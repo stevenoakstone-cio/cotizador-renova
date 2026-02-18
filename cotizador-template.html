@@ -7512,13 +7512,18 @@
             h += '<div class="pdf-field" style="flex:1"><label>Entrega</label><input type="text" value="' + (d.deliveryTime || '') + '" oninput="APP.setPdfField(\'deliveryTime\',this.value)"></div>';
             h += '</div>';
             h += '<div class="pdf-field"><label>Anticipo %</label><input type="number" value="' + (d.anticipo || CONFIG.quoting.defaultAnticipo) + '" min="0" max="100" onchange="APP.setPdfField(\'anticipo\',parseInt(this.value))"></div>';
-            // Line items
-            h += '<div class="pdf-items"><label style="font-size:14px;color:#fff;display:block;margin-bottom:4px">Descripcion del proyecto (aparece en el PDF)</label>';
-            h += '<p style="font-size:12px;color:#999;margin-bottom:12px">Edita la descripcion y el precio antes de generar el PDF</p>';
+            // Line items — one per module
+            h += '<div class="pdf-items"><label style="font-size:14px;color:#fff;display:block;margin-bottom:4px">Modulos del proyecto (aparecen en el PDF)</label>';
+            h += '<p style="font-size:12px;color:#999;margin-bottom:12px">Cada modulo es una linea en la tabla de cotizacion. Edita descripcion y precio.</p>';
             d.items.forEach(function(item, i) {
-                h += '<div class="pdf-item"><div class="pdf-item-hdr"><strong>Precio (sin IVA):</strong><div style="display:flex;align-items:center;gap:4px"><span style="color:#bbb">$</span><input class="pdf-item-price" type="number" value="' + item.price + '" onchange="APP.setPdfItemPrice(' + i + ',parseFloat(this.value))"></div></div>';
-                h += '<textarea class="pdf-item-desc" oninput="APP.setPdfItemDesc(' + i + ',this.value)" rows="8">' + item.desc + '</textarea>';
-                h += '<div style="font-size:12px;color:#999;margin-top:4px">Medidas: ' + item.dims + '</div></div>';
+                h += '<div class="pdf-item">';
+                h += '<div class="pdf-item-hdr" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+                h += '<strong style="color:#60a5fa;font-size:13px">' + (item.name || 'Modulo ' + (i + 1)) + '</strong>';
+                h += '<div style="display:flex;align-items:center;gap:4px"><span style="color:#bbb;font-size:12px">Precio:</span><span style="color:#bbb">$</span><input class="pdf-item-price" type="number" value="' + item.price + '" onchange="APP.setPdfItemPrice(' + i + ',parseFloat(this.value))" style="width:100px"></div>';
+                h += '</div>';
+                h += '<textarea class="pdf-item-desc" oninput="APP.setPdfItemDesc(' + i + ',this.value)" rows="5">' + item.desc + '</textarea>';
+                h += '<div style="font-size:12px;color:#999;margin-top:4px">Medidas: ' + item.dims + '</div>';
+                h += '</div>';
             });
             h += '</div>';
             // Totals
@@ -7617,7 +7622,10 @@
                 var modGap = nMods <= 3 ? 10 : nMods <= 5 ? 6 : 4;
                 var totalGap = (nMods - 1) * modGap;
                 var availW = pw - 2 * margin - totalGap;
-                var availH = ph - 70; // leave room for header, labels, legend below
+                // Reserve space at bottom: module details list + legend + specs line
+                var detailLines = nMods + 3; // nMods lines + header + legend + specs
+                var reservedBottom = detailLines * 3.5 + 16;
+                var availH = ph - 24 - reservedBottom; // 24 = top header area
                 var maxModH = 0;
                 modules.forEach(function(m) {
                     var mH = estModHeight(m);
@@ -7914,10 +7922,8 @@
                     doc.setFontSize(8);
                     curX += W + modGap;
                 });
-                // Module names listed at the bottom of the sheet
-                var bottomY = ph - 35;
-                if (maxBottomY + 10 < bottomY)
-                    bottomY = maxBottomY + 10;
+                // Module names listed at the bottom of the sheet — always in reserved area
+                var bottomY = ph - reservedBottom + 4;
                 doc.setFontSize(7);
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor(60, 60, 60);
@@ -8004,7 +8010,7 @@
             }
         }
 
-        // CUSTOMIZE: Client PDF — adjust logo position, colors, layout, and legal terms here
+        // CUSTOMIZE: Client PDF — black & white Excel-style layout
         function genClientPDF() {
             if (typeof jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
                 alert('jsPDF no cargado. Verifica tu conexion a internet.');
@@ -8013,147 +8019,367 @@
             var jsPDF = window.jspdf.jsPDF;
             var doc = new jsPDF('p', 'mm', 'letter');
             var d = S.pdfData,
+                P = S.project,
+                c = calc(),
                 br = BRANDS[S.brand] || BRANDS.primary;
-            // CUSTOMIZE: PDF color scheme — white background, black text
-            var accent = [196, 154, 108]; // #c49a6c gold (accent line only)
             var black = [0, 0, 0];
-            var grey = [100, 100, 100];
-            var pw = 215.9,
-                ph = 279.4,
-                margin = 20,
-                cw = pw - margin * 2;
+            var white = [255, 255, 255];
+            var pw = 215.9, ph = 279.4, margin = 15, cw = pw - margin * 2;
             var y = margin;
-            // CUSTOMIZE: Logo on left, company name + contact on right
-            var rightX = pw - margin;
+
+            // === PAGE 1: QUOTE ===
+
+            // 1. Title bar — full-width black rect with RENOVA
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(margin, y, cw, 14, 'F');
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(white[0], white[1], white[2]);
             if (S.logoBase64) {
-                try {
-                    doc.addImage(S.logoBase64, 'PNG', margin, y, 50, 25);
-                } catch (e) {}
+                try { doc.addImage(S.logoBase64, 'PNG', margin + 2, y + 1, 30, 12); } catch (e) {}
+                doc.text(br.name.toUpperCase(), margin + 35, y + 10);
+            } else {
+                doc.text(br.name.toUpperCase(), margin + 6, y + 10);
             }
-            doc.setFontSize(20);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(black[0], black[1], black[2]);
-            doc.text('Renova', rightX, y + 10, { align: 'right' });
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'italic');
-            doc.setTextColor(grey[0], grey[1], grey[2]);
-            doc.text(br.tagline, rightX, y + 17, { align: 'right' });
-            doc.setFont('helvetica', 'normal');
+            y += 14;
+
+            // 2. Info row — black bg: Fecha left, Cotizacion right
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(margin, y, cw, 8, 'F');
             doc.setFontSize(9);
-            doc.text(CONTACT.city + ' | ' + CONTACT.cell + ' | ' + CONTACT.email, rightX, y + 25, { align: 'right' });
-            y += 34;
-            // Accent line
-            doc.setDrawColor(accent[0], accent[1], accent[2]);
-            doc.setLineWidth(0.8);
-            doc.line(margin, y, pw - margin, y);
-            y += 8;
-            // Quote info
-            doc.setFontSize(13);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(black[0], black[1], black[2]);
-            doc.text('COTIZACION ' + d.quoteNum, margin, y);
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.setTextColor(grey[0], grey[1], grey[2]);
-            doc.text('Fecha: ' + fmtDatePDF(), pw - margin, y, { align: 'right' });
-            y += 5;
-            doc.text('Vigencia: 15 dias', pw - margin, y, { align: 'right' });
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('Fecha: ' + fmtDatePDF(), margin + 4, y + 5.5);
+            doc.text('Cotizacion: ' + d.quoteNum, margin + cw - 4, y + 5.5, { align: 'right' });
             y += 8;
-            doc.setFontSize(11);
+
+            // 3. Cliente row — white bg
+            doc.setFillColor(white[0], white[1], white[2]);
+            doc.setDrawColor(black[0], black[1], black[2]);
+            doc.setLineWidth(0.3);
+            doc.rect(margin, y, cw, 8, 'FD');
+            doc.setFontSize(10);
             doc.setTextColor(black[0], black[1], black[2]);
-            doc.text('Cliente: ' + (d.client || ''), margin, y);
-            y += 5;
-            doc.text('Proyecto: ' + (d.projectName || ''), margin, y);
-            y += 5;
-            if (d.location) {
-                doc.text('Ubicacion: ' + d.location, margin, y);
-                y += 5;
-            }
-            y += 6;
-            // Description text block
-            doc.setFillColor(245, 245, 245);
-            var descText = d.items.length > 0 ? d.items[0].desc : '';
-            var descLines = doc.splitTextToSize(descText, cw - 16);
-            var descBlockH = Math.max(20, descLines.length * 4.5 + 12);
-            doc.roundedRect(margin, y, cw, descBlockH, 3, 3, 'F');
-            doc.setFontSize(9);
-            doc.setTextColor(black[0], black[1], black[2]);
-            doc.text(descLines, margin + 8, y + 8);
-            y += descBlockH + 8;
-            // Price summary
-            var itemTotal = d.items.reduce(function(a, it) { return a + it.price; }, 0);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Cliente:', margin + 4, y + 5.5);
+            doc.setFont('helvetica', 'bold');
+            doc.text(d.client || '', margin + 28, y + 5.5);
+            y += 8;
+
+            // 4. Proyecto row — black bg
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(margin, y, cw, 8, 'F');
+            doc.setFontSize(10);
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Proyecto:', margin + 4, y + 5.5);
+            doc.setFont('helvetica', 'bold');
+            doc.text(d.projectName || '', margin + 30, y + 5.5);
+            y += 8;
+
+            // 5. Intro text — black bg
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(margin, y, cw, 8, 'F');
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('A continuacion remito la propuesta economica para su proyecto de muebles a la medida.', margin + 4, y + 5.5);
+            y += 10;
+
+            // 6. Item table using autoTable
+            var itemTotal = d.items.reduce(function(a, it) { return a + (it.price * (it.qty || 1)); }, 0);
+            var tableBody = d.items.map(function(it) {
+                var total = (it.price || 0) * (it.qty || 1);
+                return [
+                    it.desc || it.name || '',
+                    '$' + Math.round(it.price || 0).toLocaleString('es-MX'),
+                    String(it.qty || 1),
+                    '$' + Math.round(total).toLocaleString('es-MX')
+                ];
+            });
+
+            doc.autoTable({
+                startY: y,
+                margin: { left: margin, right: margin },
+                head: [['DESCRIPCION', 'PRECIO', 'CANT.', 'TOTAL']],
+                body: tableBody,
+                foot: [['TOTAL', '', '', '$' + Math.round(itemTotal).toLocaleString('es-MX')]],
+                theme: 'plain',
+                styles: {
+                    fontSize: 8.5,
+                    cellPadding: 3,
+                    lineColor: black,
+                    lineWidth: 0.3,
+                    textColor: black
+                },
+                headStyles: {
+                    fillColor: black,
+                    textColor: white,
+                    fontStyle: 'bold',
+                    fontSize: 9
+                },
+                footStyles: {
+                    fillColor: black,
+                    textColor: white,
+                    fontStyle: 'bold',
+                    fontSize: 9
+                },
+                columnStyles: {
+                    0: { cellWidth: cw * 0.50 },
+                    1: { cellWidth: cw * 0.18, halign: 'right' },
+                    2: { cellWidth: cw * 0.10, halign: 'center' },
+                    3: { cellWidth: cw * 0.22, halign: 'right' }
+                },
+                alternateRowStyles: { fillColor: [245, 245, 245] }
+            });
+            y = doc.lastAutoTable.finalY + 4;
+
+            // 7. Totals section — right-aligned
             var roundedTotal = Math.round(itemTotal / 100) * 100;
             var iva = Math.round(roundedTotal * CONFIG.pricing.iva);
             var grandTotal = roundedTotal + iva;
-            // Price box
-            doc.setFillColor(245, 245, 245);
-            doc.roundedRect(pw - margin - 80, y, 80, 32, 3, 3, 'F');
-            doc.setFontSize(10);
-            doc.setTextColor(grey[0], grey[1], grey[2]);
-            doc.text('Subtotal:', pw - margin - 74, y + 8);
-            doc.text('$' + roundedTotal.toLocaleString('es-MX'), pw - margin - 6, y + 8, { align: 'right' });
-            doc.text('IVA ' + Math.round(CONFIG.pricing.iva * 100) + '%:', pw - margin - 74, y + 15);
-            doc.text('$' + iva.toLocaleString('es-MX'), pw - margin - 6, y + 15, { align: 'right' });
-            doc.setDrawColor(black[0], black[1], black[2]);
-            doc.setLineWidth(0.4);
-            doc.line(pw - margin - 74, y + 18, pw - margin - 6, y + 18);
-            doc.setFontSize(13);
+            var totalsW = 80;
+            var totalsX = margin + cw - totalsW;
+            // Subtotal row
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(totalsX, y, totalsW, 7, 'F');
+            doc.setFontSize(9);
             doc.setFont('helvetica', 'bold');
-            doc.setTextColor(black[0], black[1], black[2]);
-            doc.text('TOTAL:', pw - margin - 74, y + 27);
-            doc.text('$' + grandTotal.toLocaleString('es-MX'), pw - margin - 6, y + 27, { align: 'right' });
-            doc.setFont('helvetica', 'normal');
-            y += 42;
-            // Legal terms from CONFIG
-            if (y > 220) { doc.addPage(); y = margin; }
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('SUBTOTAL', totalsX + 4, y + 5);
+            doc.text('$' + roundedTotal.toLocaleString('es-MX'), totalsX + totalsW - 4, y + 5, { align: 'right' });
+            y += 7;
+            // IVA row
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(totalsX, y, totalsW, 7, 'F');
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('IVA ' + Math.round(CONFIG.pricing.iva * 100) + '%', totalsX + 4, y + 5);
+            doc.text('$' + iva.toLocaleString('es-MX'), totalsX + totalsW - 4, y + 5, { align: 'right' });
+            y += 7;
+            // Grand total row
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(totalsX, y, totalsW, 9, 'F');
+            doc.setFontSize(11);
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('TOTAL', totalsX + 4, y + 6.5);
+            doc.text('$' + grandTotal.toLocaleString('es-MX'), totalsX + totalsW - 4, y + 6.5, { align: 'right' });
+            y += 13;
+
+            // 8. Legal terms
+            if (y > 210) { doc.addPage(); y = margin; }
             var legalTerms = CONFIG.brand.legalTerms || CONFIG.quoting.terms.map(function(t) {
                 return t.replace('{anticipo}', d.anticipo).replace('{deliveryTime}', d.deliveryTime);
             });
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'bold');
             doc.setTextColor(black[0], black[1], black[2]);
-            // Render legal terms with section headers
             legalTerms.forEach(function(t) {
-                if (!t || t.trim() === '') {
-                    y += 3; // blank line = spacing
-                    return;
-                }
-                // Lines ending with ':' are section headers
+                if (y > ph - 20) { doc.addPage(); y = margin; }
+                if (!t || t.trim() === '') { y += 3; return; }
                 if (t.trim().slice(-1) === ':') {
+                    // Section header bar
                     y += 2;
+                    doc.setFillColor(black[0], black[1], black[2]);
+                    doc.rect(margin, y, cw, 7, 'F');
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(10);
-                    doc.text(t, margin, y);
-                    y += 5;
+                    doc.setFontSize(9);
+                    doc.setTextColor(white[0], white[1], white[2]);
+                    doc.text(t, margin + 4, y + 5);
+                    doc.setTextColor(black[0], black[1], black[2]);
+                    y += 10;
                 } else {
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(8.5);
-                    var tLines = doc.splitTextToSize(t, cw);
-                    doc.text(tLines, margin, y);
-                    y += tLines.length * 3.5 + 1;
+                    doc.setFontSize(8);
+                    var tLines = doc.splitTextToSize(t, cw - 8);
+                    doc.text(tLines, margin + 4, y);
+                    y += tLines.length * 3.8 + 2;
                 }
             });
             if (d.notes) {
                 y += 3;
                 doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
                 doc.setTextColor(black[0], black[1], black[2]);
-                doc.text('Nota: ' + d.notes, margin, y);
+                doc.text('Nota: ' + d.notes, margin + 4, y);
                 y += 6;
             }
-            y += 8;
-            // Contact footer
-            doc.setDrawColor(accent[0], accent[1], accent[2]);
-            doc.line(margin, y, margin + 60, y);
-            y += 5;
+            y += 6;
+
+            // 9. Contact footer
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(margin, y, cw, 0.5, 'F');
+            y += 4;
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(black[0], black[1], black[2]);
+            doc.text('Encargado del proyecto: ' + CONTACT.name, margin + 4, y);
+            y += 3.5;
+            doc.text('Contacto: ' + CONTACT.cell + '  |  ' + CONTACT.email, margin + 4, y);
+
+            // === PAGE 2: MATERIALES ===
+            doc.addPage();
+            y = margin;
+            var matMargin = margin;
+
+            // Header
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(matMargin, y, cw, 12, 'F');
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('MATERIALES', matMargin + 6, y + 8.5);
+            y += 12;
+
+            // Project/Vendedor info row
+            doc.setFillColor(white[0], white[1], white[2]);
+            doc.setDrawColor(black[0], black[1], black[2]);
+            doc.rect(matMargin, y, cw, 7, 'FD');
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(black[0], black[1], black[2]);
+            doc.text('Proyecto: ' + (d.projectName || '') + '  |  Cliente: ' + (d.client || '') + '  |  ' + d.quoteNum, matMargin + 4, y + 4.8);
+            y += 9;
+
+            // CARPINTERIA section
+            var carpMultiplier = CONFIG.pricing.carpentryMultiplier;
+            var carpBody = [];
+            if (c.totalSheetsF > 0) {
+                var sheetSaleF = Math.round(getMatPrice(P.matFrentes, P.thickness) * carpMultiplier);
+                carpBody.push([
+                    String(c.totalSheetsF),
+                    'Hoja',
+                    'Melamina ' + P.matFrentes.name + (P.matFrentes.finish ? ' ' + P.matFrentes.finish : '') + ' ' + P.thickness + 'mm',
+                    P.matFrentes.brand || 'FINSA',
+                    '$' + Math.round(c.totalSheetsF * sheetSaleF).toLocaleString('es-MX')
+                ]);
+            }
+            if (c.useDual && c.totalSheetsI > 0) {
+                var sheetSaleI = Math.round(getMatPrice(P.matInterior, P.thickness) * carpMultiplier);
+                carpBody.push([
+                    String(c.totalSheetsI),
+                    'Hoja',
+                    'Melamina ' + P.matInterior.name + (P.matInterior.finish ? ' ' + P.matInterior.finish : '') + ' ' + P.thickness + 'mm (Interior)',
+                    P.matInterior.brand || 'FINSA',
+                    '$' + Math.round(c.totalSheetsI * sheetSaleI).toLocaleString('es-MX')
+                ]);
+            }
+            if (c.totalCanto > 0) {
+                var chapSale = Math.round((c.chapCostF + c.chapCostI) * carpMultiplier);
+                carpBody.push([
+                    String(c.totalCanto),
+                    'ML',
+                    'Chapacanto ' + (CONFIG.pricing.defaultChapSpec || ''),
+                    '',
+                    '$' + chapSale.toLocaleString('es-MX')
+                ]);
+            }
+            if (c.totalSheets > 0) {
+                carpBody.push([
+                    String(c.totalSheets),
+                    'Hoja',
+                    'Corte CNC',
+                    '',
+                    '$' + Math.round(c.corteCost * carpMultiplier).toLocaleString('es-MX')
+                ]);
+            }
+            if (c.totalCanto > 0) {
+                carpBody.push([
+                    String(c.totalCanto),
+                    'ML',
+                    'Enchapado',
+                    '',
+                    '$' + Math.round(c.enchapCost * carpMultiplier).toLocaleString('es-MX')
+                ]);
+            }
+
+            // Section header for CARPINTERIA
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(matMargin, y, cw, 7, 'F');
             doc.setFontSize(9);
-            doc.setTextColor(grey[0], grey[1], grey[2]);
-            doc.text('Encargado del proyecto: ' + CONTACT.name, margin, y);
-            y += 4;
-            doc.text('Contacto directo: ' + CONTACT.cell, margin, y);
-            y += 4;
-            doc.text('Correo: ' + CONTACT.email, margin, y);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('CARPINTERIA', matMargin + 4, y + 4.8);
+            y += 8;
+
+            if (carpBody.length > 0) {
+                doc.autoTable({
+                    startY: y,
+                    margin: { left: matMargin, right: margin },
+                    head: [['CANT.', 'UNIDAD', 'DESCRIPCION', 'MARCA', 'TOTAL']],
+                    body: carpBody,
+                    theme: 'plain',
+                    styles: { fontSize: 8, cellPadding: 2.5, lineColor: black, lineWidth: 0.2, textColor: black },
+                    headStyles: { fillColor: [220, 220, 220], textColor: black, fontStyle: 'bold' },
+                    columnStyles: {
+                        0: { cellWidth: 14, halign: 'center' },
+                        1: { cellWidth: 16, halign: 'center' },
+                        2: { cellWidth: cw * 0.44 },
+                        3: { cellWidth: 24 },
+                        4: { cellWidth: cw * 0.18, halign: 'right' }
+                    }
+                });
+                y = doc.lastAutoTable.finalY + 6;
+            }
+
+            // Check if HERRAJES section fits, otherwise new page
+            if (y > ph - 50) { doc.addPage(); y = margin; }
+
+            // HERRAJES section
+            doc.setFillColor(black[0], black[1], black[2]);
+            doc.rect(matMargin, y, cw, 7, 'F');
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(white[0], white[1], white[2]);
+            doc.text('HERRAJES', matMargin + 4, y + 4.8);
+            y += 8;
+
+            var hwBody = [];
+            c.allHW.forEach(function(hw) {
+                var qty = Math.ceil(hw.qty);
+                if (qty <= 0) return;
+                var salePrice;
+                if (hw._bucket === 'carp') {
+                    salePrice = Math.round(hw.price * carpMultiplier);
+                } else {
+                    salePrice = Math.round(hw.price / (1 - CONFIG.pricing.premiumHardwareMargin));
+                }
+                hwBody.push([
+                    String(qty),
+                    'Pza',
+                    hw.desc,
+                    hw.marca || '',
+                    '$' + Math.round(qty * salePrice).toLocaleString('es-MX')
+                ]);
+            });
+
+            if (hwBody.length > 0) {
+                doc.autoTable({
+                    startY: y,
+                    margin: { left: matMargin, right: margin },
+                    head: [['CANT.', 'UNIDAD', 'DESCRIPCION', 'MARCA', 'TOTAL']],
+                    body: hwBody,
+                    theme: 'plain',
+                    styles: { fontSize: 8, cellPadding: 2.5, lineColor: black, lineWidth: 0.2, textColor: black },
+                    headStyles: { fillColor: [220, 220, 220], textColor: black, fontStyle: 'bold' },
+                    columnStyles: {
+                        0: { cellWidth: 14, halign: 'center' },
+                        1: { cellWidth: 16, halign: 'center' },
+                        2: { cellWidth: cw * 0.44 },
+                        3: { cellWidth: 24 },
+                        4: { cellWidth: cw * 0.18, halign: 'right' }
+                    }
+                });
+                y = doc.lastAutoTable.finalY + 6;
+            } else {
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(black[0], black[1], black[2]);
+                doc.text('(Sin herrajes)', matMargin + 4, y + 4);
+                y += 10;
+            }
+
+
             // Plano page
             addPlanoPage(doc, margin);
+
             // Save
             var fname = d.quoteNum + '-Cotizacion-' + (d.client || 'Cliente').replace(/\s+/g, '-') + '.pdf';
             doc.save(fname);
@@ -10990,43 +11216,43 @@
                     });
                 var yr = new Date().getFullYear();
                 var qnum = CONFIG.quoting.prefix + '-' + yr + '-' + String(S.quoteCounter).padStart(4, '0');
-                // Build one clear project description with all modules listed
-                var tw = P.modules.reduce(function(a, x) {
-                    return a + x.width;
-                }, 0);
-                var desc = (type ? type.n : 'Proyecto') + '\nMaterial: ' + P.matFrentes.name;
-                if (c.useDual)
-                    desc += ' (frentes) / ' + P.matInterior.name + ' (interior)';
-                desc += '\n\nIncluye:';
-                P.modules.forEach(function(m) {
-                    var line = '\n- ' + m.name + ' ' + m.width + 'cm';
-                    if (m.height)
-                        line += ' x ' + m.height + 'cm alto';
-                    var mcaj = typeof m.cajones === 'number' ? m.cajones : (m.type === 'modulo' ? 4 : 0);
-                    if (mcaj > 0)
-                        line += ' (' + mcaj + ' cajones)';
-                    else if (m.type === 'modulo')
-                        line += ' (' + (typeof m.shelves === 'number' ? m.shelves : 3) + ' entrepaños)';
-                    if (m.doors)
-                        line += m.tipon ? ', puertas con tip-on' : ' con puertas';
-                    desc += line;
-                });
-                var hasAnyLed = P.modules.some(function(m) {
-                    return m.led && m.led.enabled;
-                });
-                if (hasAnyLed)
-                    desc += '\n- Iluminacion LED perimetral completa';
-                if (P.glass)
-                    desc += '\n- Vidrio templado 6mm';
-                desc += '\n- Herrajes incluidos';
-                desc += '\n- Instalacion incluida';
+                // Round total price to nearest 500
                 var totalPrice = Math.round(c.subtotal / 500) * 500;
-                var ph = (P.defaultHeight || 200) / 100;
-                var items = [{
-                    desc: desc,
-                    dims: (tw / 100) + 'm ancho x ' + ph.toFixed(2) + 'm alto',
-                    price: totalPrice
-                }];
+                // Build one item per module with proportional price allocation
+                var tw = P.modules.reduce(function(a, x) { return a + x.width; }, 0);
+                var items = [];
+                var priceAllocated = 0;
+                P.modules.forEach(function(m, idx) {
+                    var mh = (m.height || P.defaultHeight || 200);
+                    // Proportional price by width
+                    var proportion = tw > 0 ? m.width / tw : 1 / P.modules.length;
+                    var mPrice;
+                    if (idx === P.modules.length - 1) {
+                        mPrice = totalPrice - priceAllocated; // last module gets remainder
+                    } else {
+                        mPrice = Math.round(totalPrice * proportion / 100) * 100;
+                        priceAllocated += mPrice;
+                    }
+                    // Build description
+                    var desc = m.name;
+                    var matLine = P.matFrentes.name;
+                    if (c.useDual) matLine += ' (frentes) / ' + P.matInterior.name + ' (interior)';
+                    desc += '\nMaterial: ' + matLine;
+                    var mcaj = typeof m.cajones === 'number' ? m.cajones : (m.type === 'modulo' ? 4 : 0);
+                    if (mcaj > 0) desc += '\n' + mcaj + ' cajones';
+                    else if (m.type === 'modulo') desc += '\n' + (typeof m.shelves === 'number' ? m.shelves : 3) + ' entrepaños';
+                    if (m.doors) desc += m.tipon ? '\nPuertas con tip-on' : '\nCon puertas';
+                    if (m.led && m.led.enabled) desc += '\nIluminacion LED';
+                    desc += '\nHerrajes incluidos';
+                    desc += '\nInstalacion incluida';
+                    items.push({
+                        name: m.name,
+                        desc: desc,
+                        dims: m.width + 'cm x ' + mh + 'cm',
+                        price: mPrice,
+                        qty: 1
+                    });
+                });
                 S.pdfData = {
                     client: P.client || '',
                     projectName: (type ? type.n : 'Proyecto'),
