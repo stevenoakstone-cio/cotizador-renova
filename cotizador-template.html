@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>Cotizador</title>
+    <title>Cotizador v1.2</title>
     <meta name="theme-color" content="#c49a6c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2076,7 +2076,7 @@
     }
 
     .logo-preview {
-        width: 80px;
+        width: 160px;
         height: 80px;
         border-radius: 8px;
         background: #2a2a2a;
@@ -2950,13 +2950,31 @@
         // ╚══════════════════════════════════════════════════════════════╝
         var CONFIG = {
             brand: {
-                name: 'MI EMPRESA',
-                mono: 'ME',
+                name: 'Renova',
+                mono: 'RN',
                 tagline: 'Muebles a la Medida',
-                altBrand: null // e.g. { id:'alt', mono:'ALT', name:'OTRA MARCA', tagline:'Subtitulo' }
+                altBrand: null, // e.g. { id:'alt', mono:'ALT', name:'OTRA MARCA', tagline:'Subtitulo' }
+                // CUSTOMIZE: Legal terms for client PDF — edit these to match your business terms
+                legalTerms: [
+                    'ACUERDO:',
+                    'Vigencia de cotizacion 15 dias naturales a partir de la fecha.',
+                    'Tiempo de entrega de 6-8 semanas a partir de aprobacion del diseno y anticipo del 60%.',
+                    'Se inicia el proyecto con anticipo del 60% y el saldo del 40% con muebles fabricados en taller previo a la instalacion.',
+                    'Una vez realizado el pago del anticipo, no se podra realizar cancelacion de trabajos.',
+                    'Cualquier alteracion y/o solicitud nueva al proyecto se cobrara aparte.',
+                    '',
+                    'INSTALACION:',
+                    'El presupuesto incluye traslado en la ubicacion acordada, dentro de la Zona Metropolitana de Monterrey.',
+                    'La instalacion NO incluye ajustes o cambios en trabajos que no se incluyan o que no correspondan al giro de la empresa previamente solicitado (instalaciones Electricas, Hidraulicas, Gas).',
+                    'El horario de instalacion es de 9:00 am a 5:00 pm de Lunes a Viernes.',
+                    'El espacio debe estar adecuado y libre para instalacion.',
+                    '',
+                    'MATERIALES:',
+                    'La sobreexposicion al sol y rayos UV generan un deterioro indebido el cual no sera objeto de garantia. De igual manera la exposicion a exceso de humedad o fugas dentro del espacio.'
+                ]
             },
             contact: {
-                name: 'Tu Nombre',
+                name: 'Renova',
                 office: '00 0000-0000',
                 cell: '00 0000-0000',
                 email: 'contacto@miempresa.com',
@@ -2987,13 +3005,19 @@
                 prefix: 'cot_'
             },
             pwa: {
-                cacheName: 'cotizador-v1'
+                cacheName: 'cotizador-v5'
             },
             pricing: {
                 iva: 0.16,
                 marginCarp: 66,
                 marginHwStd: 66,
                 marginBlum: 0.30,
+                // CUSTOMIZE: Material merma (waste) factor — 1.20 = 20% extra material
+                mermaFactor: 1.20,
+                // CUSTOMIZE: Hardware pricing — items with total cost <= threshold go into carpentry bucket (3x multiplier), above threshold get premium margin (30%)
+                carpentryMultiplier: 3,
+                hardwareThreshold: 500,
+                premiumHardwareMargin: 0.30,
                 extrasMultiplier: 4,
                 cuttingCostPerSheet: 75,
                 glassCostPerM2: 800,
@@ -3005,6 +3029,19 @@
                 saleMultiplierPresets: [1.5, 2, 2.5, 3],
                 defaultSaleMultiplier: 2
             },
+            // CUSTOMIZE: Bisagra auto-assignment rules — adjust count by door height and material
+            hardware: {
+                autoAssignRules: {
+                    puertas: {
+                        bisagras: [
+                            { maxHeight: 100, count: 3 },
+                            { maxHeight: 200, count: 4 },
+                            { maxHeight: Infinity, count: 5 }
+                        ],
+                        heavyMaterialBonus: 1
+                    }
+                }
+            },
             supabase: {
                 url: '',
                 key: ''
@@ -3012,121 +3049,72 @@
             bundledProjects: []
         };
 
-        var COLORS = [
-        {
-            c: '74V',
-            n: 'Roble Stella',
-            f: 'Atlas'
-        }, {
-            c: '98V',
-            n: 'Roble Aurora',
-            f: 'Atlas'
-        }, {
-            c: '42B',
-            n: 'Roble Trigo',
-            f: 'Atlas'
-        },
-        {
-            c: '95Q',
-            n: 'Roble Trufa',
-            f: 'Atlas'
-        }, {
-            c: '97V',
-            n: 'Roble Colorado',
-            f: 'Atlas'
-        }, {
-            c: '4AE',
-            n: 'Roble Eternity',
-            f: 'Atlas'
-        },
-        {
-            c: '04R',
-            n: 'Olmo Volga',
-            f: 'Atlas'
-        }, {
-            c: '16N',
-            n: 'Fresno Glacial',
-            f: 'Atlas'
-        }, {
-            c: '91B',
-            n: 'Roble Renovales',
-            f: 'Atlas'
-        },
-        {
-            c: '10C',
-            n: 'Cambridge Walnut',
-            f: 'Atlas'
-        }, {
-            c: '75V',
-            n: 'Roble Azabache',
-            f: 'Atlas'
-        }, {
-            c: '20N',
-            n: 'Roble Sinatra',
-            f: 'Atlas'
-        },
-        {
-            c: '9AR',
-            n: 'Hickory Frida',
-            f: 'Boreal'
-        }, {
-            c: '4AR',
-            n: 'Olmo Sabi',
-            f: 'Boreal'
-        },
-        {
-            c: '1AS',
-            n: 'Nogal Valentina',
-            f: 'Mesura'
-        }, {
-            c: '451B',
-            n: 'Roble Newman',
-            f: 'Mesura'
-        },
-        {
-            c: '07R',
-            n: 'Olmo Ontario',
-            f: 'Poro'
-        }, {
-            c: '12G',
-            n: 'Lino Cancun',
-            f: 'Textil'
-        },
-        {
-            c: '890',
-            n: 'Aluminio',
-            f: 'Soft'
-        }, {
-            c: 'U12',
-            n: 'Natural Grey',
-            f: 'Soft'
-        }, {
-            c: '197',
-            n: 'Gris Rioja',
-            f: 'Soft'
-        },
-        {
-            c: '71A',
-            n: 'Gris Gu',
-            f: 'Soft'
-        }, {
-            c: '231',
-            n: 'Negro',
-            f: 'Soft'
-        }, {
-            c: '465B',
-            n: 'Verde Plomo',
-            f: 'Soft'
-        }, {
-            c: '3AU',
-            n: 'Verde Arcilla',
-            f: 'Soft'
+        // Helper: get bisagra count based on door height (cm) and material type
+        function getBisagraCount(heightCm, materialType) {
+            var rules = CONFIG.hardware.autoAssignRules.puertas;
+            var count = 3; // default
+            for (var i = 0; i < rules.bisagras.length; i++) {
+                if (heightCm <= rules.bisagras[i].maxHeight) {
+                    count = rules.bisagras[i].count;
+                    break;
+                }
+            }
+            if (materialType === 'vidrio' || materialType === 'metal') {
+                count += rules.heavyMaterialBonus;
+            }
+            return count;
         }
+
+        // ┌─────────────────────────────────────────────────────────────┐
+        // │  DEMO MATERIALS — Replace with real COLORS array when ready  │
+        // │  To restore: delete this block and uncomment REAL block below│
+        // └─────────────────────────────────────────────────────────────┘
+        var COLORS = [
+            { c: 'D01', n: 'Roble Natural', f: 'Demo' },
+            { c: 'D02', n: 'Nogal Oscuro', f: 'Demo' },
+            { c: 'D03', n: 'Encino Blanco', f: 'Demo' },
+            { c: 'D04', n: 'Cerezo Clasico', f: 'Demo' },
+            { c: 'D05', n: 'Gris Cemento', f: 'Demo' },
+            { c: 'D06', n: 'Negro Mate', f: 'Demo' },
+            { c: 'D07', n: 'Blanco Polar', f: 'Demo' },
+            { c: 'D08', n: 'Fresno Humo', f: 'Demo' },
+            { c: 'D09', n: 'Olmo Toscano', f: 'Demo' },
+            { c: 'D10', n: 'Maple Dorado', f: 'Demo' }
         ];
         var FINSA_PRICES = {
-            16: 1000,
-            25: 1400
+            16: 1200,
+            25: 1700
         };
+        /* ── REAL COLORS (uncomment to restore) ──
+        var COLORS = [
+        { c: '74V', n: 'Roble Stella', f: 'Atlas' },
+        { c: '98V', n: 'Roble Aurora', f: 'Atlas' },
+        { c: '42B', n: 'Roble Trigo', f: 'Atlas' },
+        { c: '95Q', n: 'Roble Trufa', f: 'Atlas' },
+        { c: '97V', n: 'Roble Colorado', f: 'Atlas' },
+        { c: '4AE', n: 'Roble Eternity', f: 'Atlas' },
+        { c: '04R', n: 'Olmo Volga', f: 'Atlas' },
+        { c: '16N', n: 'Fresno Glacial', f: 'Atlas' },
+        { c: '91B', n: 'Roble Renovales', f: 'Atlas' },
+        { c: '10C', n: 'Cambridge Walnut', f: 'Atlas' },
+        { c: '75V', n: 'Roble Azabache', f: 'Atlas' },
+        { c: '20N', n: 'Roble Sinatra', f: 'Atlas' },
+        { c: '9AR', n: 'Hickory Frida', f: 'Boreal' },
+        { c: '4AR', n: 'Olmo Sabi', f: 'Boreal' },
+        { c: '1AS', n: 'Nogal Valentina', f: 'Mesura' },
+        { c: '451B', n: 'Roble Newman', f: 'Mesura' },
+        { c: '07R', n: 'Olmo Ontario', f: 'Poro' },
+        { c: '12G', n: 'Lino Cancun', f: 'Textil' },
+        { c: '890', n: 'Aluminio', f: 'Soft' },
+        { c: 'U12', n: 'Natural Grey', f: 'Soft' },
+        { c: '197', n: 'Gris Rioja', f: 'Soft' },
+        { c: '71A', n: 'Gris Gu', f: 'Soft' },
+        { c: '231', n: 'Negro', f: 'Soft' },
+        { c: '465B', n: 'Verde Plomo', f: 'Soft' },
+        { c: '3AU', n: 'Verde Arcilla', f: 'Soft' }
+        ];
+        var FINSA_PRICES = { 16: 1000, 25: 1400 };
+        ── END REAL COLORS ── */
         // CUSTOMIZE: Project types — add/remove project categories for custom mode
         var TYPES = [{
             id: 'tv',
@@ -3145,26 +3133,32 @@
             n: 'Cocina',
             i: '&#x1f373;'
         }, {
+            id: 'puerta',
+            n: 'Puertas',
+            i: '&#x1f6aa;'
+        }, {
             id: 'otro',
             n: 'Otro',
             i: '&#x1f4e6;'
         }];
         // CUSTOMIZE: Module types — add new module types here (id, name, available widths, description)
+        // Standard dimensions based on Mexico market
         var MODS = {
+            // Closet modules — Prof: 55-60cm
             modulo: {
                 n: 'Modulo',
                 w: [70, 80, 90],
-                d: 'Corredera oculta'
+                d: 'Corredera oculta | Prof: 55-60cm'
             },
             colgador: {
                 n: 'Colgador',
                 w: [90],
-                d: 'Tubo sencillo'
+                d: 'Tubo sencillo | Min 110cm alto (largo), 90cm (corto)'
             },
             zapatero: {
                 n: 'Zapatero',
                 w: [90],
-                d: 'Extraible'
+                d: 'Extraible | 15-20cm por nivel'
             },
             esquinero: {
                 n: 'Esquinero',
@@ -3177,93 +3171,128 @@
                 d: 'Ajuste a medida',
                 custom: 1
             },
+            // TV modules — Prof: 40-50cm, Alto base: 45-55cm
             torreLateral: {
                 n: 'Torre Lateral',
-                w: [40, 50, 60],
-                d: 'Torre lateral para mueble de TV'
+                w: [30, 40, 50, 60],
+                d: 'Torre lateral | Prof: 40-50cm'
             },
             panelTV: {
                 n: 'Panel para TV',
                 w: [140, 170, 200, 240],
                 d: 'Panel decorativo para TV'
+            },
+            moduloCentral: {
+                n: 'Modulo Central',
+                w: [80, 100, 120, 140],
+                d: 'Modulo central TV | Prof: 40-50cm, Alto: 45-55cm'
+            },
+            lateralAbierto: {
+                n: 'Lateral Abierto',
+                w: [30, 40, 50, 60],
+                d: 'Lateral abierto | 30-40cm ancho tipico'
+            },
+            // Cocina modules — Base: 60cm prof x 85-90cm alto | Alacena: 30-35cm prof x 70-90cm alto
+            alacenaAlta: {
+                n: 'Alacena Alta',
+                w: [30, 45, 60, 90],
+                d: 'Gabinete superior | Prof: 30-35cm, Alto: 70-90cm'
+            },
+            gabineteBase: {
+                n: 'Gabinete Base',
+                w: [30, 45, 60, 90],
+                d: 'Gabinete inferior | Prof: 60cm, Alto: 85-90cm'
+            },
+            cajonBase: {
+                n: 'Cajon Base',
+                w: [30, 45, 60, 90],
+                d: 'Base con cajones | Prof: 60cm, Alto: 85-90cm'
+            },
+            despensa: {
+                n: 'Despensa',
+                w: [40, 50, 60],
+                d: 'Mueble despensa alto | Prof: 60cm'
+            },
+            espacioCampana: {
+                n: 'Espacio Campana',
+                w: [60, 70, 80, 90],
+                d: 'Espacio campana | Min 60cm ancho, Prof: 50-65cm'
+            },
+            esquineroGiratorio: {
+                n: 'Esquinero Giratorio',
+                w: [90],
+                d: 'Esquinero con charola giratoria'
+            },
+            // Puertas — Ancho: 80-90cm (int), 100cm (principal) | Alto: 200, 210, 240cm
+            puerta: {
+                n: 'Puerta',
+                w: [80, 90, 100],
+                d: 'Puerta individual | >100cm ancho = doble',
+                panel: true
             }
         };
 
-        // Hardware mapping to catalog search terms
+        // ┌─────────────────────────────────────────────────────────────────┐
+        // │  DEMO HARDWARE — Replace with real HW_DEFAULTS when ready       │
+        // │  To restore: delete this block and uncomment REAL block below    │
+        // │  Demo prices are round numbers, ~15-35% above typical cost      │
+        // └─────────────────────────────────────────────────────────────────┘
         var HW_DEFAULTS = {
-            corr_eco: {
-                desc: 'Corredera ext total ecoline',
-                marca: 'HERRAXA',
-                fallback: 49.90,
-                cat: 'CORREDERA'
-            },
-            corr_prem: {
-                desc: 'Corredera ext total soft close',
-                marca: 'HERRAXA',
-                fallback: 99.90,
-                cat: 'CORREDERA'
-            },
             corr_oculta: {
-                desc: 'Guia TDM oculta soft',
-                marca: 'HERRAXA',
-                fallback: 249.90,
-                cat: 'CORREDERA'
-            },
-            corr_basica: {
-                desc: 'Corredera ext lateral basica',
-                marca: 'HERRAXA',
-                fallback: 20.90,
+                desc: 'Corredera oculta soft-close',
+                marca: 'DEMO',
+                fallback: 300,
                 cat: 'CORREDERA'
             },
             bisagra: {
-                desc: 'Bisagra bastidor',
-                marca: 'HERRAXA',
-                fallback: 16.90,
+                desc: 'Bisagra de cierre suave',
+                marca: 'DEMO',
+                fallback: 20,
                 cat: 'BISAGRA'
             },
             base_clip: {
-                desc: 'Base clip',
-                marca: 'HERRAXA',
-                fallback: 4.18,
+                desc: 'Base clip para bisagra',
+                marca: 'DEMO',
+                fallback: 5,
                 cat: 'BISAGRA'
             },
             tipon: {
-                desc: 'Tip on corto gris',
-                marca: 'HERRAXA',
-                fallback: 88.38,
-                cat: 'TIP-ON'
-            },
-            placa_tipon: {
-                desc: 'Placa para tip on recta',
-                marca: 'HERRAXA',
-                fallback: 20.18,
+                desc: 'Sistema push-to-open',
+                marca: 'DEMO',
+                fallback: 110,
                 cat: 'TIP-ON'
             },
             jaladera: {
-                desc: 'Jaladera',
-                marca: 'HERRAXA',
-                fallback: 15.00,
+                desc: 'Jaladera moderna',
+                marca: 'DEMO',
+                fallback: 20,
                 cat: 'JALADERA'
-            },
-            tubo: {
-                desc: 'Tubo colgador',
-                marca: 'HERRAXA',
-                fallback: 120.00,
-                cat: 'ACC. CLOSET'
-            },
-            soporte: {
-                desc: 'Soporte tubo',
-                marca: 'HERRAXA',
-                fallback: 35.00,
-                cat: 'ACC. CLOSET'
-            },
-            nivelador: {
-                desc: 'Nivelador',
-                marca: 'HERRAXA',
-                fallback: 5.00,
-                cat: 'NIVELADOR'
             }
         };
+        // Keys needed by auto-assignment but not in demo — add minimal fallbacks
+        if (!HW_DEFAULTS.corr_eco) HW_DEFAULTS.corr_eco = { desc: 'Corredera economica', marca: 'DEMO', fallback: 60, cat: 'CORREDERA' };
+        if (!HW_DEFAULTS.corr_prem) HW_DEFAULTS.corr_prem = { desc: 'Corredera premium', marca: 'DEMO', fallback: 120, cat: 'CORREDERA' };
+        if (!HW_DEFAULTS.corr_basica) HW_DEFAULTS.corr_basica = { desc: 'Corredera basica', marca: 'DEMO', fallback: 25, cat: 'CORREDERA' };
+        if (!HW_DEFAULTS.placa_tipon) HW_DEFAULTS.placa_tipon = { desc: 'Placa tip-on', marca: 'DEMO', fallback: 25, cat: 'TIP-ON' };
+        if (!HW_DEFAULTS.tubo) HW_DEFAULTS.tubo = { desc: 'Tubo colgador', marca: 'DEMO', fallback: 150, cat: 'ACC. CLOSET' };
+        if (!HW_DEFAULTS.soporte) HW_DEFAULTS.soporte = { desc: 'Soporte tubo', marca: 'DEMO', fallback: 45, cat: 'ACC. CLOSET' };
+        if (!HW_DEFAULTS.nivelador) HW_DEFAULTS.nivelador = { desc: 'Nivelador', marca: 'DEMO', fallback: 6, cat: 'NIVELADOR' };
+        /* ── REAL HW_DEFAULTS (uncomment to restore) ──
+        var HW_DEFAULTS = {
+            corr_eco: { desc: 'Corredera ext total ecoline', marca: 'HERRAXA', fallback: 49.90, cat: 'CORREDERA' },
+            corr_prem: { desc: 'Corredera ext total soft close', marca: 'HERRAXA', fallback: 99.90, cat: 'CORREDERA' },
+            corr_oculta: { desc: 'Guia TDM oculta soft', marca: 'HERRAXA', fallback: 249.90, cat: 'CORREDERA' },
+            corr_basica: { desc: 'Corredera ext lateral basica', marca: 'HERRAXA', fallback: 20.90, cat: 'CORREDERA' },
+            bisagra: { desc: 'Bisagra bastidor', marca: 'HERRAXA', fallback: 16.90, cat: 'BISAGRA' },
+            base_clip: { desc: 'Base clip', marca: 'HERRAXA', fallback: 4.18, cat: 'BISAGRA' },
+            tipon: { desc: 'Tip on corto gris', marca: 'HERRAXA', fallback: 88.38, cat: 'TIP-ON' },
+            placa_tipon: { desc: 'Placa para tip on recta', marca: 'HERRAXA', fallback: 20.18, cat: 'TIP-ON' },
+            jaladera: { desc: 'Jaladera', marca: 'HERRAXA', fallback: 15.00, cat: 'JALADERA' },
+            tubo: { desc: 'Tubo colgador', marca: 'HERRAXA', fallback: 120.00, cat: 'ACC. CLOSET' },
+            soporte: { desc: 'Soporte tubo', marca: 'HERRAXA', fallback: 35.00, cat: 'ACC. CLOSET' },
+            nivelador: { desc: 'Nivelador', marca: 'HERRAXA', fallback: 5.00, cat: 'NIVELADOR' }
+        };
+        ── END REAL HW_DEFAULTS ── */
 
         // V2.3: Closet Estandarizado constants
         var EST_HEIGHT = 200,
@@ -3299,6 +3328,37 @@
             n: 'Maleteros',
             icon: '&#x1f9f3;',
             hidden: true
+        },
+        // Cocina zone types
+        {
+            id: 'alacenaAlta',
+            n: 'Alacena Alta',
+            icon: '&#x1f3e0;'
+        },
+        {
+            id: 'gabineteBase',
+            n: 'Gabinete Base',
+            icon: '&#x1f3e0;'
+        },
+        {
+            id: 'cajonBase',
+            n: 'Cajon Base',
+            icon: '&#x1f4e6;'
+        },
+        {
+            id: 'despensa',
+            n: 'Despensa',
+            icon: '&#x1f3e0;'
+        },
+        {
+            id: 'espacioCampana',
+            n: 'Espacio Campana',
+            icon: '&#x1f32c;'
+        },
+        {
+            id: 'esquineroGiratorio',
+            n: 'Esquinero Giratorio',
+            icon: '&#x1f504;'
         }
         ];
         var EST_ZONE_DEFAULTS = {
@@ -3528,6 +3588,128 @@
                         scope: 'doors'
                     }
                 };
+            // Cocina: Alacena Alta (upper cabinet)
+            if (modType === 'alacenaAlta')
+                return {
+                    id: uid(),
+                    type: 'alacenaAlta',
+                    width: 60,
+                    height: 70,
+                    depth: 35,
+                    zones: [{
+                        id: uid(),
+                        type: 'entrepa',
+                        count: 2
+                    }],
+                    doors: true,
+                    doorMode: 'completo',
+                    doorType: 'bisagra',
+                    doorCount: 2,
+                    doorMaterial: 'melamina',
+                    chap: { mode: 'perimetrico', edges: { latIzq: true, latDer: true, techo: true, piso: true, fondo: false } },
+                    led: null,
+                    zoclo: { enabled: false, height: 10 },
+                    maletero: { enabled: false, height: 0 },
+                    quoteMode: 'completo',
+                    paint: { enabled: false, name: '', pricePerLiter: 0, coats: 2, scope: 'doors' }
+                };
+            // Cocina: Gabinete Base (lower cabinet)
+            if (modType === 'gabineteBase')
+                return {
+                    id: uid(),
+                    type: 'gabineteBase',
+                    width: 60,
+                    height: 85,
+                    depth: 60,
+                    zones: [{
+                        id: uid(),
+                        type: 'entrepa',
+                        count: 1
+                    }],
+                    doors: true,
+                    doorMode: 'completo',
+                    doorType: 'bisagra',
+                    doorCount: 2,
+                    doorMaterial: 'melamina',
+                    chap: { mode: 'perimetrico', edges: { latIzq: true, latDer: true, techo: true, piso: true, fondo: false } },
+                    led: null,
+                    zoclo: { enabled: true, height: 10 },
+                    maletero: { enabled: false, height: 0 },
+                    quoteMode: 'completo',
+                    paint: { enabled: false, name: '', pricePerLiter: 0, coats: 2, scope: 'doors' }
+                };
+            // Cocina: Cajon Base (drawer base)
+            if (modType === 'cajonBase')
+                return {
+                    id: uid(),
+                    type: 'cajonBase',
+                    width: 60,
+                    height: 85,
+                    depth: 60,
+                    zones: [{
+                        id: uid(),
+                        type: 'cajones',
+                        count: 4
+                    }],
+                    doors: false,
+                    doorMode: 'por_zona',
+                    doorType: 'tipon',
+                    doorCount: 0,
+                    doorMaterial: 'melamina',
+                    chap: { mode: 'perimetrico', edges: { latIzq: true, latDer: true, techo: true, piso: true, fondo: false } },
+                    led: null,
+                    zoclo: { enabled: true, height: 10 },
+                    maletero: { enabled: false, height: 0 },
+                    quoteMode: 'completo',
+                    paint: { enabled: false, name: '', pricePerLiter: 0, coats: 2, scope: 'doors' }
+                };
+            // Cocina: Despensa (tall pantry)
+            if (modType === 'despensa')
+                return {
+                    id: uid(),
+                    type: 'despensa',
+                    width: 60,
+                    height: 200,
+                    depth: 60,
+                    zones: [{
+                        id: uid(),
+                        type: 'entrepa',
+                        count: 5
+                    }],
+                    doors: true,
+                    doorMode: 'completo',
+                    doorType: 'bisagra',
+                    doorCount: 2,
+                    doorMaterial: 'melamina',
+                    chap: { mode: 'perimetrico', edges: { latIzq: true, latDer: true, techo: true, piso: true, fondo: false } },
+                    led: null,
+                    zoclo: { enabled: true, height: 10 },
+                    maletero: { enabled: false, height: 0 },
+                    quoteMode: 'completo',
+                    paint: { enabled: false, name: '', pricePerLiter: 0, coats: 2, scope: 'doors' }
+                };
+            // Puerta (standalone door)
+            if (modType === 'puerta')
+                return {
+                    id: uid(),
+                    type: 'puerta',
+                    width: 90,
+                    height: 210,
+                    depth: 4,
+                    zones: [],
+                    doors: true,
+                    doorMode: 'completo',
+                    doorType: 'bisagra',
+                    doorCount: 1,
+                    doorMaterial: 'melamina',
+                    marco: true,
+                    chap: { mode: 'perimetrico', edges: { latIzq: true, latDer: true, techo: true, piso: true, fondo: false } },
+                    led: null,
+                    zoclo: { enabled: false, height: 0 },
+                    maletero: { enabled: false, height: 0 },
+                    quoteMode: 'completo',
+                    paint: { enabled: false, name: '', pricePerLiter: 0, coats: 2, scope: 'doors' }
+                };
             return {
                 id: uid(),
                 type: 'normal',
@@ -3576,6 +3758,7 @@
             return {
                 mode: 'estandarizado',
                 projectDepth: 60,
+                sameDepth: true,
                 projectType: '',
                 client: '',
                 sameMaterial: true,
@@ -3951,9 +4134,9 @@
         function defaultMat() {
             return {
                 brand: 'FINSA',
-                code: '74V',
-                name: 'Roble Stella',
-                finish: 'Atlas',
+                code: COLORS[0].c,
+                name: COLORS[0].n,
+                finish: COLORS[0].f,
                 precio: FINSA_PRICES[16],
                 thickness: 16
             };
@@ -4022,9 +4205,10 @@
                 marginPreset: 'estandar',
                 supplierAdj: {
                     ARAUCO: 0,
-                    HERRAXA: -10,
+                    HERRAXA: 0,
                     BLUM: 0,
-                    HAFELE: 0
+                    HAFELE: 0,
+                    DEMO: 0
                 }
             },
             project: {
@@ -4049,6 +4233,7 @@
                 freightCost: CONFIG.pricing.defaultFreightCost,
                 defaultHeight: 200,
                 defaultDepth: 50,
+                sameDepth: true,
                 chapSpec: CONFIG.pricing.defaultChapSpec
             },
             editedPieces: {},
@@ -4238,11 +4423,11 @@
         // Get material price per sheet
         function getMatPrice(mat, thickness) {
             if (!mat)
-                return FINSA_PRICES[thickness] || 850;
+                return FINSA_PRICES[thickness] || FINSA_PRICES[16] || 850;
             if (mat.brand === 'CUSTOM')
                 return mat.customPrice || 0;
             if (mat.brand === 'FINSA')
-                return FINSA_PRICES[thickness] || 850;
+                return FINSA_PRICES[thickness] || (thickness > 20 ? FINSA_PRICES[25] : FINSA_PRICES[16]) || 850;
             if (mat.brand === 'ARAUCO' && mat.catItem)
                 return adjPrice(mat.catItem);
             return mat.precio || 850;
@@ -4432,7 +4617,7 @@
             var TK = P.thickness;
             P.modules.forEach(function(m) {
                 var w = m.width * 10,
-                    d = (P.defaultDepth || 50) * 10,
+                    d = (P.sameDepth ? (P.defaultDepth || 50) : (m.depth || P.defaultDepth || 50)) * 10,
                     h = (m.height || P.defaultHeight || 200) * 10;
                 var qm = m.quoteMode || 'completo';
                 if (qm !== 'solo_puertas') {
@@ -4837,6 +5022,76 @@
                             t: TK,
                             z: 'i'
                         });
+                    } else if (m.type === 'alacenaAlta') {
+                        // Cocina: alacena alta (upper cabinet)
+                        var alacH = m.height ? m.height * 10 : 700; // default 70cm tall
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: alacH, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: 1, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: alacH - 2 * TK, t: TK, z: 'i' });
+                    } else if (m.type === 'gabineteBase') {
+                        // Cocina: gabinete base
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: 1, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                    } else if (m.type === 'cajonBase') {
+                        // Cocina: base con cajones
+                        var caj = typeof m.cajones === 'number' ? m.cajones : 3;
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                        if (caj > 0) {
+                            var ch = Math.floor((h - 100) / caj);
+                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Frente cajon', q: caj, w: w - 6, h: ch - 6, t: TK, c: 4, z: 'f' });
+                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lat. cajon', q: caj * 2, w: d - 80, h: ch - 30, t: TK, z: 'i' });
+                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Resp. cajon', q: caj * 2, w: w - 80, h: ch - 30, t: TK, z: 'i' });
+                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Base cajon', q: caj, w: w - 80, h: d - 80, t: TK, z: 'i' });
+                            autoHW.push({ key: 'corr_oculta', q: caj, modId: m.id });
+                        }
+                    } else if (m.type === 'despensa') {
+                        // Cocina: despensa (tall pantry)
+                        var sh = m.shelves || 4;
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: sh, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                    } else if (m.type === 'espacioCampana') {
+                        // Cocina: espacio campana — open frame, no back
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: 400, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Travesano', q: 2, w: w - 32, h: 100, t: TK, z: 'i' });
+                    } else if (m.type === 'esquineroGiratorio') {
+                        // Cocina: esquinero giratorio
+                        var w2 = (m.width2 || m.width) * 10;
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral A', q: 1, w: w, h: h, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral B', q: 1, w: w2, h: h, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 2 * TK, h: w2 - 2 * TK, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                    } else if (m.type === 'moduloCentral') {
+                        // TV: modulo central
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'f' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: 1, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                    } else if (m.type === 'lateralAbierto') {
+                        // TV: lateral abierto con entrepaños
+                        var sh = m.shelves || 3;
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'f' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: sh, w: w - 32, h: d, t: TK, z: 'i' });
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                    } else if (m.type === 'puerta') {
+                        // Puerta: single panel + optional marco, no zones
+                        var marco = m.marco;
+                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Panel puerta', q: 1, w: w, h: h, t: TK, c: 4, z: 'f' });
+                        if (marco) {
+                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Jamba', q: 2, w: 100, h: h, t: TK, z: 'f' });
+                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Cabezal', q: 1, w: w + 200, h: 100, t: TK, z: 'f' });
+                        }
+                        // Auto-assign bisagras using CONFIG rules
+                        var puertaHinges = getBisagraCount(m.height || P.defaultHeight || 200, m.materialType);
+                        autoHW.push({ key: 'bisagra', q: puertaHinges, modId: m.id });
+                        autoHW.push({ key: 'base_clip', q: puertaHinges, modId: m.id });
                     }
                 } // end qm!=='solo_puertas'
                 // Door pieces
@@ -4857,14 +5112,17 @@
                             c: 4,
                             z: 'f'
                         });
+                    var doorHeightCm = (m.height || P.defaultHeight || 200);
+                    var doorMatType = m.doorMaterial || 'melamina';
+                    var bisPerDoor = getBisagraCount(doorHeightCm, doorMatType);
                     autoHW.push({
                         key: 'bisagra',
-                        q: doorCnt * 3,
+                        q: doorCnt * bisPerDoor,
                         modId: m.id
                     });
                     autoHW.push({
                         key: 'base_clip',
-                        q: doorCnt * 3,
+                        q: doorCnt * bisPerDoor,
                         modId: m.id
                     });
                     if (m.tipon) {
@@ -4888,21 +5146,12 @@
                 }
             });
 
-            // Calculate areas by zone and thickness
-            var areasF = {
-                    25: 0,
-                    16: 0
-                },
-                areasI = {
-                    25: 0,
-                    16: 0
-                },
-                cantoF = 0,
-                cantoI = 0;
+            // Calculate areas by zone — all pieces use project thickness
+            var areaF = 0, areaI = 0, cantoF = 0, cantoI = 0;
             pieces.forEach(function(p) {
                 var a = (p.w / 1000) * (p.h / 1000) * p.q;
-                var target = (useDual && p.z === 'i') ? areasI : areasF;
-                target[p.t] = (target[p.t] || 0) + a;
+                if (useDual && p.z === 'i') areaI += a;
+                else areaF += a;
                 var ml = 0;
                 if (p.c) {
                     if (p.c === 4)
@@ -4921,28 +5170,22 @@
             });
 
             var SHEET = 1.22 * 2.44;
-            var sheetsF = {
-                25: Math.ceil(areasF[25] * 1.15 / SHEET),
-                16: Math.ceil(areasF[16] * 1.15 / SHEET)
-            };
-            var sheetsI = {
-                25: Math.ceil(areasI[25] * 1.15 / SHEET),
-                16: Math.ceil(areasI[16] * 1.15 / SHEET)
-            };
+            var merma = CONFIG.pricing.mermaFactor;
+            var totalSheetsF = Math.ceil(areaF * merma / SHEET);
+            var totalSheetsI = Math.ceil(areaI * merma / SHEET);
+            // sheetsF/sheetsI keyed by actual thickness for UI display
+            var sheetsF = { 16: 0, 25: 0 }; sheetsF[TK] = totalSheetsF;
+            var sheetsI = { 16: 0, 25: 0 }; sheetsI[TK] = totalSheetsI;
             cantoF = Math.ceil(cantoF);
             cantoI = Math.ceil(cantoI);
-            var totalSheetsF = sheetsF[25] + sheetsF[16];
-            var totalSheetsI = sheetsI[25] + sheetsI[16];
             var totalSheets = totalSheetsF + totalSheetsI;
             var totalCanto = cantoF + cantoI;
 
-            // Material costs
-            var matPriceF16 = getMatPrice(P.matFrentes, 16),
-                matPriceF25 = getMatPrice(P.matFrentes, 25);
-            var matPriceI16 = getMatPrice(P.matInterior, 16),
-                matPriceI25 = getMatPrice(P.matInterior, 25);
-            var matCostF = sheetsF[25] * matPriceF25 + sheetsF[16] * matPriceF16;
-            var matCostI = sheetsI[25] * matPriceI25 + sheetsI[16] * matPriceI16;
+            // Material costs — use actual project thickness for price lookup
+            var matPriceF = getMatPrice(P.matFrentes, TK);
+            var matPriceI = getMatPrice(P.matInterior, TK);
+            var matCostF = totalSheetsF * matPriceF;
+            var matCostI = totalSheetsI * matPriceI;
             var chapCostF = cantoF * P.chapFrentesPrice;
             var chapCostI = cantoI * P.chapInteriorPrice;
             var corteCost = totalSheets * CONFIG.pricing.cuttingCostPerSheet;
@@ -4985,30 +5228,44 @@
                 });
             });
 
+            var hwCostCarpBucket = 0,
+                hwCostPremium = 0;
+            // Legacy brand-based accumulators (kept for backward compat in return object)
             var hwCostHerraxa = 0,
                 hwCostHafele = 0,
                 hwCostBlum = 0;
             var allHW = [];
+            var hwThreshold = CONFIG.pricing.hardwareThreshold;
             for (var k in hwConsolidated) {
                 var h = hwConsolidated[k];
                 allHW.push(h);
                 var cost = Math.ceil(h.qty) * h.price;
-                if (h.marca === 'BLUM')
-                    hwCostBlum += cost;
-                else if (h.marca === 'HAFELE')
-                    hwCostHafele += cost;
-                else
-                    hwCostHerraxa += cost;
+                // Threshold-based split: line item total <= threshold goes to carpentry bucket
+                if (cost <= hwThreshold) {
+                    hwCostCarpBucket += cost;
+                    h._bucket = 'carp';
+                } else {
+                    hwCostPremium += cost;
+                    h._bucket = 'premium';
+                }
+                // Legacy brand tracking
+                if (h.marca === 'BLUM') hwCostBlum += cost;
+                else if (h.marca === 'HAFELE') hwCostHafele += cost;
+                else hwCostHerraxa += cost;
             }
             manualHW.forEach(function(h) {
                 allHW.push(h);
                 var cost = Math.ceil(h.qty) * h.price;
-                if (h.marca === 'BLUM')
-                    hwCostBlum += cost;
-                else if (h.marca === 'HAFELE')
-                    hwCostHafele += cost;
-                else
-                    hwCostHerraxa += cost;
+                if (cost <= hwThreshold) {
+                    hwCostCarpBucket += cost;
+                    h._bucket = 'carp';
+                } else {
+                    hwCostPremium += cost;
+                    h._bucket = 'premium';
+                }
+                if (h.marca === 'BLUM') hwCostBlum += cost;
+                else if (h.marca === 'HAFELE') hwCostHafele += cost;
+                else hwCostHerraxa += cost;
             });
 
             var hwStdCost = hwCostHerraxa + hwCostHafele;
@@ -5035,19 +5292,22 @@
             });
             extraCost += paintCost;
 
-            // Apply margins
-            var mCarp = S.settings.marginCarp / 100;
-            var mHwStd = S.settings.marginHwStd / 100;
-            var mBlum = CONFIG.pricing.marginBlum;
-            var carpSale = mCarp < 1 ? carpCost / (1 - mCarp) : carpCost * 3;
-            var hwStdSale = mHwStd < 1 ? hwStdCost / (1 - mHwStd) : hwStdCost * 3;
-            var hwBlumSale = hwCostBlum / (1 - mBlum);
+            // Apply margins — threshold-based hardware pricing
+            var carpMultiplier = CONFIG.pricing.carpentryMultiplier;
+            var premiumMargin = CONFIG.pricing.premiumHardwareMargin;
+            // Carpentry cost now includes the carpentry-bucket hardware (low-cost items)
+            var carpSale = (carpCost + hwCostCarpBucket) * carpMultiplier;
+            // Premium hardware (above threshold) gets margin-based pricing
+            var hwPremiumSale = hwCostPremium / (1 - premiumMargin);
+            // Legacy aliases for backward compat
+            var hwStdSale = hwPremiumSale;
+            var hwBlumSale = 0;
             var extrasSale = extraCost * CONFIG.pricing.extrasMultiplier;
 
-            var subtotal = carpSale + hwStdSale + hwBlumSale + extrasSale;
+            var subtotal = carpSale + hwPremiumSale + extrasSale;
             var iva = subtotal * CONFIG.pricing.iva;
             var total = subtotal + iva;
-            var totalCost = carpCost + hwStdCost + hwCostBlum + extraCost;
+            var totalCost = carpCost + hwCostCarpBucket + hwCostPremium + extraCost;
             var profit = subtotal - totalCost;
             var margin = subtotal > 0 ? ((profit / subtotal) * 100).toFixed(1) : 0;
 
@@ -5072,6 +5332,8 @@
                 corteCost: corteCost,
                 enchapCost: enchapCost,
                 carpCost: carpCost,
+                hwCostCarpBucket: hwCostCarpBucket,
+                hwCostPremium: hwCostPremium,
                 hwCostHerraxa: hwCostHerraxa,
                 hwCostHafele: hwCostHafele,
                 hwCostBlum: hwCostBlum,
@@ -5080,6 +5342,7 @@
                 ledBOM: ledBOM,
                 paintCost: paintCost,
                 carpSale: carpSale,
+                hwPremiumSale: hwPremiumSale,
                 hwStdSale: hwStdSale,
                 hwBlumSale: hwBlumSale,
                 extrasSale: extrasSale,
@@ -5099,9 +5362,13 @@
             var EP = S.estProject;
             return EP.mode === 'custom' ? (m && m.height || 200) : EST_HEIGHT;
         }
-        function estProjDepth() {
+        function estProjDepth(mod) {
             var EP = S.estProject;
-            return EP.mode === 'custom' ? (EP.projectDepth || 60) : EST_DEPTH;
+            if (EP.mode === 'custom') {
+                if (mod && !EP.sameDepth && mod.depth) return mod.depth;
+                return EP.projectDepth || 60;
+            }
+            return EST_DEPTH;
         }
         // Calculate fixed zone heights (everything except colgador)
         // Espacio útil = height minus techo+piso panel thickness
@@ -5204,7 +5471,7 @@
         function calcEstChapML(m, TK) {
             var W = m.width * 10,
                 H = estModHeight(m) * 10,
-                D = estProjDepth() * 10;
+                D = estProjDepth(m) * 10;
             var ml = 0;
             var ch = m.chap;
             if (!ch)
@@ -5239,7 +5506,7 @@
                 d;
             if (projConfig.mode === 'est') {
                 h = estModHeight(m) * 10;
-                d = estProjDepth() * 10;
+                d = estProjDepth(m) * 10;
             } else {
                 h = (m.height || projConfig.defaultHeight || 200) * 10;
                 d = (projConfig.defaultDepth || 50) * 10;
@@ -5413,9 +5680,9 @@
                 autoHW = [];
             var TK = EP.thickness,
                 useDual = !EP.sameMaterial;
-            var D = estProjDepth() * 10;
 
             EP.modules.forEach(function(m, mi) {
+                var D = estProjDepth(m) * 10;
                 var W = m.width * 10;
                 var H = estModHeight(m) * 10;
                 var mname = 'Mod ' + (mi + 1);
@@ -5777,8 +6044,10 @@
                             z: 'f'
                         });
                     }
-                    // Tall doors (2m) need more hinges: 4 per door
-                    var hingasPerDoor = 4;
+                    // Bisagra count from CONFIG rules based on door height
+                    var fullDoorHeightCm = estModHeight(m);
+                    var fullDoorMat = m.doorMaterial || 'melamina';
+                    var hingasPerDoor = getBisagraCount(fullDoorHeightCm, fullDoorMat);
                     autoHW.push({
                         key: 'bisagra',
                         q: hingasPerDoor * fullDoorCnt,
@@ -5835,15 +6104,17 @@
                                 z: 'f'
                             });
                         }
-                        // Hardware: 2 bisagras per door (4 total), 4 base_clips
+                        // Hardware: bisagras per door from CONFIG rules
+                        var zoneDoorHeightCm = Math.round(getEstZoneDisplayHeight(m, z));
+                        var zoneBisCount = getBisagraCount(zoneDoorHeightCm, dMat);
                         autoHW.push({
                             key: 'bisagra',
-                            q: 4,
+                            q: zoneBisCount * 2,
                             modId: mid
                         });
                         autoHW.push({
                             key: 'base_clip',
-                            q: 4,
+                            q: zoneBisCount * 2,
                             modId: mid
                         });
                         if (dType === 'tipon') {
@@ -5992,14 +6263,16 @@
                                     z: 'f'
                                 });
                             }
+                            var malHeightCm = mal.height || 30;
+                            var malBisCount = getBisagraCount(malHeightCm, malDMat);
                             autoHW.push({
                                 key: 'bisagra',
-                                q: 4,
+                                q: malBisCount * 2,
                                 modId: mid
                             });
                             autoHW.push({
                                 key: 'base_clip',
-                                q: 4,
+                                q: malBisCount * 2,
                                 modId: mid
                             });
                             if (malDType === 'tipon') {
@@ -6033,21 +6306,13 @@
                 } // end qm!=='solo_puertas' (zoclo+maletero+niveladores)
             });
 
-            // Calculate areas, sheets, canto - same logic as calc()
-            var areasF = {
-                    25: 0,
-                    16: 0
-                },
-                areasI = {
-                    25: 0,
-                    16: 0
-                },
-                cantoF = 0,
-                cantoI = 0;
+            // Calculate areas, sheets, canto — all pieces use project thickness
+            var TK_EST = EP.thickness || 16;
+            var areaF = 0, areaI = 0, cantoF = 0, cantoI = 0;
             pieces.forEach(function(p) {
                 var a = (p.w / 1000) * (p.h / 1000) * p.q;
-                var target = (useDual && p.z === 'i') ? areasI : areasF;
-                target[p.t] = (target[p.t] || 0) + a;
+                if (useDual && p.z === 'i') areaI += a;
+                else areaF += a;
                 var ml = 0;
                 if (p.c) {
                     if (p.c === 4)
@@ -6072,27 +6337,20 @@
             });
 
             var SHEET = 1.22 * 2.44;
-            var sheetsF = {
-                25: Math.ceil(areasF[25] * 1.15 / SHEET),
-                16: Math.ceil(areasF[16] * 1.15 / SHEET)
-            };
-            var sheetsI = {
-                25: Math.ceil(areasI[25] * 1.15 / SHEET),
-                16: Math.ceil(areasI[16] * 1.15 / SHEET)
-            };
+            var merma = CONFIG.pricing.mermaFactor;
+            var totalSheetsF = Math.ceil(areaF * merma / SHEET);
+            var totalSheetsI = Math.ceil(areaI * merma / SHEET);
+            var sheetsF = { 16: 0, 25: 0 }; sheetsF[TK_EST] = totalSheetsF;
+            var sheetsI = { 16: 0, 25: 0 }; sheetsI[TK_EST] = totalSheetsI;
             cantoF = Math.ceil(cantoF);
             cantoI = Math.ceil(cantoI);
-            var totalSheetsF = sheetsF[25] + sheetsF[16];
-            var totalSheetsI = sheetsI[25] + sheetsI[16];
             var totalSheets = totalSheetsF + totalSheetsI;
             var totalCanto = cantoF + cantoI;
 
-            var matPriceF16 = getMatPrice(EP.matFrentes, 16),
-                matPriceF25 = getMatPrice(EP.matFrentes, 25);
-            var matPriceI16 = getMatPrice(EP.matInterior, 16),
-                matPriceI25 = getMatPrice(EP.matInterior, 25);
-            var matCostF = sheetsF[25] * matPriceF25 + sheetsF[16] * matPriceF16;
-            var matCostI = sheetsI[25] * matPriceI25 + sheetsI[16] * matPriceI16;
+            var matPriceF = getMatPrice(EP.matFrentes, TK_EST);
+            var matPriceI = getMatPrice(EP.matInterior, TK_EST);
+            var matCostF = totalSheetsF * matPriceF;
+            var matCostI = totalSheetsI * matPriceI;
             var chapCostF = cantoF * EP.chapFrentesPrice;
             var chapCostI = cantoI * EP.chapInteriorPrice;
             var corteCost = totalSheets * CONFIG.pricing.cuttingCostPerSheet;
@@ -6197,30 +6455,41 @@
                 });
             });
 
+            var hwCostCarpBucket = 0,
+                hwCostPremium = 0;
             var hwCostHerraxa = 0,
                 hwCostHafele = 0,
                 hwCostBlum = 0;
             var allHW = [];
+            var hwThreshold = CONFIG.pricing.hardwareThreshold;
             for (var k in hwConsolidated) {
                 var h2 = hwConsolidated[k];
                 allHW.push(h2);
                 var cost = Math.ceil(h2.qty) * h2.price;
-                if (h2.marca === 'BLUM')
-                    hwCostBlum += cost;
-                else if (h2.marca === 'HAFELE')
-                    hwCostHafele += cost;
-                else
-                    hwCostHerraxa += cost;
+                if (cost <= hwThreshold) {
+                    hwCostCarpBucket += cost;
+                    h2._bucket = 'carp';
+                } else {
+                    hwCostPremium += cost;
+                    h2._bucket = 'premium';
+                }
+                if (h2.marca === 'BLUM') hwCostBlum += cost;
+                else if (h2.marca === 'HAFELE') hwCostHafele += cost;
+                else hwCostHerraxa += cost;
             }
             manualHW.forEach(function(h2) {
                 allHW.push(h2);
                 var cost = Math.ceil(h2.qty) * h2.price;
-                if (h2.marca === 'BLUM')
-                    hwCostBlum += cost;
-                else if (h2.marca === 'HAFELE')
-                    hwCostHafele += cost;
-                else
-                    hwCostHerraxa += cost;
+                if (cost <= hwThreshold) {
+                    hwCostCarpBucket += cost;
+                    h2._bucket = 'carp';
+                } else {
+                    hwCostPremium += cost;
+                    h2._bucket = 'premium';
+                }
+                if (h2.marca === 'BLUM') hwCostBlum += cost;
+                else if (h2.marca === 'HAFELE') hwCostHafele += cost;
+                else hwCostHerraxa += cost;
             });
             var hwStdCost = hwCostHerraxa + hwCostHafele;
 
@@ -6266,8 +6535,16 @@
                 extraCost += paintCost;
 
             var mult = EP.saleMultiplier || CONFIG.pricing.defaultSaleMultiplier;
-            var totalCostAll = carpCost + hwStdCost + hwCostBlum + extraCost;
-            var subtotal = totalCostAll * mult;
+            var carpMultiplier = CONFIG.pricing.carpentryMultiplier;
+            var premiumMargin = CONFIG.pricing.premiumHardwareMargin;
+            // Carpentry + low-cost hardware (≤ threshold) → carpentry multiplier (3x)
+            var carpSale = (carpCost + hwCostCarpBucket) * carpMultiplier;
+            // Premium hardware (> threshold) → margin-based (cost / 0.70 = 30% margin)
+            var hwPremiumSale = hwCostPremium > 0 ? hwCostPremium / (1 - premiumMargin) : 0;
+            // Extras
+            var extrasSale = extraCost * CONFIG.pricing.extrasMultiplier;
+            var totalCostAll = carpCost + hwCostCarpBucket + hwCostPremium + extraCost;
+            var subtotal = carpSale + hwPremiumSale + extrasSale;
             var iva = subtotal * CONFIG.pricing.iva;
             var total = subtotal + iva;
             var profit = subtotal - totalCostAll;
@@ -6294,6 +6571,8 @@
                 corteCost: corteCost,
                 enchapCost: enchapCost,
                 carpCost: carpCost,
+                hwCostCarpBucket: hwCostCarpBucket,
+                hwCostPremium: hwCostPremium,
                 hwCostHerraxa: hwCostHerraxa,
                 hwCostHafele: hwCostHafele,
                 hwCostBlum: hwCostBlum,
@@ -6302,6 +6581,9 @@
                 vidrioCost: vidrioCost,
                 ledBOM: ledBOM,
                 paintCost: paintCost,
+                carpSale: carpSale,
+                hwPremiumSale: hwPremiumSale,
+                extrasSale: extrasSale,
                 subtotal: subtotal,
                 iva: iva,
                 total: total,
@@ -6310,10 +6592,9 @@
                 margin: margin,
                 useDual: useDual,
                 saleMultiplier: mult,
-                matPriceF16: matPriceF16,
-                matPriceF25: matPriceF25,
-                matPriceI16: matPriceI16,
-                matPriceI25: matPriceI25
+                projThickness: TK_EST,
+                matPriceF: matPriceF,
+                matPriceI: matPriceI
             };
         }
 
@@ -6634,18 +6915,29 @@
             h += '<div class="field"><label>Enchapado ($/ml)</label>';
             h += '<input type="number" value="' + (typeof P.enchapPrice === 'number' ? P.enchapPrice : 13) + '" step="0.5" min="0" onchange="APP.setEnchapPrice(parseFloat(this.value))" style="width:120px">';
             h += '<p class="hint">Costo por metro lineal de enchapado</p></div>';
-            // Default Height + Depth
-            h += '<div class="field"><label>Dimensiones del proyecto (cm)</label>';
-            h += '<div class="grid2">';
-            h += '<div><span style="font-size:12px;color:#bbb">Alto por defecto</span><input type="number" value="' + P.defaultHeight + '" min="50" max="400" step="1" onchange="APP.setDefaultHeight(parseInt(this.value))" placeholder="200"></div>';
-            h += '<div><span style="font-size:12px;color:#bbb">Profundidad</span><input type="number" value="' + P.defaultDepth + '" min="20" max="100" step="1" onchange="APP.setDefaultDepth(parseInt(this.value))" placeholder="50"></div>';
-            h += '</div><p class="hint">Alto: aplica a todos los modulos sin alto propio | Profundidad: general</p></div>';
+            // Default Height
+            h += '<div class="field"><label>Alto por defecto (cm)</label>';
+            h += '<input type="number" value="' + P.defaultHeight + '" min="50" max="400" step="1" onchange="APP.setDefaultHeight(parseInt(this.value))" placeholder="200" style="width:120px">';
+            h += '<p class="hint">Aplica a todos los modulos sin alto propio</p></div>';
+            // Depth — same for all or per-module
+            h += '<div class="field"><label>Profundidad</label>';
+            h += '<div class="mat-toggle-row" style="margin-bottom:8px"><span>Misma profundidad para todos</span><button class="toggle' + (P.sameDepth ? ' on' : '') + '" onclick="APP.togSameDepth()"></button></div>';
+            if (P.sameDepth) {
+                h += '<input type="number" value="' + P.defaultDepth + '" min="20" max="100" step="1" onchange="APP.setDefaultDepth(parseInt(this.value))" placeholder="50" style="width:120px">';
+                h += '<span style="font-size:12px;color:#999;margin-left:8px">cm — general para todo el proyecto</span>';
+            } else {
+                h += '<p class="hint">Cada modulo tendra su propia profundidad editable</p>';
+            }
+            h += '</div>';
             return h;
         }
 
+        // CUSTOMIZE: Module type buttons — controls which module types appear in the add-module panel
         function step2() {
             var P = S.project;
-            var h = '<div class="title"><h2>Configurar Modulos</h2><p>Agrega los modulos</p></div>';
+            var typeObj = TYPES.find(function(t) { return t.id === P.type; });
+            var typeName = typeObj ? typeObj.i + ' ' + typeObj.n : 'Proyecto';
+            var h = '<div class="title"><h2>' + typeName + '</h2><p>Configurar modulos del proyecto</p></div>';
             h += '<div class="add-btns">';
             for (var k in MODS) {
                 h += '<button class="add-btn" onclick="APP.addMod(\'' + k + '\')">' + svg('plus') + MODS[k].n + '</button>';
@@ -6665,6 +6957,10 @@
                     h += '</div></div>';
                     // Per-module height
                     h += '<div class="module-row"><span>Alto:</span><input type="number" value="' + (m.height || '') + '" placeholder="' + (P.defaultHeight || 200) + 'cm" style="width:100px;padding:6px;background:#3a3a3a;border:none;border-radius:8px;color:#fff;text-align:center" onchange="APP.setModH(\'' + m.id + '\',this.value?parseInt(this.value):0)"><span style="font-size:12px;color:#999;margin-left:4px">cm (vacio = ' + P.defaultHeight + 'cm)</span></div>';
+                    // Per-module depth (only when sameDepth is false)
+                    if (!P.sameDepth) {
+                        h += '<div class="module-row"><span>Prof.:</span><input type="number" value="' + (m.depth || P.defaultDepth || 50) + '" min="20" max="120" step="1" style="width:100px;padding:6px;background:#3a3a3a;border:none;border-radius:8px;color:#fff;text-align:center" onchange="APP.setModDepth(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:#999;margin-left:4px">cm</span></div>';
+                    }
                     if (m.type === 'modulo') {
                         var mcaj = typeof m.cajones === 'number' ? m.cajones : 4;
                         h += '<div class="module-row"><span>Cajones:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
@@ -6700,30 +6996,53 @@
                             h += '</div></div>';
                         }
                     }
-                    if (m.type === 'entrepa' || m.type === 'torreLateral') {
+                    if (m.type === 'entrepa' || m.type === 'torreLateral' || m.type === 'lateralAbierto' || m.type === 'despensa') {
                         h += '<div class="module-row"><span>Estantes:</span><div style="display:flex;gap:8px">';
-                        [3, 4, 5, 6, 7].forEach(function(n) {
-                            h += '<button class="opt-btn' + (m.shelves === n ? ' sel' : '') + '" onclick="APP.setModS(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        [2, 3, 4, 5, 6, 7].forEach(function(n) {
+                            h += '<button class="opt-btn' + ((m.shelves || 3) === n ? ' sel' : '') + '" onclick="APP.setModS(\'' + m.id + '\',' + n + ')">' + n + '</button>';
                         });
                         h += '</div></div>';
                     }
-                    var qmC = m.quoteMode || 'completo';
-                    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">';
-                    h += '<button class="opt-btn' + (qmC === 'completo' ? ' sel' : '') + '" onclick="APP.setQuoteMode(\'' + m.id + '\',\'completo\')">Completo</button>';
-                    h += '<button class="opt-btn' + (qmC === 'solo_puertas' ? ' sel' : '') + '" style="' + (qmC === 'solo_puertas' ? 'background:#fbbf24;color:#1a1a1a;border-color:#fbbf24' : '') + '" onclick="APP.setQuoteMode(\'' + m.id + '\',\'solo_puertas\')">Solo puertas</button>';
-                    h += '</div>';
-                    if (qmC === 'solo_puertas') {
-                        h += '<div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:6px;padding:6px 10px;margin-bottom:6px;font-size:12px;color:#fbbf24">Solo puertas: la estructura no se cotiza</div>';
+                    if (m.type === 'cajonBase') {
+                        var mcaj = typeof m.cajones === 'number' ? m.cajones : 3;
+                        h += '<div class="module-row"><span>Cajones:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [1, 2, 3, 4, 5].forEach(function(n) {
+                            h += '<button class="opt-btn' + (mcaj === n ? ' sel' : '') + '" onclick="APP.setModC(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        });
+                        h += '</div></div>';
                     }
-                    h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
-                    if (qmC !== 'solo_puertas') {
-                        h += '<button class="opt-btn' + (m.doors ? ' sel' : '') + '" onclick="APP.togDoor(\'' + m.id + '\')">' + svg(m.doors ? 'check' : 'plus') + ' Puertas</button>';
-                        if (m.doors)
+                    if (m.type === 'esquineroGiratorio') {
+                        h += '<div class="module-row"><span>Ancho 2:</span><input type="number" value="' + (m.width2 || m.width) + '" min="30" max="120" step="10" style="width:80px;padding:6px;background:#3a3a3a;border:none;border-radius:8px;color:#fff;text-align:center" onchange="APP.setModW2(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:#999;margin-left:4px">cm (segundo lado)</span></div>';
+                    }
+                    if (m.type === 'puerta') {
+                        // Puerta-specific: marco toggle and material type
+                        h += '<div class="module-row"><span>Marco:</span><button class="opt-btn' + (m.marco ? ' sel' : '') + '" onclick="APP.togModProp(\'' + m.id + '\',\'marco\')">' + svg(m.marco ? 'check' : 'plus') + ' Con marco</button></div>';
+                        h += '<div class="module-row"><span>Material:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [{k:'standard',l:'Melamina'},{k:'vidrio',l:'Vidrio'},{k:'metal',l:'Metal'}].forEach(function(mt) {
+                            h += '<button class="opt-btn' + ((m.materialType || 'standard') === mt.k ? ' sel' : '') + '" onclick="APP.setModProp(\'' + m.id + '\',\'materialType\',\'' + mt.k + '\')">' + mt.l + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
+                    // Puerta type doesn't need quote mode or door toggles — it IS a door
+                    if (m.type !== 'puerta') {
+                        var qmC = m.quoteMode || 'completo';
+                        h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">';
+                        h += '<button class="opt-btn' + (qmC === 'completo' ? ' sel' : '') + '" onclick="APP.setQuoteMode(\'' + m.id + '\',\'completo\')">Completo</button>';
+                        h += '<button class="opt-btn' + (qmC === 'solo_puertas' ? ' sel' : '') + '" style="' + (qmC === 'solo_puertas' ? 'background:#fbbf24;color:#1a1a1a;border-color:#fbbf24' : '') + '" onclick="APP.setQuoteMode(\'' + m.id + '\',\'solo_puertas\')">Solo puertas</button>';
+                        h += '</div>';
+                        if (qmC === 'solo_puertas') {
+                            h += '<div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:6px;padding:6px 10px;margin-bottom:6px;font-size:12px;color:#fbbf24">Solo puertas: la estructura no se cotiza</div>';
+                        }
+                        h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+                        if (qmC !== 'solo_puertas') {
+                            h += '<button class="opt-btn' + (m.doors ? ' sel' : '') + '" onclick="APP.togDoor(\'' + m.id + '\')">' + svg(m.doors ? 'check' : 'plus') + ' Puertas</button>';
+                            if (m.doors)
+                                h += '<button class="opt-btn' + (m.tipon ? ' sel' : '') + '" onclick="APP.togTipon(\'' + m.id + '\')">' + svg(m.tipon ? 'check' : 'plus') + ' Tip-On</button>';
+                        } else {
                             h += '<button class="opt-btn' + (m.tipon ? ' sel' : '') + '" onclick="APP.togTipon(\'' + m.id + '\')">' + svg(m.tipon ? 'check' : 'plus') + ' Tip-On</button>';
-                    } else {
-                        h += '<button class="opt-btn' + (m.tipon ? ' sel' : '') + '" onclick="APP.togTipon(\'' + m.id + '\')">' + svg(m.tipon ? 'check' : 'plus') + ' Tip-On</button>';
+                        }
+                        h += '</div>';
                     }
-                    h += '</div>';
                     h += renderModuleLed(m);
                     h += renderModulePaint(m);
                     h += '<p class="module-desc">' + MODS[m.type].d + '</p></div>';
@@ -6762,7 +7081,7 @@
 
         function step3(c) {
             var P = S.project;
-            var h = '<div class="title"><h2>Resumen de Costeo</h2><p>Margen: ' + S.settings.marginCarp + '% carpinteria | ' + S.settings.marginHwStd + '% herrajes | 30% Blum</p></div>';
+            var h = '<div class="title"><h2>Resumen de Costeo</h2><p>Carpinter\u00eda x' + CONFIG.pricing.carpentryMultiplier + ' | Herrajes premium ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%</p></div>';
             // Carpinteria card
             h += '<div class="card"><div class="card-title">' + svg('layers') + ' Carpinteria</div>';
             if (c.totalSheetsF > 0) {
@@ -6781,7 +7100,7 @@
             if (P.freight)
                 h += '<div class="cost-row"><span>Flete</span><strong>' + fmt(P.freightCost) + '</strong></div>';
             h += '<div class="cost-total"><span>Costo Carpinteria</span><strong>' + fmt(c.carpCost) + '</strong></div>';
-            h += '<div class="cost-row" style="margin-top:4px"><span>Venta (' + S.settings.marginCarp + '%)</span><strong style="color:#ffffff">' + fmt(c.carpSale) + '</strong></div></div>';
+            h += '<div class="cost-row" style="margin-top:4px"><span>Venta (carp + hw std) x' + CONFIG.pricing.carpentryMultiplier + '</span><strong style="color:#ffffff">' + fmt(c.carpSale) + '</strong></div></div>';
             // Labor config
             h += '<div class="card"><div class="card-title">' + svg('users') + ' Mano de Obra</div>';
             h += '<div style="margin-bottom:12px"><span style="font-size:14px;color:#bbb">Costo mano de obra:</span>';
@@ -6807,29 +7126,26 @@
             });
             h += '</div></div>';
             h += '<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#bbb">Flete:</span><button class="toggle' + (P.freight ? ' on' : '') + '" onclick="APP.togFreight()"></button></div></div>';
-            // Herrajes card
-            h += '<div class="card"><div class="card-title">' + svg('settings') + ' Herrajes Estandar (Herraxa/Hafele)</div>';
-            var hasStd = false;
-            c.allHW.forEach(function(hw) {
-                if (hw.marca === 'BLUM')
-                    return;
-                hasStd = true;
-                h += '<div class="cost-row"><span class="' + marcaClass(hw.marca) + '">' + hw.desc + ' x' + Math.ceil(hw.qty) + '</span><strong>' + fmtD(Math.ceil(hw.qty) * hw.price) + '</strong></div>';
-            });
-            if (!hasStd)
-                h += '<div class="cost-row"><span>Sin herrajes estandar</span><strong>$0</strong></div>';
-            h += '<div class="cost-total"><span>Costo Herrajes Std</span><strong>' + fmt(c.hwStdCost) + '</strong></div>';
-            h += '<div class="cost-row" style="margin-top:4px"><span>Venta (' + S.settings.marginHwStd + '%)</span><strong style="color:#ffffff">' + fmt(c.hwStdSale) + '</strong></div></div>';
-            // Blum card
-            if (c.hwCostBlum > 0) {
-                h += '<div class="card"><div class="card-title">' + svg('lock') + ' Herrajes Blum <span style="font-size:11px;color:#999;font-weight:400">Margen fijo 30%</span></div>';
+            // Herrajes card — carpentry bucket (low-cost, included in carpentry x multiplier)
+            if (c.hwCostCarpBucket > 0) {
+                h += '<div class="card"><div class="card-title">' + svg('settings') + ' Herrajes (incluidos en carpinter\u00eda x' + CONFIG.pricing.carpentryMultiplier + ')</div>';
+                h += '<div style="font-size:11px;color:#999;margin-bottom:6px">Costo unitario \u2264 $' + CONFIG.pricing.hardwareThreshold + '</div>';
                 c.allHW.forEach(function(hw) {
-                    if (hw.marca !== 'BLUM')
-                        return;
-                    h += '<div class="cost-row"><span class="marca-blum">' + hw.desc + ' x' + Math.ceil(hw.qty) + '</span><strong>' + fmtD(Math.ceil(hw.qty) * hw.price) + '</strong></div>';
+                    if (hw._bucket !== 'carp') return;
+                    h += '<div class="cost-row"><span class="' + marcaClass(hw.marca) + '">' + hw.desc + ' x' + Math.ceil(hw.qty) + '</span><strong>' + fmtD(Math.ceil(hw.qty) * hw.price) + '</strong></div>';
                 });
-                h += '<div class="cost-total"><span>Costo Blum</span><strong>' + fmt(c.hwCostBlum) + '</strong></div>';
-                h += '<div class="cost-row" style="margin-top:4px"><span>Venta (30% fijo)</span><strong style="color:#ffffff">' + fmt(c.hwBlumSale) + '</strong></div></div>';
+                h += '<div class="cost-total"><span>Subtotal herrajes (en carp.)</span><strong>' + fmt(c.hwCostCarpBucket) + '</strong></div></div>';
+            }
+            // Premium hardware card (above threshold)
+            if (c.hwCostPremium > 0) {
+                h += '<div class="card"><div class="card-title">' + svg('lock') + ' Herrajes Premium <span style="font-size:11px;color:#999;font-weight:400">Margen ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%</span></div>';
+                h += '<div style="font-size:11px;color:#999;margin-bottom:6px">Costo unitario > $' + CONFIG.pricing.hardwareThreshold + '</div>';
+                c.allHW.forEach(function(hw) {
+                    if (hw._bucket !== 'premium') return;
+                    h += '<div class="cost-row"><span class="' + marcaClass(hw.marca) + '">' + hw.desc + ' x' + Math.ceil(hw.qty) + '</span><strong>' + fmtD(Math.ceil(hw.qty) * hw.price) + '</strong></div>';
+                });
+                h += '<div class="cost-total"><span>Costo Premium</span><strong>' + fmt(c.hwCostPremium) + '</strong></div>';
+                h += '<div class="cost-row" style="margin-top:4px"><span>Venta (' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)</span><strong style="color:#ffffff">' + fmt(c.hwPremiumSale) + '</strong></div></div>';
             }
             // Extras
             if (c.extraCost > 0) {
@@ -6862,10 +7178,9 @@
             }
             // Summary
             h += '<div class="summary">';
-            h += '<div class="summary-row"><span>Carpinteria</span><strong>' + fmt(c.carpSale) + '</strong></div>';
-            h += '<div class="summary-row"><span>Herrajes Estandar</span><strong>' + fmt(c.hwStdSale) + '</strong></div>';
-            if (c.hwCostBlum > 0)
-                h += '<div class="summary-row"><span>Herrajes Blum</span><strong>' + fmt(c.hwBlumSale) + '</strong></div>';
+            h += '<div class="summary-row"><span>Carpinter\u00eda (incl. herrajes std)</span><strong>' + fmt(c.carpSale) + '</strong></div>';
+            if (c.hwCostPremium > 0)
+                h += '<div class="summary-row"><span>Herrajes Premium</span><strong>' + fmt(c.hwPremiumSale) + '</strong></div>';
             if (c.extrasSale > 0)
                 h += '<div class="summary-row"><span>Extras</span><strong>' + fmt(c.extrasSale) + '</strong></div>';
             h += '<div class="grand-total"><span>SUBTOTAL</span><strong>' + fmt(c.subtotal) + '</strong></div>';
@@ -6889,13 +7204,11 @@
                 if (P.freight)
                     h += '<div class="cost-bd-row"><span>Flete</span><strong>' + fmt(P.freightCost) + '</strong></div>';
                 h += '<div class="cost-bd-subtotal"><span>Costo carp.</span><strong>' + fmt(c.carpCost) + '</strong></div>';
-                h += '<div class="cost-bd-subtotal"><span>Venta carp. (' + S.settings.marginCarp + '%)</span><strong>' + fmt(c.carpSale) + '</strong></div></div>';
+                h += '<div class="cost-bd-subtotal"><span>Venta (carp + hw std) x' + CONFIG.pricing.carpentryMultiplier + '</span><strong>' + fmt(c.carpSale) + '</strong></div></div>';
                 h += '<div class="cost-bd-section"><h5>Herrajes</h5>';
-                h += '<div class="cost-bd-row"><span>Herraxa</span><strong>' + fmt(c.hwCostHerraxa) + '</strong></div>';
-                h += '<div class="cost-bd-row"><span>Hafele</span><strong>' + fmt(c.hwCostHafele) + '</strong></div>';
-                h += '<div class="cost-bd-row"><span>Blum</span><strong>' + fmt(c.hwCostBlum) + '</strong></div>';
-                h += '<div class="cost-bd-subtotal"><span>Venta std (' + S.settings.marginHwStd + '%)</span><strong>' + fmt(c.hwStdSale) + '</strong></div>';
-                h += '<div class="cost-bd-subtotal"><span>Venta Blum (30%)</span><strong>' + fmt(c.hwBlumSale) + '</strong></div></div>';
+                h += '<div class="cost-bd-row"><span>En carpinter\u00eda (\u2264$' + CONFIG.pricing.hardwareThreshold + ')</span><strong>' + fmt(c.hwCostCarpBucket) + '</strong></div>';
+                h += '<div class="cost-bd-row"><span>Premium (>$' + CONFIG.pricing.hardwareThreshold + ')</span><strong>' + fmt(c.hwCostPremium) + '</strong></div>';
+                h += '<div class="cost-bd-subtotal"><span>Venta premium (' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)</span><strong>' + fmt(c.hwPremiumSale) + '</strong></div></div>';
                 if (c.extraCost > 0) {
                     h += '<div class="cost-bd-section"><h5>Extras</h5>';
                     if (c.ledBOM)
@@ -6973,27 +7286,19 @@
                     h += '<p style="color:#c49a6c;font-size:13px">Chapacanto: ' + P.chapSpec + '</p>';
                 h += '</div><div class="cut-body">';
                 h += '<div class="cut-summary"><div class="cut-box"><strong>' + c.totalSheets + '</strong><span>Hojas Total</span></div><div class="cut-box"><strong>' + c.totalCanto + '</strong><span>ML Canto</span></div></div>';
-                h += '<div style="padding:12px;background:rgba(40,40,40,0.5);border-radius:8px;margin-bottom:16px"><h4 style="font-weight:700;margin-bottom:8px">Hojas por espesor:</h4>';
+                var tk = c.projThickness || 16;
+                h += '<div style="padding:12px;background:rgba(40,40,40,0.5);border-radius:8px;margin-bottom:16px"><h4 style="font-weight:700;margin-bottom:8px">Hojas (' + tk + 'mm):</h4>';
                 if (c.useDual) {
                     h += '<p style="font-size:12px;color:#60a5fa;margin-bottom:4px">FRENTES:</p>';
-                    if (c.sheetsF[25] > 0)
-                        h += '<p style="font-size:14px;color:#bbb">  25mm: ' + c.sheetsF[25] + ' hojas</p>';
-                    if (c.sheetsF[16] > 0)
-                        h += '<p style="font-size:14px;color:#bbb">  16mm: ' + c.sheetsF[16] + ' hojas</p>';
+                    if (c.totalSheetsF > 0)
+                        h += '<p style="font-size:14px;color:#bbb">  ' + tk + 'mm: ' + c.totalSheetsF + ' hojas</p>';
                     h += '<p style="font-size:12px;color:#9ca3af;margin:8px 0 4px">INTERIOR:</p>';
-                    if (c.sheetsI[25] > 0)
-                        h += '<p style="font-size:14px;color:#bbb">  25mm: ' + c.sheetsI[25] + ' hojas</p>';
-                    if (c.sheetsI[16] > 0)
-                        h += '<p style="font-size:14px;color:#bbb">  16mm: ' + c.sheetsI[16] + ' hojas</p>';
+                    if (c.totalSheetsI > 0)
+                        h += '<p style="font-size:14px;color:#bbb">  ' + tk + 'mm: ' + c.totalSheetsI + ' hojas</p>';
                 } else {
-                    var sAll = {
-                        25: c.sheetsF[25] + c.sheetsI[25],
-                        16: c.sheetsF[16] + c.sheetsI[16]
-                    };
-                    if (sAll[25] > 0)
-                        h += '<p style="font-size:14px;color:#bbb">25mm: ' + sAll[25] + ' hojas</p>';
-                    if (sAll[16] > 0)
-                        h += '<p style="font-size:14px;color:#bbb">16mm: ' + sAll[16] + ' hojas</p>';
+                    var sAll = c.totalSheetsF + c.totalSheetsI;
+                    if (sAll > 0)
+                        h += '<p style="font-size:14px;color:#bbb">' + tk + 'mm: ' + sAll + ' hojas</p>';
                 }
                 h += '</div>';
                 P.modules.forEach(function(m) {
@@ -7699,6 +8004,7 @@
             }
         }
 
+        // CUSTOMIZE: Client PDF — adjust logo position, colors, layout, and legal terms here
         function genClientPDF() {
             if (typeof jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
                 alert('jsPDF no cargado. Verifica tu conexion a internet.');
@@ -7708,165 +8014,142 @@
             var doc = new jsPDF('p', 'mm', 'letter');
             var d = S.pdfData,
                 br = BRANDS[S.brand] || BRANDS.primary;
-            var accent = [196, 154, 108];
-            var dark = [26, 26, 46];
+            // CUSTOMIZE: PDF color scheme — white background, black text
+            var accent = [196, 154, 108]; // #c49a6c gold (accent line only)
+            var black = [0, 0, 0];
+            var grey = [100, 100, 100];
             var pw = 215.9,
+                ph = 279.4,
                 margin = 20,
                 cw = pw - margin * 2;
             var y = margin;
-            // Logo
+            // CUSTOMIZE: Logo on left, company name + contact on right
+            var rightX = pw - margin;
             if (S.logoBase64) {
                 try {
-                    doc.addImage(S.logoBase64, 'PNG', margin, y, 30, 30);
+                    doc.addImage(S.logoBase64, 'PNG', margin, y, 50, 25);
                 } catch (e) {}
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(dark[0], dark[1], dark[2]);
-                doc.text(br.name, margin + 38, y + 10);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'italic');
-                doc.text(br.tagline, margin + 38, y + 17);
-                doc.setFont('helvetica', 'normal');
-                doc.text(CONTACT.city, margin + 38, y + 23);
-                doc.setFontSize(9);
-                doc.text('Oficina: ' + CONTACT.office + ' | Cel: ' + CONTACT.cell + ' | ' + CONTACT.email, margin + 38, y + 29);
-                y += 34;
-            } else {
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(dark[0], dark[1], dark[2]);
-                doc.text(br.name, margin, y + 6);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'italic');
-                doc.text(br.tagline, margin, y + 13);
-                doc.setFont('helvetica', 'normal');
-                doc.text(CONTACT.city, margin, y + 19);
-                doc.setFontSize(9);
-                doc.text('Oficina: ' + CONTACT.office + ' | Cel: ' + CONTACT.cell + ' | ' + CONTACT.email, margin, y + 25);
-                y += 30;
             }
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(black[0], black[1], black[2]);
+            doc.text('Renova', rightX, y + 10, { align: 'right' });
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.setTextColor(grey[0], grey[1], grey[2]);
+            doc.text(br.tagline, rightX, y + 17, { align: 'right' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text(CONTACT.city + ' | ' + CONTACT.cell + ' | ' + CONTACT.email, rightX, y + 25, { align: 'right' });
+            y += 34;
             // Accent line
             doc.setDrawColor(accent[0], accent[1], accent[2]);
             doc.setLineWidth(0.8);
             doc.line(margin, y, pw - margin, y);
-            y += 6;
+            y += 8;
             // Quote info
-            doc.setFontSize(12);
+            doc.setFontSize(13);
             doc.setFont('helvetica', 'bold');
+            doc.setTextColor(black[0], black[1], black[2]);
             doc.text('COTIZACION ' + d.quoteNum, margin, y);
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(10);
-            doc.text('Fecha: ' + fmtDatePDF(), pw - margin, y, {
-                align: 'right'
-            });
+            doc.setTextColor(grey[0], grey[1], grey[2]);
+            doc.text('Fecha: ' + fmtDatePDF(), pw - margin, y, { align: 'right' });
             y += 5;
-            doc.text('Vigencia: 15 dias', pw - margin, y, {
-                align: 'right'
-            });
-            y += 7;
+            doc.text('Vigencia: 15 dias', pw - margin, y, { align: 'right' });
+            y += 8;
             doc.setFontSize(11);
+            doc.setTextColor(black[0], black[1], black[2]);
             doc.text('Cliente: ' + (d.client || ''), margin, y);
             y += 5;
             doc.text('Proyecto: ' + (d.projectName || ''), margin, y);
             y += 5;
-            if (d.location)
+            if (d.location) {
                 doc.text('Ubicacion: ' + d.location, margin, y);
-            y += 8;
-            // Items table
-            var tableData = [];
-            d.items.forEach(function(item, i) {
-                tableData.push([(i + 1).toString(), item.desc, item.dims, '$' + Math.round(item.price / 100) * 100]);
-            });
-            var itemTotal = d.items.reduce(function(a, it) {
-                return a + it.price;
-            }, 0);
+                y += 5;
+            }
+            y += 6;
+            // Description text block
+            doc.setFillColor(245, 245, 245);
+            var descText = d.items.length > 0 ? d.items[0].desc : '';
+            var descLines = doc.splitTextToSize(descText, cw - 16);
+            var descBlockH = Math.max(20, descLines.length * 4.5 + 12);
+            doc.roundedRect(margin, y, cw, descBlockH, 3, 3, 'F');
+            doc.setFontSize(9);
+            doc.setTextColor(black[0], black[1], black[2]);
+            doc.text(descLines, margin + 8, y + 8);
+            y += descBlockH + 8;
+            // Price summary
+            var itemTotal = d.items.reduce(function(a, it) { return a + it.price; }, 0);
             var roundedTotal = Math.round(itemTotal / 100) * 100;
             var iva = Math.round(roundedTotal * CONFIG.pricing.iva);
-            tableData.push(['', '', 'Subtotal', '$' + roundedTotal.toLocaleString('es-MX')]);
-            tableData.push(['', '', 'IVA ' + Math.round(CONFIG.pricing.iva * 100) + '%', '$' + iva.toLocaleString('es-MX')]);
-            tableData.push(['', '', 'TOTAL', '$' + (roundedTotal + iva).toLocaleString('es-MX')]);
-            doc.autoTable({
-                startY: y,
-                margin: {
-                    left: margin,
-                    right: margin
-                },
-                head: [['#', 'Descripcion', 'Medidas', 'Precio']],
-                body: tableData,
-                headStyles: {
-                    fillColor: accent,
-                    textColor: [255, 255, 255],
-                    fontStyle: 'bold',
-                    fontSize: 10
-                },
-                bodyStyles: {
-                    fontSize: 9,
-                    textColor: dark
-                },
-                alternateRowStyles: {
-                    fillColor: [245, 240, 235]
-                },
-                columnStyles: {
-                    0: {
-                        cellWidth: 10
-                    },
-                    1: {
-                        cellWidth: 90
-                    },
-                    2: {
-                        cellWidth: 30
-                    },
-                    3: {
-                        cellWidth: 30,
-                        halign: 'right'
-                    }
-                },
-                didParseCell: function(data) {
-                    var rows = tableData.length;
-                    if (data.section === 'body' && data.row.index >= rows - 3) {
-                        data.cell.styles.fontStyle = 'bold';
-                        if (data.row.index === rows - 1) {
-                            data.cell.styles.fontSize = 11;
-                            data.cell.styles.fillColor = [245, 240, 235];
-                        }
-                    }
-                }
-            });
-            y = doc.lastAutoTable.finalY + 10;
-            // Terms
-            if (y > 230) {
-                doc.addPage();
-                y = margin;
-            }
-            doc.setFontSize(11);
+            var grandTotal = roundedTotal + iva;
+            // Price box
+            doc.setFillColor(245, 245, 245);
+            doc.roundedRect(pw - margin - 80, y, 80, 32, 3, 3, 'F');
+            doc.setFontSize(10);
+            doc.setTextColor(grey[0], grey[1], grey[2]);
+            doc.text('Subtotal:', pw - margin - 74, y + 8);
+            doc.text('$' + roundedTotal.toLocaleString('es-MX'), pw - margin - 6, y + 8, { align: 'right' });
+            doc.text('IVA ' + Math.round(CONFIG.pricing.iva * 100) + '%:', pw - margin - 74, y + 15);
+            doc.text('$' + iva.toLocaleString('es-MX'), pw - margin - 6, y + 15, { align: 'right' });
+            doc.setDrawColor(black[0], black[1], black[2]);
+            doc.setLineWidth(0.4);
+            doc.line(pw - margin - 74, y + 18, pw - margin - 6, y + 18);
+            doc.setFontSize(13);
             doc.setFont('helvetica', 'bold');
-            doc.setTextColor(dark[0], dark[1], dark[2]);
-            doc.text('CONDICIONES', margin, y);
-            y += 6;
-            doc.setFontSize(9);
+            doc.setTextColor(black[0], black[1], black[2]);
+            doc.text('TOTAL:', pw - margin - 74, y + 27);
+            doc.text('$' + grandTotal.toLocaleString('es-MX'), pw - margin - 6, y + 27, { align: 'right' });
             doc.setFont('helvetica', 'normal');
-            var terms = CONFIG.quoting.terms.map(function(t) {
+            y += 42;
+            // Legal terms from CONFIG
+            if (y > 220) { doc.addPage(); y = margin; }
+            var legalTerms = CONFIG.brand.legalTerms || CONFIG.quoting.terms.map(function(t) {
                 return t.replace('{anticipo}', d.anticipo).replace('{deliveryTime}', d.deliveryTime);
             });
-            terms.forEach(function(t) {
-                doc.text('\u2022 ' + t, margin, y);
-                y += 4.5;
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(black[0], black[1], black[2]);
+            // Render legal terms with section headers
+            legalTerms.forEach(function(t) {
+                if (!t || t.trim() === '') {
+                    y += 3; // blank line = spacing
+                    return;
+                }
+                // Lines ending with ':' are section headers
+                if (t.trim().slice(-1) === ':') {
+                    y += 2;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.text(t, margin, y);
+                    y += 5;
+                } else {
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8.5);
+                    var tLines = doc.splitTextToSize(t, cw);
+                    doc.text(tLines, margin, y);
+                    y += tLines.length * 3.5 + 1;
+                }
             });
             if (d.notes) {
-                y += 2;
+                y += 3;
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(black[0], black[1], black[2]);
                 doc.text('Nota: ' + d.notes, margin, y);
                 y += 6;
             }
-            y += 6;
+            y += 8;
+            // Contact footer
             doc.setDrawColor(accent[0], accent[1], accent[2]);
             doc.line(margin, y, margin + 60, y);
             y += 5;
             doc.setFontSize(9);
+            doc.setTextColor(grey[0], grey[1], grey[2]);
             doc.text('Encargado del proyecto: ' + CONTACT.name, margin, y);
             y += 4;
             doc.text('Contacto directo: ' + CONTACT.cell, margin, y);
-            y += 4;
-            doc.text('Oficina: ' + CONTACT.office, margin, y);
             y += 4;
             doc.text('Correo: ' + CONTACT.email, margin, y);
             // Plano page
@@ -7922,7 +8205,7 @@
             var tableData = [];
             // Carpinteria section
             tableData.push([{
-                content: 'CARPINTERIA (' + S.settings.marginCarp + '%)',
+                content: 'CARPINTERIA (x' + CONFIG.pricing.carpentryMultiplier + ')',
                 colSpan: 4,
                 styles: {
                     fillColor: [200, 200, 200],
@@ -7944,9 +8227,9 @@
                     fontStyle: 'bold'
                 }
             }, '', '$' + Math.round(c.carpCost).toLocaleString('es-MX'), '$' + Math.round(c.carpSale).toLocaleString('es-MX')]);
-            // Herrajes std
+            // Herrajes — carpentry bucket
             tableData.push([{
-                content: 'HERRAJES ESTANDAR (' + S.settings.marginHwStd + '%)',
+                content: 'HERRAJES EN CARPINTERIA (\u2264$' + CONFIG.pricing.hardwareThreshold + ')',
                 colSpan: 4,
                 styles: {
                     fillColor: [200, 200, 200],
@@ -7954,20 +8237,21 @@
                     fontSize: 9
                 }
             }]);
+            var hasCarpHW = false;
             c.allHW.forEach(function(hw) {
-                if (hw.marca === 'BLUM')
-                    return;
+                if (hw._bucket !== 'carp') return;
+                hasCarpHW = true;
                 tableData.push([hw.desc + ' (' + hw.marca + ')', Math.ceil(hw.qty), '$' + Math.round(Math.ceil(hw.qty) * hw.price).toLocaleString('es-MX'), '']);
             });
+            if (!hasCarpHW)
+                tableData.push(['(ninguno)', '', '$0', '']);
             tableData.push([{
-                content: 'Subtotal herrajes std',
-                styles: {
-                    fontStyle: 'bold'
-                }
-            }, '', '$' + Math.round(c.hwStdCost).toLocaleString('es-MX'), '$' + Math.round(c.hwStdSale).toLocaleString('es-MX')]);
-            // Blum
+                content: 'Subtotal herrajes (en carp.)',
+                styles: { fontStyle: 'bold' }
+            }, '', '$' + Math.round(c.hwCostCarpBucket).toLocaleString('es-MX'), '(incl. en carp.)']);
+            // Premium hardware
             tableData.push([{
-                content: 'HERRAJES BLUM (30% fijo)',
+                content: 'HERRAJES PREMIUM (>$' + CONFIG.pricing.hardwareThreshold + ', ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)',
                 colSpan: 4,
                 styles: {
                     fillColor: [200, 200, 200],
@@ -7975,21 +8259,18 @@
                     fontSize: 9
                 }
             }]);
-            var hasBlum = false;
+            var hasPremHW = false;
             c.allHW.forEach(function(hw) {
-                if (hw.marca !== 'BLUM')
-                    return;
-                hasBlum = true;
-                tableData.push([hw.desc, Math.ceil(hw.qty), '$' + Math.round(Math.ceil(hw.qty) * hw.price).toLocaleString('es-MX'), '']);
+                if (hw._bucket !== 'premium') return;
+                hasPremHW = true;
+                tableData.push([hw.desc + ' (' + hw.marca + ')', Math.ceil(hw.qty), '$' + Math.round(Math.ceil(hw.qty) * hw.price).toLocaleString('es-MX'), '']);
             });
-            if (!hasBlum)
+            if (!hasPremHW)
                 tableData.push(['(ninguno)', '', '$0', '$0']);
             tableData.push([{
-                content: 'Subtotal Blum',
-                styles: {
-                    fontStyle: 'bold'
-                }
-            }, '', '$' + Math.round(c.hwCostBlum).toLocaleString('es-MX'), '$' + Math.round(c.hwBlumSale).toLocaleString('es-MX')]);
+                content: 'Subtotal premium',
+                styles: { fontStyle: 'bold' }
+            }, '', '$' + Math.round(c.hwCostPremium).toLocaleString('es-MX'), '$' + Math.round(c.hwPremiumSale).toLocaleString('es-MX')]);
             // Extras
             if (c.extraCost > 0) {
                 tableData.push([{
@@ -8229,14 +8510,11 @@
                     fontSize: 9
                 }
             }]);
-            if (c.sheetsF[16] > 0)
-                tableData.push([pdfMatF + ' 16mm (' + c.sheetsF[16] + ' hojas x $' + Math.round(c.matPriceF16).toLocaleString('es-MX') + ')', c.sheetsF[16], '$' + Math.round(c.sheetsF[16] * c.matPriceF16).toLocaleString('es-MX'), '']);
-            if (c.sheetsF[25] > 0)
-                tableData.push([pdfMatF + ' 25mm (' + c.sheetsF[25] + ' hojas x $' + Math.round(c.matPriceF25).toLocaleString('es-MX') + ')', c.sheetsF[25], '$' + Math.round(c.sheetsF[25] * c.matPriceF25).toLocaleString('es-MX'), '']);
-            if (c.useDual && c.sheetsI[16] > 0)
-                tableData.push([pdfMatI + ' 16mm (' + c.sheetsI[16] + ' hojas x $' + Math.round(c.matPriceI16).toLocaleString('es-MX') + ')', c.sheetsI[16], '$' + Math.round(c.sheetsI[16] * c.matPriceI16).toLocaleString('es-MX'), '']);
-            if (c.useDual && c.sheetsI[25] > 0)
-                tableData.push([pdfMatI + ' 25mm (' + c.sheetsI[25] + ' hojas x $' + Math.round(c.matPriceI25).toLocaleString('es-MX') + ')', c.sheetsI[25], '$' + Math.round(c.sheetsI[25] * c.matPriceI25).toLocaleString('es-MX'), '']);
+            var pdfTK = c.projThickness || 16;
+            if (c.totalSheetsF > 0)
+                tableData.push([pdfMatF + ' ' + pdfTK + 'mm (' + c.totalSheetsF + ' hojas x $' + Math.round(c.matPriceF).toLocaleString('es-MX') + ')', c.totalSheetsF, '$' + Math.round(c.totalSheetsF * c.matPriceF).toLocaleString('es-MX'), '']);
+            if (c.useDual && c.totalSheetsI > 0)
+                tableData.push([pdfMatI + ' ' + pdfTK + 'mm (' + c.totalSheetsI + ' hojas x $' + Math.round(c.matPriceI).toLocaleString('es-MX') + ')', c.totalSheetsI, '$' + Math.round(c.totalSheetsI * c.matPriceI).toLocaleString('es-MX'), '']);
             tableData.push(['Chapacanto', c.totalCanto + ' ml', '$' + Math.round(c.chapCostF + c.chapCostI).toLocaleString('es-MX'), '']);
             tableData.push(['Corte', c.totalSheets + ' hojas', '$' + Math.round(c.corteCost).toLocaleString('es-MX'), '']);
             tableData.push(['Enchapado', c.totalCanto + ' ml', '$' + Math.round(c.enchapCost).toLocaleString('es-MX'), '']);
@@ -8264,7 +8542,7 @@
                 styles: {
                     fontStyle: 'bold'
                 }
-            }, '', '$' + Math.round(c.hwStdCost + c.hwCostBlum).toLocaleString('es-MX'), '']);
+            }, '', '$' + Math.round(c.hwCostCarpBucket + c.hwCostPremium).toLocaleString('es-MX'), '']);
             if (c.extraCost > 0) {
                 tableData.push([{
                     content: 'EXTRAS',
@@ -8356,8 +8634,8 @@
             doc.setFont('helvetica', 'normal');
             doc.text('Costo total:', margin + 5, y + 15);
             doc.text('$' + Math.round(c.totalCost).toLocaleString('es-MX'), margin + 70, y + 15);
-            doc.text('Multiplicador:', margin + 5, y + 21);
-            doc.text(c.saleMultiplier + 'x', margin + 70, y + 21);
+            doc.text('Carp. x' + CONFIG.pricing.carpentryMultiplier + ' + HW ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%:', margin + 5, y + 21);
+            doc.text('$' + Math.round(c.carpSale).toLocaleString('es-MX') + ' + $' + Math.round(c.hwPremiumSale || 0).toLocaleString('es-MX'), margin + 70, y + 21);
             doc.text('Precio venta:', margin + 5, y + 27);
             doc.text('$' + Math.round(c.subtotal).toLocaleString('es-MX'), margin + 70, y + 27);
             doc.text('Utilidad bruta:', margin + 5, y + 33);
@@ -8441,31 +8719,18 @@
             if (c.useDual) {
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(8);
-                var fLine = 'FRENTES:';
-                if (c.sheetsF[25] > 0)
-                    fLine += ' 25mm=' + c.sheetsF[25];
-                if (c.sheetsF[16] > 0)
-                    fLine += ' 16mm=' + c.sheetsF[16];
-                fLine += ' | Canto: ' + c.cantoF + ' ml';
+                var pTK = c.projThickness || 16;
+                var fLine = 'FRENTES: ' + pTK + 'mm=' + c.totalSheetsF + ' | Canto: ' + c.cantoF + ' ml';
                 doc.text(fLine, sx, y + 10);
-                var iLine = 'INTERIOR:';
-                if (c.sheetsI[25] > 0)
-                    iLine += ' 25mm=' + c.sheetsI[25];
-                if (c.sheetsI[16] > 0)
-                    iLine += ' 16mm=' + c.sheetsI[16];
-                iLine += ' | Canto: ' + c.cantoI + ' ml';
+                var iLine = 'INTERIOR: ' + pTK + 'mm=' + c.totalSheetsI + ' | Canto: ' + c.cantoI + ' ml';
                 doc.text(iLine, sx, y + 15);
                 y += 25;
             } else {
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(8);
-                var aLine = '';
-                var sAll25 = c.sheetsF[25] + c.sheetsI[25],
-                    sAll16 = c.sheetsF[16] + c.sheetsI[16];
-                if (sAll25 > 0)
-                    aLine += '25mm: ' + sAll25 + ' hojas  ';
-                if (sAll16 > 0)
-                    aLine += '16mm: ' + sAll16 + ' hojas  ';
+                var pTK2 = c.projThickness || 16;
+                var sAllSheets = c.totalSheetsF + c.totalSheetsI;
+                var aLine = pTK2 + 'mm: ' + sAllSheets + ' hojas  ';
                 doc.text(aLine, sx, y + 10);
                 y += 17;
             }
@@ -8735,23 +9000,39 @@
             var h = '<div class="title"><h2>' + titleText + '</h2><p>' + subtitleText + '</p></div>';
             h += '<div class="field"><label>Nombre del Cliente</label><input type="text" id="estClient" value="' + EP.client + '" placeholder="Ej: Juan P\u00e9rez" oninput="APP.estSetClient(this.value)"></div>';
             if (isCustom) {
-                h += '<div class="field"><label>Profundidad del proyecto (cm)</label>';
-                h += '<div style="display:flex;align-items:center;gap:8px"><input type="number" value="' + EP.projectDepth + '" min="30" max="120" step="1" style="width:100px" onchange="APP.estSetProjectDepth(parseInt(this.value))"><span style="color:#bbb">cm</span></div>';
-                h += '<p class="hint">Profundidad general de todos los m\u00f3dulos</p></div>';
+                // Project type selector
+                h += '<div class="field"><label>Tipo de Proyecto</label><div style="display:flex;gap:8px;flex-wrap:wrap">';
+                TYPES.forEach(function(t) {
+                    var sel = EP.projectType === t.id;
+                    h += '<button style="flex:1;min-width:80px;padding:10px 8px;border-radius:12px;border:2px solid ' + (sel ? '#c49a6c' : '#3a3a3a') + ';background:' + (sel ? '#c49a6c22' : '#2a2a2a') + ';color:' + (sel ? '#c49a6c' : '#999') + ';cursor:pointer;font-size:13px;text-align:center" onclick="APP.estSetProjectType(\'' + t.id + '\')">' + t.i + '<br>' + t.n + '</button>';
+                });
+                h += '</div></div>';
+                // Depth toggle
+                h += '<div class="field"><label>Profundidad</label>';
+                h += '<div class="mat-toggle-row" style="margin-bottom:8px"><span>Misma profundidad para todos</span><button class="toggle' + (EP.sameDepth ? ' on' : '') + '" onclick="APP.estTogSameDepth()"></button></div>';
+                if (EP.sameDepth) {
+                    h += '<div style="display:flex;align-items:center;gap:8px"><input type="number" value="' + EP.projectDepth + '" min="20" max="120" step="1" style="width:100px" onchange="APP.estSetProjectDepth(parseInt(this.value))"><span style="color:#bbb">cm — general para todo el proyecto</span></div>';
+                } else {
+                    h += '<p class="hint">Cada m\u00f3dulo tendr\u00e1 su propia profundidad editable</p>';
+                }
+                h += '</div>';
             }
             if (EP.modules.length === 0) {
                 h += '<div class="empty" style="margin:16px 0">' + svg('pkg') + '<p>Agrega m\u00f3dulos para comenzar</p></div>';
             } else {
                 h += '<div class="est-modules-row">';
                 EP.modules.forEach(function(m, i) {
-                    var typeLabel = m.type === 'esquinero' ? 'Esquinero' : m.type === 'especial' ? 'Especial' : m.type === 'fijo' ? 'Fijo' : m.type === 'panelTV' ? 'Panel TV' : m.type === 'torreLateral' ? 'Torre Lat.' : m.zones.length + ' zona' + (m.zones.length !== 1 ? 's' : '');
+                    var typeLabel = m.type === 'esquinero' ? 'Esquinero' : m.type === 'especial' ? 'Especial' : m.type === 'fijo' ? 'Fijo' : m.type === 'panelTV' ? 'Panel TV' : m.type === 'torreLateral' ? 'Torre Lat.' : m.type === 'alacenaAlta' ? 'Alacena' : m.type === 'gabineteBase' ? 'Gab. Base' : m.type === 'cajonBase' ? 'Caj\u00f3n Base' : m.type === 'despensa' ? 'Despensa' : m.type === 'puerta' ? 'Puerta' : m.zones.length + ' zona' + (m.zones.length !== 1 ? 's' : '');
                     h += '<div class="est-mod-card" onclick="APP.estEditMod(' + i + ')">';
                     h += '<button class="est-mod-del" onclick="event.stopPropagation();APP.estDelMod(' + i + ')">&times;</button>';
                     h += '<div class="est-mod-num">' + (i + 1) + '</div>';
                     h += renderEstSilhouette(m);
                     h += '<div class="est-mod-w">' + (m.type === 'esquinero' ? m.width + '\u00d7' + (m.width2 || m.width) : m.width) + 'cm</div>';
-                    if (isCustom)
+                    if (isCustom) {
                         h += '<div class="est-mod-type" style="font-size:11px;color:#60a5fa">' + m.height + 'cm alto</div>';
+                        if (!EP.sameDepth)
+                            h += '<div class="est-mod-type" style="font-size:11px;color:#9ca3af">' + (m.depth || EP.projectDepth) + 'cm prof</div>';
+                    }
                     h += '<div class="est-mod-type">' + typeLabel + '</div>';
                     h += '<div class="est-mod-arrows">';
                     if (i > 0)
@@ -8767,6 +9048,11 @@
                 if (isCustom) {
                     h += '<button class="est-add-btn" onclick="APP.estAddMod(\'panelTV\')">' + svg('plus') + 'Panel TV</button>';
                     h += '<button class="est-add-btn" onclick="APP.estAddMod(\'torreLateral\')">' + svg('plus') + 'Torre Lat.</button>';
+                    h += '<button class="est-add-btn" style="border-color:#c49a6c44" onclick="APP.estAddMod(\'alacenaAlta\')">' + svg('plus') + 'Alacena Alta</button>';
+                    h += '<button class="est-add-btn" style="border-color:#c49a6c44" onclick="APP.estAddMod(\'gabineteBase\')">' + svg('plus') + 'Gab. Base</button>';
+                    h += '<button class="est-add-btn" style="border-color:#c49a6c44" onclick="APP.estAddMod(\'cajonBase\')">' + svg('plus') + 'Caj\u00f3n Base</button>';
+                    h += '<button class="est-add-btn" style="border-color:#c49a6c44" onclick="APP.estAddMod(\'despensa\')">' + svg('plus') + 'Despensa</button>';
+                    h += '<button class="est-add-btn" style="border-color:#c49a6c44" onclick="APP.estAddMod(\'puerta\')">' + svg('plus') + 'Puerta</button>';
                 }
                 h += '</div>';
                 var tw = EP.modules.reduce(function(a, m2) {
@@ -8784,6 +9070,11 @@
                 if (isCustom) {
                     h += '<button class="est-add-btn" style="flex:1" onclick="APP.estAddMod(\'panelTV\')">' + svg('plus') + 'Panel TV</button>';
                     h += '<button class="est-add-btn" style="flex:1" onclick="APP.estAddMod(\'torreLateral\')">' + svg('plus') + 'Torre Lat.</button>';
+                    h += '<button class="est-add-btn" style="flex:1;border-color:#c49a6c44" onclick="APP.estAddMod(\'alacenaAlta\')">' + svg('plus') + 'Alacena Alta</button>';
+                    h += '<button class="est-add-btn" style="flex:1;border-color:#c49a6c44" onclick="APP.estAddMod(\'gabineteBase\')">' + svg('plus') + 'Gab. Base</button>';
+                    h += '<button class="est-add-btn" style="flex:1;border-color:#c49a6c44" onclick="APP.estAddMod(\'cajonBase\')">' + svg('plus') + 'Caj\u00f3n Base</button>';
+                    h += '<button class="est-add-btn" style="flex:1;border-color:#c49a6c44" onclick="APP.estAddMod(\'despensa\')">' + svg('plus') + 'Despensa</button>';
+                    h += '<button class="est-add-btn" style="flex:1;border-color:#c49a6c44" onclick="APP.estAddMod(\'puerta\')">' + svg('plus') + 'Puerta</button>';
                 }
                 h += '</div>';
             }
@@ -8801,8 +9092,14 @@
             var isFijo = m.type === 'fijo';
             var isPanelTV = m.type === 'panelTV';
             var isTorre = m.type === 'torreLateral';
+            var isAlacena = m.type === 'alacenaAlta';
+            var isGabBase = m.type === 'gabineteBase';
+            var isCajBase = m.type === 'cajonBase';
+            var isDespensa = m.type === 'despensa';
+            var isPuerta = m.type === 'puerta';
             var isCustom = EP.mode === 'custom';
-            var typeSuffix = isEsq ? ' (Esquinero)' : isEsp ? ' (Especial)' : isFijo ? ' (Fijo)' : isPanelTV ? ' (Panel TV)' : isTorre ? ' (Torre Lateral)' : '';
+            var typeNames = { esquinero: 'Esquinero', especial: 'Especial', fijo: 'Fijo', panelTV: 'Panel TV', torreLateral: 'Torre Lateral', alacenaAlta: 'Alacena Alta', gabineteBase: 'Gabinete Base', cajonBase: 'Caj\u00f3n Base', despensa: 'Despensa', puerta: 'Puerta' };
+            var typeSuffix = typeNames[m.type] ? ' (' + typeNames[m.type] + ')' : '';
             var h = '<div class="title"><h2>M\u00f3dulo ' + (idx + 1) + typeSuffix + '</h2></div>';
             // fijo: just ancho + alto, nothing else
             if (isFijo) {
@@ -8818,8 +9115,13 @@
                 h += '<div class="field"><label>Alto del m\u00f3dulo</label>';
                 h += '<div style="display:flex;align-items:center;gap:8px"><input type="number" value="' + m.height + '" min="50" max="300" step="1" style="width:80px" onchange="APP.estSetModHeight(' + idx + ',parseInt(this.value))"><span style="color:#bbb">cm</span></div></div>';
             }
+            // Per-module depth (when sameDepth is off)
+            if (isCustom && !EP.sameDepth) {
+                h += '<div class="field"><label>Profundidad</label>';
+                h += '<div style="display:flex;align-items:center;gap:8px"><input type="number" value="' + (m.depth || EP.projectDepth) + '" min="20" max="120" step="1" style="width:80px" onchange="APP.estSetModDepth(' + idx + ',parseInt(this.value))"><span style="color:#bbb">cm</span></div></div>';
+            }
             // Width selector
-            if (isPanelTV || isTorre || isEsp) {
+            if (isPanelTV || isTorre || isEsp || isAlacena || isGabBase || isCajBase || isDespensa || isPuerta) {
                 h += '<div class="field"><label>Ancho (libre)</label>';
                 h += '<div style="display:flex;align-items:center;gap:8px"><input type="number" value="' + m.width + '" min="10" max="300" step="1" style="width:80px" onchange="APP.estSetWidth(' + idx + ',parseInt(this.value))"><span style="color:#bbb">cm</span></div>';
                 if (isPanelTV)
@@ -8851,6 +9153,14 @@
             // panelTV has no zones
             if (isPanelTV) {
                 h += '<div class="field"><p style="color:#999;font-size:14px">Panel plano \u2014 sin zonas internas. Incluye panel, travesa\u00f1os y fondo.</p></div>';
+                h += renderEstHeightBar(m, idx);
+                return h;
+            }
+            // puerta has no zones — just panel + optional marco
+            if (isPuerta) {
+                h += '<div class="field"><label>Marco</label>';
+                h += '<div class="mat-toggle-row"><span>Incluir marco</span><button class="toggle' + (m.marco ? ' on' : '') + '" onclick="APP.estTogMarco(' + idx + ')"></button></div>';
+                h += '<p class="hint">Puerta: ' + m.width + 'cm \u00d7 ' + m.height + 'cm' + (m.marco ? ' + marco' : '') + '</p></div>';
                 h += renderEstHeightBar(m, idx);
                 return h;
             }
@@ -9615,11 +9925,7 @@
             });
             // Sheets + Canto
             h += '<div class="card"><div class="card-title">' + svg('layers') + ' Material</div>';
-            h += '<div class="cost-row"><span>Hojas totales</span><strong>' + c.totalSheets + '</strong></div>';
-            if (c.sheetsF[16] > 0)
-                h += '<div class="cost-row"><span>  16mm</span><strong>' + c.sheetsF[16] + ' hojas</strong></div>';
-            if (c.sheetsF[25] > 0)
-                h += '<div class="cost-row"><span>  25mm</span><strong>' + c.sheetsF[25] + ' hojas</strong></div>';
+            h += '<div class="cost-row"><span>Hojas totales (' + (c.projThickness || 16) + 'mm)</span><strong>' + c.totalSheets + '</strong></div>';
             h += '<div class="cost-row"><span>Chapacanto total</span><strong>' + c.totalCanto + ' ml</strong></div>';
             h += '</div>';
             // Hardware (editable)
@@ -9677,24 +9983,23 @@
             h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin-bottom:6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Carpinter\u00eda</div>';
             var matNameF = EP.matFrentes.brand === 'CUSTOM' ? (EP.matFrentes.name || 'Personalizado') : EP.matFrentes.brand + ' ' + EP.matFrentes.name + (EP.matFrentes.finish ? ' ' + EP.matFrentes.finish : '');
             var matNameI = EP.matInterior.brand === 'CUSTOM' ? (EP.matInterior.name || 'Personalizado') : EP.matInterior.brand + ' ' + EP.matInterior.name + (EP.matInterior.finish ? ' ' + EP.matInterior.finish : '');
-            if (c.sheetsF[16] > 0)
-                h += '<div class="cost-row"><span>' + matNameF + ' 16mm (' + c.sheetsF[16] + ' hojas \u00d7 ' + fmtD(c.matPriceF16) + ')</span><strong>' + fmt(c.sheetsF[16] * c.matPriceF16) + '</strong></div>';
-            if (c.sheetsF[25] > 0)
-                h += '<div class="cost-row"><span>' + matNameF + ' 25mm (' + c.sheetsF[25] + ' hojas \u00d7 ' + fmtD(c.matPriceF25) + ')</span><strong>' + fmt(c.sheetsF[25] * c.matPriceF25) + '</strong></div>';
-            if (c.useDual && c.sheetsI[16] > 0)
-                h += '<div class="cost-row"><span>' + matNameI + ' 16mm (' + c.sheetsI[16] + ' hojas \u00d7 ' + fmtD(c.matPriceI16) + ')</span><strong>' + fmt(c.sheetsI[16] * c.matPriceI16) + '</strong></div>';
-            if (c.useDual && c.sheetsI[25] > 0)
-                h += '<div class="cost-row"><span>' + matNameI + ' 25mm (' + c.sheetsI[25] + ' hojas \u00d7 ' + fmtD(c.matPriceI25) + ')</span><strong>' + fmt(c.sheetsI[25] * c.matPriceI25) + '</strong></div>';
+            var csTK = c.projThickness || 16;
+            if (c.totalSheetsF > 0)
+                h += '<div class="cost-row"><span>' + matNameF + ' ' + csTK + 'mm (' + c.totalSheetsF + ' hojas \u00d7 ' + fmtD(c.matPriceF) + ')</span><strong>' + fmt(c.totalSheetsF * c.matPriceF) + '</strong></div>';
+            if (c.useDual && c.totalSheetsI > 0)
+                h += '<div class="cost-row"><span>' + matNameI + ' ' + csTK + 'mm (' + c.totalSheetsI + ' hojas \u00d7 ' + fmtD(c.matPriceI) + ')</span><strong>' + fmt(c.totalSheetsI * c.matPriceI) + '</strong></div>';
             h += '<div class="cost-row"><span>Chapacanto (' + c.totalCanto + ' ml)</span><strong>' + fmt(c.chapCostF + c.chapCostI) + '</strong></div>';
             h += '<div class="cost-row"><span>Corte (' + c.totalSheets + ' hojas)</span><strong>' + fmt(c.corteCost) + '</strong></div>';
             h += '<div class="cost-row"><span>Enchapado (' + c.totalCanto + ' ml x $' + (typeof EP.enchapPrice === 'number' ? EP.enchapPrice : 13) + ')</span><strong>' + fmt(c.enchapCost) + '</strong></div>';
             h += '<div class="cost-row"><span>Mano de obra</span><strong>' + fmt(EP.laborCost) + '</strong></div>';
-            h += '<div class="cost-total"><span>Subtotal Carpinter\u00eda</span><strong>' + fmt(c.carpCost) + '</strong></div>';
-            h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin:10px 0 6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Herrajes</div>';
-            h += '<div class="cost-row"><span>Herrajes est\u00e1ndar</span><strong>' + fmt(c.hwStdCost) + '</strong></div>';
-            if (c.hwCostBlum > 0)
-                h += '<div class="cost-row"><span>Herrajes Blum</span><strong>' + fmt(c.hwCostBlum) + '</strong></div>';
-            h += '<div class="cost-total"><span>Subtotal Herrajes</span><strong>' + fmt(c.hwStdCost + c.hwCostBlum) + '</strong></div>';
+            h += '<div class="cost-row"><span>Herrajes incl. en carp. (\u2264$' + CONFIG.pricing.hardwareThreshold + ')</span><strong>' + fmt(c.hwCostCarpBucket) + '</strong></div>';
+            h += '<div class="cost-total"><span>Subtotal Carpinter\u00eda + Herrajes</span><strong>' + fmt(c.carpCost + c.hwCostCarpBucket) + '</strong></div>';
+            h += '<div class="cost-row" style="font-size:12px;color:#c49a6c"><span>Venta carp. x' + CONFIG.pricing.carpentryMultiplier + '</span><strong>' + fmt(c.carpSale) + '</strong></div>';
+            if (c.hwCostPremium > 0) {
+                h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin:10px 0 6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Herrajes Premium (>$' + CONFIG.pricing.hardwareThreshold + ')</div>';
+                h += '<div class="cost-row"><span>Costo herrajes premium</span><strong>' + fmt(c.hwCostPremium) + '</strong></div>';
+                h += '<div class="cost-row" style="font-size:12px;color:#c49a6c"><span>Venta (margen ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)</span><strong>' + fmt(c.hwPremiumSale) + '</strong></div>';
+            }
             if (c.extraCost > 0) {
                 h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin:10px 0 6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Extras</div>';
                 if (c.ledBOM)
@@ -9716,26 +10021,15 @@
                 h += '<div class="cost-total"><span>Subtotal Extras</span><strong>' + fmt(c.extraCost) + '</strong></div>';
             }
             h += '</div>';
-            // Totals + multiplier
+            // Totals
             h += '<div class="summary">';
             h += '<div class="grand-total"><span>COSTO TOTAL</span><strong>' + fmt(c.totalCost) + '</strong></div>';
-            h += '<div style="margin:12px 0;padding:10px;background:rgba(196,154,108,0.1);border:1px solid rgba(196,154,108,0.3);border-radius:8px">';
-            h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;color:#c49a6c;font-weight:600">Multiplicador de venta</span>';
-            h += '<div style="display:flex;align-items:center;gap:6px">';
-            var curM = Math.round((c.saleMultiplier || CONFIG.pricing.defaultSaleMultiplier) * 10) / 10;
-            var decM = Math.max(1, Math.round((curM - 0.1) * 10) / 10);
-            var incM = Math.min(10, Math.round((curM + 0.1) * 10) / 10);
-            h += '<button style="width:32px;height:32px;border-radius:6px;border:1px solid #3a3a3a;background:#1a1a1a;color:#fff;font-size:18px;cursor:pointer" onclick="APP.estSetMultiplier(' + decM + ')">\u2212</button>';
-            h += '<input type="number" value="' + curM.toFixed(1) + '" min="1" max="10" step="0.1" style="width:60px;text-align:center;font-size:18px;font-weight:700;color:#c49a6c;background:#1a1a1a;border:1px solid #3a3a3a;border-radius:6px;padding:4px" onchange="APP.estSetMultiplier(parseFloat(this.value))">';
-            h += '<span style="font-size:16px;color:#999">x</span>';
-            h += '<button style="width:32px;height:32px;border-radius:6px;border:1px solid #3a3a3a;background:#1a1a1a;color:#fff;font-size:18px;cursor:pointer" onclick="APP.estSetMultiplier(' + incM + ')">+</button>';
-            h += '</div></div>';
-            h += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
-            CONFIG.pricing.saleMultiplierPresets.forEach(function(v) {
-                h += '<button style="padding:4px 12px;border-radius:6px;border:1px solid ' + (c.saleMultiplier === v ? '#c49a6c' : '#3a3a3a') + ';background:' + (c.saleMultiplier === v ? 'rgba(196,154,108,0.2)' : 'none') + ';color:' + (c.saleMultiplier === v ? '#c49a6c' : '#999') + ';font-size:13px;cursor:pointer" onclick="APP.estSetMultiplier(' + v + ')">' + v + 'x</button>';
-            });
-            h += '</div></div>';
-            h += '<div class="grand-total"><span>PRECIO VENTA (' + c.saleMultiplier + 'x)</span><strong>' + fmt(c.subtotal) + '</strong></div>';
+            h += '<div class="summary-row"><span>Carpinter\u00eda (carp + herrajes \u2264$' + CONFIG.pricing.hardwareThreshold + ') x' + CONFIG.pricing.carpentryMultiplier + '</span><strong>' + fmt(c.carpSale) + '</strong></div>';
+            if (c.hwPremiumSale > 0)
+                h += '<div class="summary-row"><span>Herrajes Premium (margen ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)</span><strong>' + fmt(c.hwPremiumSale) + '</strong></div>';
+            if (c.extrasSale > 0)
+                h += '<div class="summary-row"><span>Extras</span><strong>' + fmt(c.extrasSale) + '</strong></div>';
+            h += '<div class="grand-total"><span>PRECIO VENTA</span><strong>' + fmt(c.subtotal) + '</strong></div>';
             h += '<div class="summary-row"><span>IVA ' + Math.round(CONFIG.pricing.iva * 100) + '%</span><strong>' + fmt(c.iva) + '</strong></div>';
             h += '<div class="grand-total" style="margin-top:8px"><span>TOTAL CON IVA</span><strong>' + fmt(c.total) + '</strong></div>';
             h += '<div class="profit-box"><span>Costo: ' + fmt(c.totalCost) + '</span><strong>Utilidad: ' + fmt(c.profit) + ' (' + c.margin + '%)</strong></div></div>';
@@ -10223,6 +10517,19 @@
                 S.editedPieces = {};
                 render();
             },
+            togSameDepth: function() {
+                S.project.sameDepth = !S.project.sameDepth;
+                S.editedPieces = {};
+                render();
+            },
+            setModDepth: function(id, v) {
+                var m = S.project.modules.find(function(x) { return x.id === id; });
+                if (m) {
+                    m.depth = Math.max(20, Math.min(120, v || 50));
+                    S.editedPieces = {};
+                    render();
+                }
+            },
             setModW: function(id, w) {
                 var m = S.project.modules.find(function(x) {
                     return x.id === id;
@@ -10274,6 +10581,18 @@
                     S.editedPieces = {};
                     render();
                 }
+            },
+            setModW2: function(id, w) {
+                var m = S.project.modules.find(function(x) { return x.id === id; });
+                if (m) { m.width2 = w; S.editedPieces = {}; render(); }
+            },
+            togModProp: function(id, prop) {
+                var m = S.project.modules.find(function(x) { return x.id === id; });
+                if (m) { m[prop] = !m[prop]; S.editedPieces = {}; render(); }
+            },
+            setModProp: function(id, prop, val) {
+                var m = S.project.modules.find(function(x) { return x.id === id; });
+                if (m) { m[prop] = val; S.editedPieces = {}; render(); }
             },
             togDoor: function(id) {
                 var m = S.project.modules.find(function(x) {
@@ -11073,6 +11392,22 @@
             estSetProjectDepth: function(d) {
                 S.estProject.projectDepth = Math.max(30, Math.min(120, d || 60));
                 render();
+            },
+            estSetProjectType: function(typeId) {
+                S.estProject.projectType = typeId;
+                render();
+            },
+            estTogSameDepth: function() {
+                S.estProject.sameDepth = !S.estProject.sameDepth;
+                render();
+            },
+            estSetModDepth: function(idx, d) {
+                var m = S.estProject.modules[idx];
+                if (m) { m.depth = Math.max(20, Math.min(120, d || 60)); render(); }
+            },
+            estTogMarco: function(idx) {
+                var m = S.estProject.modules[idx];
+                if (m) { m.marco = !m.marco; render(); }
             },
             // Zones
             estAddZone: function(idx, type) {
@@ -11984,7 +12319,7 @@
         // PWA: Service Worker
         if ('serviceWorker' in navigator) {
             try {
-                var swCode = "var CACHE='" + CONFIG.pwa.cacheName + "';self.addEventListener('install',function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll([self.location.origin+self.location.pathname])}))});self.addEventListener('fetch',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});";
+                var swCode = "var CACHE='" + CONFIG.pwa.cacheName + "';self.addEventListener('install',function(e){self.skipWaiting();e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll([self.location.origin+self.location.pathname])}))});self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==CACHE}).map(function(k){return caches.delete(k)}))}));self.clients.claim()});self.addEventListener('fetch',function(e){e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request)}))});";
                 var swBlob = new Blob([swCode], {
                     type: 'application/javascript'
                 });
