@@ -6627,6 +6627,7 @@
                 });
                 h += '</div>';
             }
+            /* TEMPLATES hidden
             TEMPLATES.forEach(function(t) {
                 var typeName = TYPES.find(function(x) {
                     return x.id === t.type;
@@ -6643,6 +6644,7 @@
                 h += '<button class="tpl-card-btn" onclick="APP.selectTpl(\'' + t.id + '\')">Usar plantilla</button>';
                 h += '</div></div>';
             });
+            */
             h += '</div>';
             return h;
         }
@@ -8011,7 +8013,7 @@
         }
 
         // CUSTOMIZE: Client PDF — black & white Excel-style layout
-        function genClientPDF() {
+        function genClientPDF(optProject, optCalc) {
             if (typeof jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
                 alert('jsPDF no cargado. Verifica tu conexion a internet.');
                 return;
@@ -8019,8 +8021,8 @@
             var jsPDF = window.jspdf.jsPDF;
             var doc = new jsPDF('p', 'mm', 'letter');
             var d = S.pdfData,
-                P = S.project,
-                c = calc(),
+                P = optProject || S.project,
+                c = optCalc || calc(),
                 br = BRANDS[S.brand] || BRANDS.primary;
             var black = [0, 0, 0];
             var white = [255, 255, 255];
@@ -8303,17 +8305,25 @@
                 doc.autoTable({
                     startY: y,
                     margin: { left: matMargin, right: margin },
+                    tableWidth: cw,
                     head: [['CANT.', 'UNIDAD', 'DESCRIPCION', 'MARCA', 'TOTAL']],
                     body: carpBody,
+                    foot: [['TOTAL CARPINTERIA', '', '', '', '$' + Math.round(c.carpSale).toLocaleString('es-MX')]],
                     theme: 'plain',
                     styles: { fontSize: 8, cellPadding: 2.5, lineColor: black, lineWidth: 0.2, textColor: black },
                     headStyles: { fillColor: [220, 220, 220], textColor: black, fontStyle: 'bold' },
+                    footStyles: { fillColor: black, textColor: white, fontStyle: 'bold', fontSize: 9 },
                     columnStyles: {
                         0: { cellWidth: 14, halign: 'center' },
                         1: { cellWidth: 16, halign: 'center' },
-                        2: { cellWidth: cw * 0.44 },
+                        2: { cellWidth: 'auto' },
                         3: { cellWidth: 24 },
-                        4: { cellWidth: cw * 0.18, halign: 'right' }
+                        4: { cellWidth: 35, halign: 'right' }
+                    },
+                    didParseCell: function(data) {
+                        if (data.section === 'foot' && data.column.index === 0) {
+                            data.cell.colSpan = 4;
+                        }
                     }
                 });
                 y = doc.lastAutoTable.finalY + 6;
@@ -8350,21 +8360,30 @@
                 ]);
             });
 
+            var hwSaleTotal = c.hwPremiumSale + (c.hwCostCarpBucket * carpMultiplier);
             if (hwBody.length > 0) {
                 doc.autoTable({
                     startY: y,
                     margin: { left: matMargin, right: margin },
+                    tableWidth: cw,
                     head: [['CANT.', 'UNIDAD', 'DESCRIPCION', 'MARCA', 'TOTAL']],
                     body: hwBody,
+                    foot: [['TOTAL HERRAJES', '', '', '', '$' + Math.round(hwSaleTotal).toLocaleString('es-MX')]],
                     theme: 'plain',
                     styles: { fontSize: 8, cellPadding: 2.5, lineColor: black, lineWidth: 0.2, textColor: black },
                     headStyles: { fillColor: [220, 220, 220], textColor: black, fontStyle: 'bold' },
+                    footStyles: { fillColor: black, textColor: white, fontStyle: 'bold', fontSize: 9 },
                     columnStyles: {
                         0: { cellWidth: 14, halign: 'center' },
                         1: { cellWidth: 16, halign: 'center' },
-                        2: { cellWidth: cw * 0.44 },
+                        2: { cellWidth: 'auto' },
                         3: { cellWidth: 24 },
-                        4: { cellWidth: cw * 0.18, halign: 'right' }
+                        4: { cellWidth: 35, halign: 'right' }
+                    },
+                    didParseCell: function(data) {
+                        if (data.section === 'foot' && data.column.index === 0) {
+                            data.cell.colSpan = 4;
+                        }
                     }
                 });
                 y = doc.lastAutoTable.finalY + 6;
@@ -10206,6 +10225,7 @@
             }
             // Cost breakdown
             h += '<div class="card"><div class="card-title">' + svg('dollar') + ' Costos</div>';
+            // --- CARPINTERIA ---
             h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin-bottom:6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Carpinter\u00eda</div>';
             var matNameF = EP.matFrentes.brand === 'CUSTOM' ? (EP.matFrentes.name || 'Personalizado') : EP.matFrentes.brand + ' ' + EP.matFrentes.name + (EP.matFrentes.finish ? ' ' + EP.matFrentes.finish : '');
             var matNameI = EP.matInterior.brand === 'CUSTOM' ? (EP.matInterior.name || 'Personalizado') : EP.matInterior.brand + ' ' + EP.matInterior.name + (EP.matInterior.finish ? ' ' + EP.matInterior.finish : '');
@@ -10218,14 +10238,20 @@
             h += '<div class="cost-row"><span>Corte (' + c.totalSheets + ' hojas)</span><strong>' + fmt(c.corteCost) + '</strong></div>';
             h += '<div class="cost-row"><span>Enchapado (' + c.totalCanto + ' ml x $' + (typeof EP.enchapPrice === 'number' ? EP.enchapPrice : 13) + ')</span><strong>' + fmt(c.enchapCost) + '</strong></div>';
             h += '<div class="cost-row"><span>Mano de obra</span><strong>' + fmt(EP.laborCost) + '</strong></div>';
-            h += '<div class="cost-row"><span>Herrajes incl. en carp. (\u2264$' + CONFIG.pricing.hardwareThreshold + ')</span><strong>' + fmt(c.hwCostCarpBucket) + '</strong></div>';
-            h += '<div class="cost-total"><span>Subtotal Carpinter\u00eda + Herrajes</span><strong>' + fmt(c.carpCost + c.hwCostCarpBucket) + '</strong></div>';
-            h += '<div class="cost-row" style="font-size:12px;color:#c49a6c"><span>Venta carp. x' + CONFIG.pricing.carpentryMultiplier + '</span><strong>' + fmt(c.carpSale) + '</strong></div>';
-            if (c.hwCostPremium > 0) {
-                h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin:10px 0 6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Herrajes Premium (>$' + CONFIG.pricing.hardwareThreshold + ')</div>';
-                h += '<div class="cost-row"><span>Costo herrajes premium</span><strong>' + fmt(c.hwCostPremium) + '</strong></div>';
-                h += '<div class="cost-row" style="font-size:12px;color:#c49a6c"><span>Venta (margen ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)</span><strong>' + fmt(c.hwPremiumSale) + '</strong></div>';
-            }
+            h += '<div class="cost-total"><span>Costo Carpinter\u00eda</span><strong>' + fmt(c.carpCost) + '</strong></div>';
+            h += '<div class="cost-row" style="font-size:12px;color:#c49a6c"><span>Carpinter\u00eda x' + CONFIG.pricing.carpentryMultiplier + '</span><strong>' + fmt(c.carpSale) + '</strong></div>';
+            // --- HERRAJES ---
+            h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin:10px 0 6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Herrajes</div>';
+            var hwTotalCost = c.hwCostCarpBucket + c.hwCostPremium;
+            if (c.hwCostCarpBucket > 0)
+                h += '<div class="cost-row"><span>Herrajes est\u00e1ndar (\u2264$' + CONFIG.pricing.hardwareThreshold + ')</span><strong>' + fmt(c.hwCostCarpBucket) + '</strong></div>';
+            if (c.hwCostPremium > 0)
+                h += '<div class="cost-row"><span>Herrajes premium (>$' + CONFIG.pricing.hardwareThreshold + ')</span><strong>' + fmt(c.hwCostPremium) + '</strong></div>';
+            h += '<div class="cost-total"><span>Costo Herrajes</span><strong>' + fmt(hwTotalCost) + '</strong></div>';
+            var hwSaleTotal = (c.hwCostCarpBucket * CONFIG.pricing.carpentryMultiplier) + c.hwPremiumSale;
+            h += '<div class="cost-row" style="font-size:12px;color:#c49a6c"><span>Herrajes (margen ' + Math.round(CONFIG.pricing.premiumHardwareMargin * 100) + '%)</span><strong>' + fmt(hwSaleTotal) + '</strong></div>';
+            // --- SUBTOTAL CARP + HERRAJES ---
+            h += '<div class="cost-total" style="margin-top:8px;border-top:2px solid #c49a6c;padding-top:8px"><span>Subtotal Carpinter\u00eda + Herrajes</span><strong style="color:#c49a6c">' + fmt(c.carpSale + hwSaleTotal) + '</strong></div>';
             if (c.extraCost > 0) {
                 h += '<div style="font-size:13px;font-weight:600;color:#999;text-transform:uppercase;margin:10px 0 6px;border-bottom:1px solid #2a2a2a;padding-bottom:3px">Extras</div>';
                 if (c.ledBOM)
@@ -12498,7 +12524,7 @@
                 APP.estInitPdfData();
                 var savedPdf = S.pdfData;
                 S.pdfData = S.estPdfData;
-                genClientPDF();
+                genClientPDF(S.estProject, calcEstandarizado());
                 S.pdfData = savedPdf;
                 APP.saveProject(true);
             },
