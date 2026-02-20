@@ -42,14 +42,14 @@
 
 - [x] **CUI-01**: User can select "Cocina" as project type in Step 1 wizard
 - [x] **CUI-02**: When type is cocina, UI shows only cocina modules grouped by category (Bajos, Alacenas, Torres, Extras)
-- [ ] **CUI-03**: Validation warns if horno module lacks ventilación note
-- [ ] **CUI-04**: Validation warns if fregadero uses non-MDF-RH material
-- [ ] **CUI-05**: Validation warns if module width is non-standard
+- [x] **CUI-03**: Validation warns if horno module lacks ventilación note
+- [x] **CUI-04**: Validation warns if fregadero uses non-MDF-RH material
+- [x] **CUI-05**: Validation warns if module width is non-standard
 
 ### Cocina Output
 
-- [ ] **COUT-01**: Summary shows subtotals by casco, frente, herrajes, and extras
-- [ ] **COUT-02**: PDF includes module table, despiece table, hardware summary, extras list, technical note
+- [x] **COUT-01**: Summary shows subtotals by casco, frente, herrajes, and extras
+- [x] **COUT-02**: PDF includes module table, despiece table, hardware summary, extras list, technical note
 
 ### Baño
 
@@ -148,11 +148,11 @@
 | CEXT-04 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
 | CUI-01 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
 | CUI-02 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
-| CUI-03 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CUI-04 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CUI-05 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| COUT-01 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| COUT-02 | Phase 4 | Cocina Extras + UI + Output | Pending |
+| CUI-03 | Phase 4 | Cocina Extras + UI + Output | Complete |
+| CUI-04 | Phase 4 | Cocina Extras + UI + Output | Complete |
+| CUI-05 | Phase 4 | Cocina Extras + UI + Output | Complete |
+| COUT-01 | Phase 4 | Cocina Extras + UI + Output | Complete |
+| COUT-02 | Phase 4 | Cocina Extras + UI + Output | Complete (04-03) |
 | BANO-01 | Phase 5 | Baños | Pending |
 | BANO-02 | Phase 5 | Baños | Pending |
 | BANO-03 | Phase 5 | Baños | Pending |

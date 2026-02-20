@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Generic calculateParts() and assignHardware() functions; closet patterns documented
 - [x] **Phase 2: Cocina Bajos** - All base-cabinet module types with auto despiece and hardware
 - [x] **Phase 3: Cocina Altos + Torres** - Wall cabinets (alacenas) and full-height tower columns (completed 2026-02-20)
-- [ ] **Phase 4: Cocina Extras + UI + Output** - Finishing pieces, cocina wizard UI, validations, and PDF
+- [x] **Phase 4: Cocina Extras + UI + Output** - Finishing pieces, cocina wizard UI, validations, and PDF
 - [ ] **Phase 5: Baños** - Bathroom module types with MDF RH enforcement and filtered UI
 - [ ] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
 - [ ] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
@@ -84,8 +84,8 @@ Plans:
 **Plans:** 3 plans
 Plans:
 - [x] 04-01-PLAN.md — Extras MODS + calculateParts() + forType filtering + category grouping in step2()
-- [ ] 04-02-PLAN.md — Cocina validations (horno/fregadero/width) + categorized cost subtotals in step3()
-- [ ] 04-03-PLAN.md — Cocina PDF sections (module table, despiece, hardware, extras, technical note)
+- [x] 04-02-PLAN.md — Cocina validations (horno/fregadero/width) + categorized cost subtotals in step3()
+- [x] 04-03-PLAN.md — Cocina PDF sections (module table, despiece, hardware, extras, technical note)
 
 ### Phase 5: Baños
 **Goal**: Users can quote a complete bathroom vanity project with MDF RH enforced and all bathroom-specific module constraints applied
@@ -97,7 +97,10 @@ Plans:
   3. User can add a cajonera baño within the 500-600mm height range with MDF RH material enforced
   4. User can add a botiquín/espejo at 100-150mm depth with wall-mount hardware
   5. Selecting any non-MDF-RH material for any baño module shows a red blocking warning
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() + assignHardware() for 3 bano module types
+- [ ] 05-02-PLAN.md — TYPES entry + calc() door logic + MDF-RH validation + cajones selector
 
 ### Phase 6: Tablered Arauco
 **Goal**: Users can generate exact-specification despiece for the three Tablered Arauco catalog products (Librero KIRA, Credenza NERO, Mesa de Centro) with piece labels matching the official catalog
@@ -166,8 +169,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation | 2/2 | Complete | 2026-02-19 |
 | 2. Cocina Bajos | 3/3 | Complete   | 2026-02-20 |
 | 3. Cocina Altos + Torres | 2/2 | Complete   | 2026-02-20 |
-| 4. Cocina Extras + UI + Output | 0/3 | Not started | - |
-| 5. Baños | 0/TBD | Not started | - |
+| 4. Cocina Extras + UI + Output | 3/3 | Complete | 2026-02-20 |
+| 5. Baños | 0/2 | Planning | - |
 | 6. Tablered Arauco | 0/TBD | Not started | - |
 | 7. Mueble TV | 0/TBD | Not started | - |
 | 8. Closet Extension + Puertas | 0/TBD | Not started | - |

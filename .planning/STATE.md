@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 ## Current Position
 
 Phase: 4 of 10 (Cocina Extras + UI + Output)
-Plan: 1 of 3 in current phase (COMPLETE)
-Status: In progress
-Last activity: 2026-02-20 — Plan 04-01 completed: 4 extras MODS (zoclo/vistaLateral/panelRelleno/cubierta), forType on all MODS, step2() filtering + grouping, cubierta m2 pricing, zoclo auto-width
+Plan: 3 of 3 in current phase (COMPLETE)
+Status: Phase 4 complete — ready for Phase 5
+Last activity: 2026-02-20 — Plan 04-03 completed: Cocina PDF sections in genClientPDF() (module index, despiece, hardware summary, extras list, technical note) and genInternalPDF() (module index with costs, hardware detail with bucket classification, category cost summary)
 
-Progress: [██████░░░░] 30%
+Progress: [████████░░] 40%
 
 ## Performance Metrics
 
@@ -79,6 +79,14 @@ Recent decisions affecting current work:
 - alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
 - torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
 - APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
 
 ### Pending Todos
 
@@ -91,5 +99,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 04-01-PLAN.md — 4 extras MODS, forType field on all MODS, step2() filtering + grouping by type/category, cubierta m2 pricing, zoclo auto-width
+Stopped at: Completed 04-03-PLAN.md — Cocina PDF sections in genClientPDF() and genInternalPDF(). Phase 4 complete.
 Resume file: None
