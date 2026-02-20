@@ -3027,7 +3027,13 @@
                 defaultEnchapPrice: 13,
                 defaultChapSpec: '1mm x 19mm ABS para refilar',
                 saleMultiplierPresets: [1.5, 2, 2.5, 3],
-                defaultSaleMultiplier: 2
+                defaultSaleMultiplier: 2,
+                // CUSTOMIZE: Cubierta pricing per m2 (MXN) — postformado/cuarzo/granito
+                cubiertaPrices: {
+                    postformado: 2500,
+                    cuarzo: 8500,
+                    granito: 6500
+                }
             },
             // CUSTOMIZE: Bisagra auto-assignment rules — adjust count by door height and material
             hardware: {
@@ -3148,51 +3154,69 @@
             modulo: {
                 n: 'Modulo',
                 w: [70, 80, 90],
-                d: 'Corredera oculta | Prof: 55-60cm'
+                d: 'Corredera oculta | Prof: 55-60cm',
+                forType: ['closet'],
+                cat: 'Modulos'
             },
             colgador: {
                 n: 'Colgador',
                 w: [90],
-                d: 'Tubo sencillo | Min 110cm alto (largo), 90cm (corto)'
+                d: 'Tubo sencillo | Min 110cm alto (largo), 90cm (corto)',
+                forType: ['closet'],
+                cat: 'Modulos'
             },
             zapatero: {
                 n: 'Zapatero',
                 w: [90],
-                d: 'Extraible | 15-20cm por nivel'
+                d: 'Extraible | 15-20cm por nivel',
+                forType: ['closet'],
+                cat: 'Modulos'
             },
             esquinero: {
                 n: 'Esquinero',
                 w: [90],
-                d: '90x90 L-shape'
+                d: '90x90 L-shape',
+                forType: ['closet'],
+                cat: 'Modulos'
             },
             entrepa: {
                 n: 'Entrepaneras',
                 w: [30, 40, 50, 60, 70, 80, 90, 100],
                 d: 'Ajuste a medida',
-                custom: 1
+                custom: 1,
+                forType: ['closet'],
+                cat: 'Modulos'
             },
             // TV modules — Prof: 40-50cm, Alto base: 45-55cm
             torreLateral: {
                 n: 'Torre Lateral',
                 w: [30, 40, 50, 60],
-                d: 'Torre lateral | Prof: 40-50cm'
+                d: 'Torre lateral | Prof: 40-50cm',
+                forType: ['tv'],
+                cat: 'Modulos'
             },
             panelTV: {
                 n: 'Panel para TV',
                 w: [140, 170, 200, 240],
-                d: 'Panel decorativo para TV'
+                d: 'Panel decorativo para TV',
+                forType: ['tv'],
+                cat: 'Modulos'
             },
             moduloCentral: {
                 n: 'Modulo Central',
                 w: [80, 100, 120, 140],
-                d: 'Modulo central TV | Prof: 40-50cm, Alto: 45-55cm'
+                d: 'Modulo central TV | Prof: 40-50cm, Alto: 45-55cm',
+                forType: ['tv'],
+                cat: 'Modulos'
             },
             lateralAbierto: {
                 n: 'Lateral Abierto',
                 w: [30, 40, 50, 60],
-                d: 'Lateral abierto | 30-40cm ancho tipico'
+                d: 'Lateral abierto | 30-40cm ancho tipico',
+                forType: ['tv'],
+                cat: 'Modulos'
             },
-            // Cocina modules — Base: 60cm prof x 85-90cm alto | Alacena: 30-35cm prof x 70-90cm alto
+            // Cocina modules (legacy, no forType — shown for 'otro' only)
             alacenaAlta: {
                 n: 'Alacena Alta',
                 w: [30, 45, 60, 90],
@@ -3227,61 +3251,114 @@
             bajoEstandar: {
                 n: 'Bajo Estandar',
                 w: [30, 40, 45, 50, 60, 75, 80, 90, 100],
-                d: 'Gabinete base 1-2 puertas | Prof: 58cm, Alto: 72cm'
+                d: 'Gabinete base 1-2 puertas | Prof: 58cm, Alto: 72cm',
+                forType: ['cocina'],
+                cat: 'Bajos'
             },
             fregadero: {
                 n: 'Fregadero',
                 w: [60, 75, 80, 90],
-                d: 'Sin techo, 2 amarres, saque trasero | Prof: 58cm'
+                d: 'Sin techo, 2 amarres, saque trasero | Prof: 58cm',
+                forType: ['cocina'],
+                cat: 'Bajos'
             },
             cajonera: {
                 n: 'Cajonera',
                 w: [30, 40, 45, 50, 60, 75, 80, 90],
-                d: '2-4 cajones Blum Tandem | Prof: 58cm'
+                d: '2-4 cajones Blum Tandem | Prof: 58cm',
+                forType: ['cocina'],
+                cat: 'Bajos'
             },
             esquineroCiego: {
                 n: 'Esquinero Ciego',
                 w: [90],
-                d: 'Esquinero 90x90 ciego o en L (165\u00b0)'
+                d: 'Esquinero 90x90 ciego o en L (165\u00b0)',
+                forType: ['cocina'],
+                cat: 'Bajos'
             },
             hornoBase: {
                 n: 'Horno Base',
                 w: [60, 75, 90],
-                d: 'Nicho horno 595mm + caj\u00f3n inferior'
+                d: 'Nicho horno 595mm + caj\u00f3n inferior',
+                forType: ['cocina'],
+                cat: 'Bajos'
             },
             // Cocina Alacenas — Prof: 30-35cm, Alto: 70-90cm
             alacenaEstandar: {
                 n: 'Alacena Est\u00e1ndar',
                 w: [30, 40, 45, 50, 60, 75, 80, 90],
-                d: '1-2 puertas, 1-2 entrepa\u00f1os | Prof: 30-35cm, Alto: 70-90cm'
+                d: '1-2 puertas, 1-2 entrepa\u00f1os | Prof: 30-35cm, Alto: 70-90cm',
+                forType: ['cocina'],
+                cat: 'Alacenas'
             },
             alacenaAventos: {
                 n: 'Alacena Aventos',
                 w: [60, 75, 80, 90],
-                d: 'Puerta elevable Blum Aventos (HK/HL/HS) | Prof: 30-35cm'
+                d: 'Puerta elevable Blum Aventos (HK/HL/HS) | Prof: 30-35cm',
+                forType: ['cocina'],
+                cat: 'Alacenas'
             },
             alacenaSobreCampana: {
                 n: 'Alacena Sobre Campana',
                 w: [60, 70, 80, 90],
-                d: 'Sobre campana o refri, prof. reducida | Prof: 20-30cm'
+                d: 'Sobre campana o refri, prof. reducida | Prof: 20-30cm',
+                forType: ['cocina'],
+                cat: 'Alacenas'
             },
             // Cocina Torres — Prof: 58-60cm, Alto total: 220-240cm
             torreHornos: {
                 n: 'Torre de Hornos',
                 w: [60, 75, 90],
-                d: 'Microondas + horno, caj\u00f3n inferior, ventilaci\u00f3n | Prof: 58-60cm'
+                d: 'Microondas + horno, caj\u00f3n inferior, ventilaci\u00f3n | Prof: 58-60cm',
+                forType: ['cocina'],
+                cat: 'Torres'
             },
             torreDespensa: {
                 n: 'Torre Despensa',
                 w: [40, 50, 60],
-                d: 'Entrepa\u00f1os regulables 32mm, 2 puertas (sup+inf) | Prof: 58-60cm'
+                d: 'Entrepa\u00f1os regulables 32mm, 2 puertas (sup+inf) | Prof: 58-60cm',
+                forType: ['cocina'],
+                cat: 'Torres'
+            },
+            // Cocina Extras — Piezas de terminacion y acabado
+            zoclo: {
+                n: 'Zoclo',
+                w: [30, 40, 50, 60, 75, 80, 90, 100],
+                d: 'Vista frontal inferior | melamina o aluminio',
+                forType: ['cocina'],
+                cat: 'Extras',
+                custom: 1
+            },
+            vistaLateral: {
+                n: 'Vista Lateral',
+                w: [58, 60],
+                d: 'Panel lateral visible | material premium',
+                forType: ['cocina'],
+                cat: 'Extras'
+            },
+            panelRelleno: {
+                n: 'Panel de Relleno',
+                w: [5, 10, 15, 20, 30, 50],
+                d: 'Tira entre modulo y pared | 5-100mm',
+                forType: ['cocina'],
+                cat: 'Extras',
+                custom: 1
+            },
+            cubierta: {
+                n: 'Cubierta',
+                w: [60, 90, 120, 150, 180, 240, 300],
+                d: 'Superficie superior m2 | postformado/cuarzo/granito',
+                forType: ['cocina'],
+                cat: 'Extras',
+                custom: 1
             },
             // Puertas — Ancho: 80-90cm (int), 100cm (principal) | Alto: 200, 210, 240cm
             puerta: {
                 n: 'Puerta',
                 w: [80, 90, 100],
                 d: 'Puerta individual | >100cm ancho = doble',
-                panel: true
+                panel: true,
+                forType: ['puerta']
             }
         };
 
@@ -5046,6 +5123,23 @@
                     pieces.push({ n: 'Entrepa\u00f1o', q: entDesp, w: w - 2 * TK, h: d - TK, t: TK, z: 'i' });
                 }
 
+            } else if (moduleType === 'zoclo') {
+                // AUDIT: Zoclo — linear strip, w=module width, h=150mm standard zoclo height, frente material
+                pieces.push({ n: 'Zoclo', q: 1, w: w, h: 150, t: TK, z: 'f' });
+
+            } else if (moduleType === 'vistaLateral') {
+                // AUDIT: Vista lateral — exposed side panel, profundidad x alto casco, frente material
+                pieces.push({ n: 'Vista Lateral', q: 1, w: d, h: h, t: TK, z: 'f' });
+
+            } else if (moduleType === 'panelRelleno') {
+                // AUDIT: Panel relleno — gap strip between module and wall, ancho=gap width, alto=casco height
+                pieces.push({ n: 'Panel Relleno', q: 1, w: w, h: h, t: TK, z: 'f' });
+
+            } else if (moduleType === 'cubierta') {
+                // AUDIT: Cubierta — priced per m2, not by sheet; w=length, h=depth (d param)
+                // isCubierta: true signals calc() to use m2-based pricing instead of sheet area
+                pieces.push({ n: 'Cubierta', q: 1, w: w, h: d, t: 0, z: 'f', isCubierta: true });
+
             } else if (moduleType === 'puerta') {
                 // Individual door panel with optional marco (frame)
                 // AUDIT: Panel puerta — full w x h; 4 edges chapacanto; zone='f'
@@ -5196,6 +5290,10 @@
                 hw.push({ key: 'pata', q: 4 });
                 hw.push({ key: 'zoclo_clip', q: 4 });
 
+            } else if (moduleType === 'zoclo' || moduleType === 'vistaLateral' || moduleType === 'panelRelleno' || moduleType === 'cubierta') {
+                // Cocina extras: finishing pieces — no hardware required
+                // AUDIT: zoclo/vistaLateral/panelRelleno/cubierta are panel-only; no hinges, legs, or clips
+
             }
             // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
             // alacenaAlta, gabineteBase, despensa, espacioCampana, esquineroGiratorio):
@@ -5240,6 +5338,8 @@
                         p.mid = m.id;
                         p.mn  = m.name;
                         p.mw  = m.width;
+                        // Stamp cubiertaType for m2 pricing in area calculation
+                        if (p.isCubierta) p.cubiertaType = m.cubiertaType || 'postformado';
                         pieces.push(p);
                     });
                     // Delegate hardware assignment to assignHardware()
@@ -5261,9 +5361,10 @@
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
                     // Skip door generation for module types that have no doors (drawers/oven use their own frentes)
-                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos') {
+                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta') {
                         // cajonera: frentes are in calculateParts(); hornoBase: oven has its own door
                         // torreHornos: oven has its own door, caj\u00f3n frente in calculateParts()
+                        // zoclo/vistaLateral/panelRelleno/cubierta: extras have no puertas
                         // Do nothing — skip door generation
                     } else {
                     var doorCnt;
@@ -5354,8 +5455,18 @@
             });
 
             // Calculate areas by zone — all pieces use project thickness
+            // cubierta pieces (isCubierta: true) are excluded from sheet area and priced per m2 separately
             var areaF = 0, areaI = 0, cantoF = 0, cantoI = 0;
+            var cubiertaCost = 0;
             pieces.forEach(function(p) {
+                if (p.isCubierta) {
+                    // AUDIT: Cubierta priced per m2 from CONFIG.cubiertaPrices; apply mermaFactor
+                    var cubArea = (p.w / 1000) * (p.h / 1000) * p.q;
+                    var cubType = (p.cubiertaType || 'postformado');
+                    var cubPriceM2 = CONFIG.pricing.cubiertaPrices[cubType] || CONFIG.pricing.cubiertaPrices.postformado;
+                    cubiertaCost += cubArea * CONFIG.pricing.mermaFactor * cubPriceM2;
+                    return; // skip sheet area accumulation for cubierta
+                }
                 var a = (p.w / 1000) * (p.h / 1000) * p.q;
                 if (useDual && p.z === 'i') areaI += a;
                 else areaF += a;
@@ -5479,6 +5590,8 @@
 
             // Extras
             var extraCost = 0;
+            // Include cubierta m2 cost in extras bucket
+            extraCost += cubiertaCost;
             var ledBOM = calcLedBOM();
             if (ledBOM)
                 extraCost += ledBOM.totalCost;
@@ -5546,6 +5659,7 @@
                 hwCostBlum: hwCostBlum,
                 hwStdCost: hwStdCost,
                 extraCost: extraCost,
+                cubiertaCost: cubiertaCost,
                 ledBOM: ledBOM,
                 paintCost: paintCost,
                 carpSale: carpSale,
@@ -7148,9 +7262,34 @@
             var typeName = typeObj ? typeObj.i + ' ' + typeObj.n : 'Proyecto';
             var h = '<div class="title"><h2>' + typeName + '</h2><p>Configurar modulos del proyecto</p></div>';
             h += '<div class="add-btns">';
+            // Filter modules by project type using forType field
+            var filteredKeys = [];
             for (var k in MODS) {
-                h += '<button class="add-btn" onclick="APP.addMod(\'' + k + '\')">' + svg('plus') + MODS[k].n + '</button>';
+                var modDef = MODS[k];
+                if (modDef.forType) {
+                    if (modDef.forType.indexOf(P.type) !== -1) filteredKeys.push(k);
+                } else {
+                    // Legacy modules without forType: show for 'otro' or unset type
+                    if (!P.type || P.type === 'otro') filteredKeys.push(k);
+                }
             }
+            // Group filtered modules by cat field
+            var groups = {};
+            var groupOrder = [];
+            filteredKeys.forEach(function(fk) {
+                var c = MODS[fk].cat || '';
+                if (!groups[c]) { groups[c] = []; groupOrder.push(c); }
+                groups[c].push(fk);
+            });
+            // Render grouped buttons with category headers
+            groupOrder.forEach(function(gName) {
+                if (gName && groupOrder.length > 1) {
+                    h += '<div style="width:100%;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px;padding-top:6px;border-top:1px solid #333">' + gName + '</div>';
+                }
+                groups[gName].forEach(function(mk) {
+                    h += '<button class="add-btn" onclick="APP.addMod(\'' + mk + '\')">' + svg('plus') + MODS[mk].n + '</button>';
+                });
+            });
             h += '</div>';
             if (P.modules.length === 0) {
                 h += '<div class="empty">' + svg('pkg') + '<p>No hay modulos</p></div>';
@@ -7264,8 +7403,26 @@
                         });
                         h += '</div></div>';
                     }
-                    // Puerta type doesn't need quote mode or door toggles — it IS a door
-                    if (m.type !== 'puerta') {
+                    if (m.type === 'cubierta') {
+                        var cubT = m.cubiertaType || 'postformado';
+                        h += '<div class="module-row"><span>Tipo:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [['postformado', 'Postformado'], ['cuarzo', 'Cuarzo'], ['granito', 'Granito']].forEach(function(opt) {
+                            h += '<button class="opt-btn' + (cubT === opt[0] ? ' sel' : '') + '" onclick="APP.setModProp(\'' + m.id + '\',\'cubiertaType\',\'' + opt[0] + '\')">' + opt[1] + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
+                    if (m.type === 'zoclo') {
+                        var bajoTypes = ['bajoEstandar', 'fregadero', 'cajonera', 'esquineroCiego', 'hornoBase'];
+                        var totalBW = 0;
+                        S.project.modules.forEach(function(x) {
+                            if (bajoTypes.indexOf(x.type) !== -1) totalBW += (x.width || 60) * (x.quantity || 1);
+                        });
+                        if (totalBW > 0) {
+                            h += '<div style="font-size:11px;color:#999;margin:2px 0 4px">Total bajos: ' + totalBW + ' cm (auto-calculado)</div>';
+                        }
+                    }
+                    // Puerta and extras types don't need quote mode or door toggles
+                    if (m.type !== 'puerta' && m.type !== 'zoclo' && m.type !== 'vistaLateral' && m.type !== 'panelRelleno' && m.type !== 'cubierta') {
                         var qmC = m.quoteMode || 'completo';
                         h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">';
                         h += '<button class="opt-btn' + (qmC === 'completo' ? ' sel' : '') + '" onclick="APP.setQuoteMode(\'' + m.id + '\',\'completo\')">Completo</button>';
@@ -10954,7 +11111,7 @@
             // Step 2 - Modules
             addMod: function(t) {
                 var m = MODS[t];
-                S.project.modules.push({
+                var newMod = {
                     id: uid(),
                     type: t,
                     name: m.n,
@@ -10987,7 +11144,21 @@
                         coats: 2,
                         scope: 'doors'
                     }
-                });
+                };
+                // Auto-populate zoclo width from sum of all bajo module widths (CEXT-01)
+                if (t === 'zoclo') {
+                    var bajoTypes = ['bajoEstandar', 'fregadero', 'cajonera', 'esquineroCiego', 'hornoBase'];
+                    var totalBajoWidth = 0;
+                    S.project.modules.forEach(function(existing) {
+                        if (bajoTypes.indexOf(existing.type) !== -1) {
+                            totalBajoWidth += (existing.width || 60) * (existing.quantity || 1);
+                        }
+                    });
+                    if (totalBajoWidth > 0) {
+                        newMod.width = totalBajoWidth;
+                    }
+                }
+                S.project.modules.push(newMod);
                 S.editedPieces = {};
                 render();
             },
