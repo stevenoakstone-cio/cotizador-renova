@@ -6698,6 +6698,25 @@
             };
         }
 
+        // === Sheet optimizer: calculates standard 1220x2440mm melamina sheets needed ===
+        function calcSheets(pieces) {
+            var SHEET_AREA = 1.22 * 2.44; // m2 per sheet (same as existing calc)
+            var merma = CONFIG.pricing.mermaFactor || 1.20;
+            var cascoArea = 0, frenteArea = 0;
+            (pieces || []).forEach(function(p) {
+                if (p.isCubierta || p.isCubrecanto || p.isBastidor) return; // priced separately
+                if (p.t !== 15 && p.t !== 18 && p.t !== 16 && p.t !== 25) return; // only standard melamina sheets
+                var a = (p.w / 1000) * (p.h / 1000) * (p.q || 1);
+                if (p.z === 'f') frenteArea += a;
+                else cascoArea += a;
+            });
+            return {
+                casco: Math.ceil((cascoArea * merma) / SHEET_AREA),
+                frente: Math.ceil((frenteArea * merma) / SHEET_AREA),
+                total: Math.ceil((cascoArea * merma) / SHEET_AREA) + Math.ceil((frenteArea * merma) / SHEET_AREA)
+            };
+        }
+
         // === V2.3: Estandarizado calc ===
         // Height/depth helpers — use per-module height in custom mode, fixed in estandarizado
         function estModHeight(m) {
@@ -8683,6 +8702,19 @@
             h += '<div class="summary-row"><span>IVA ' + Math.round(CONFIG.pricing.iva * 100) + '%</span><strong>' + fmt(c.iva) + '</strong></div>';
             h += '<div class="grand-total" style="margin-top:8px"><span>TOTAL</span><strong>' + fmt(c.total) + '</strong></div>';
             h += '<div class="profit-box"><span>Costo real: ' + fmt(c.totalCost) + '</span><strong>Utilidad: ' + fmt(c.profit) + ' (' + c.margin + '%)</strong></div></div>';
+            // Sheet optimizer
+            if (c.pieces && c.pieces.length > 0) {
+                var sheets = calcSheets(c.pieces);
+                if (sheets.total > 0) {
+                    h += '<div style="margin-top:12px;padding:12px;background:#1a2a1a;border:1px solid #2a4a2a;border-radius:8px">';
+                    h += '<div style="font-size:13px;color:#4a9;font-weight:600;margin-bottom:6px">Laminas Necesarias (1220x2440mm, +20% merma)</div>';
+                    h += '<div style="display:flex;gap:16px;font-size:13px;color:#ccc">';
+                    h += '<span>Casco: <strong>' + sheets.casco + '</strong></span>';
+                    h += '<span>Frente: <strong>' + sheets.frente + '</strong></span>';
+                    h += '<span style="color:#4a9">Total: <strong>' + sheets.total + '</strong> laminas</span>';
+                    h += '</div></div>';
+                }
+            }
             // Cost Breakdown (internal)
             h += '<div class="cost-bd">';
             h += '<button class="cost-bd-toggle" onclick="APP.togCostBD()">&#x1f512; Desglose de Costos (Interno) ' + svg(S.showCostBreakdown ? 'chevDown' : 'right') + '</button>';
