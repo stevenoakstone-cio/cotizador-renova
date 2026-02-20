@@ -33,15 +33,15 @@
 
 ### Cocina Extras
 
-- [ ] **CEXT-01**: User can add zoclo (calculated as linear meters from total bajo module widths)
-- [ ] **CEXT-02**: User can add vista lateral panel (premium material, costado size)
-- [ ] **CEXT-03**: User can add panel de relleno (5-100mm between module and wall)
-- [ ] **CEXT-04**: User can add cubierta (priced per m² — postformado, cuarzo, granito)
+- [x] **CEXT-01**: User can add zoclo (calculated as linear meters from total bajo module widths)
+- [x] **CEXT-02**: User can add vista lateral panel (premium material, costado size)
+- [x] **CEXT-03**: User can add panel de relleno (5-100mm between module and wall)
+- [x] **CEXT-04**: User can add cubierta (priced per m² — postformado, cuarzo, granito)
 
 ### Cocina UI
 
-- [ ] **CUI-01**: User can select "Cocina" as project type in Step 1 wizard
-- [ ] **CUI-02**: When type is cocina, UI shows only cocina modules grouped by category (Bajos, Alacenas, Torres, Extras)
+- [x] **CUI-01**: User can select "Cocina" as project type in Step 1 wizard
+- [x] **CUI-02**: When type is cocina, UI shows only cocina modules grouped by category (Bajos, Alacenas, Torres, Extras)
 - [ ] **CUI-03**: Validation warns if horno module lacks ventilación note
 - [ ] **CUI-04**: Validation warns if fregadero uses non-MDF-RH material
 - [ ] **CUI-05**: Validation warns if module width is non-standard
@@ -142,12 +142,12 @@
 | CALT-03 | Phase 3 | Cocina Altos + Torres | Pending |
 | CTOR-01 | Phase 3 | Cocina Altos + Torres | Pending |
 | CTOR-02 | Phase 3 | Cocina Altos + Torres | Pending |
-| CEXT-01 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CEXT-02 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CEXT-03 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CEXT-04 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CUI-01 | Phase 4 | Cocina Extras + UI + Output | Pending |
-| CUI-02 | Phase 4 | Cocina Extras + UI + Output | Pending |
+| CEXT-01 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
+| CEXT-02 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
+| CEXT-03 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
+| CEXT-04 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
+| CUI-01 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
+| CUI-02 | Phase 4 | Cocina Extras + UI + Output | Complete (04-01) |
 | CUI-03 | Phase 4 | Cocina Extras + UI + Output | Pending |
 | CUI-04 | Phase 4 | Cocina Extras + UI + Output | Pending |
 | CUI-05 | Phase 4 | Cocina Extras + UI + Output | Pending |

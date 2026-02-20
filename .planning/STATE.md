@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Given module dimensions and material selection, instantly generate a complete, accurate despiece with pricing.
-**Current focus:** Phase 3 — Cocina Altos + Torres (IN PROGRESS)
+**Current focus:** Phase 4 — Cocina Extras + UI + Output (IN PROGRESS)
 
 ## Current Position
 
-Phase: 3 of 10 (Cocina Altos + Torres)
-Plan: 2 of 3 in current phase (COMPLETE)
+Phase: 4 of 10 (Cocina Extras + UI + Output)
+Plan: 1 of 3 in current phase (COMPLETE)
 Status: In progress
-Last activity: 2026-02-20 — Plan 03-02 completed: assignHardware() blocks, calc() door logic, and step2() UI selectors for 5 alacena/torre types
+Last activity: 2026-02-20 — Plan 04-01 completed: 4 extras MODS (zoclo/vistaLateral/panelRelleno/cubierta), forType on all MODS, step2() filtering + grouping, cubierta m2 pricing, zoclo auto-width
 
-Progress: [█████░░░░░] 25%
+Progress: [██████░░░░] 30%
 
 ## Performance Metrics
 
@@ -64,6 +64,11 @@ Recent decisions affecting current work:
 - calc() fregadero: always doorCnt=2 regardless of width
 - calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
 - Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
 - [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
 - alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
 - alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
@@ -86,5 +91,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-02-PLAN.md — assignHardware() blocks, calc() door logic, step2() UI selectors for 5 cocina altos + torres types
+Stopped at: Completed 04-01-PLAN.md — 4 extras MODS, forType field on all MODS, step2() filtering + grouping by type/category, cubierta m2 pricing, zoclo auto-width
 Resume file: None

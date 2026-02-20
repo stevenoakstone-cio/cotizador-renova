@@ -83,7 +83,7 @@ Plans:
   6. Exported PDF includes a module table, despiece per module, hardware summary, extras list, and technical note
 **Plans:** 3 plans
 Plans:
-- [ ] 04-01-PLAN.md — Extras MODS + calculateParts() + forType filtering + category grouping in step2()
+- [x] 04-01-PLAN.md — Extras MODS + calculateParts() + forType filtering + category grouping in step2()
 - [ ] 04-02-PLAN.md — Cocina validations (horno/fregadero/width) + categorized cost subtotals in step3()
 - [ ] 04-03-PLAN.md — Cocina PDF sections (module table, despiece, hardware, extras, technical note)
 
