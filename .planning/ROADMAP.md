@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Baños** - Bathroom module types with MDF RH enforcement and filtered UI
 - [x] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
 - [x] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
-- [x] **Phase 8: Closet Extension + Puertas** - Missing closet modules and interior door quotation (completed 2026-02-20)
+- [x] **Phase 8: Closet Extension + Puertas** - Missing closet modules and interior door quotation (completed 2026-02-20)
 - [ ] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen
 - [ ] **Phase 10: Quality + Polish** - End-to-end cocina test, professional PDF, tooltips, sheet optimizer
 
@@ -145,7 +145,7 @@ Plans:
 - [ ] 08-02-PLAN.md — Puerta interior bastidor despiece + relleno-based bisagra logic + step2() relleno selector
 
 ### Phase 9: Multi-Tenant SaaS
-**Goal**: The app can be deployed for any carpintería with their own branding, Supabase instance, and license key — without code changes
+**Goal**: The app can be deployed for any carpinteria with their own branding, Supabase instance, and license key — without code changes
 **Depends on**: Phase 4
 **Requirements**: MTNT-01, MTNT-02, MTNT-03, MTNT-04, MTNT-05
 **Success Criteria** (what must be TRUE):
@@ -154,7 +154,11 @@ Plans:
   3. The app header shows a green indicator when connected to Supabase and a red indicator when offline
   4. A license screen shows the app version, client name, expiration date, and support contact
   5. An invalid or expired licenseKey shows a lock screen preventing app use
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 09-01-PLAN.md — APP_CONFIG localStorage layer + first-run setup screen
+- [ ] 09-02-PLAN.md — PDF branding via APP_CONFIG + connection status indicator
+- [ ] 09-03-PLAN.md — License key validation + lock screen + license info screen
 
 ### Phase 10: Quality + Polish
 **Goal**: The cocina workflow is verified end-to-end, the PDF is professional-grade, and usability aids (tooltips, sheet calculator) are in place
@@ -182,5 +186,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Tablered Arauco | 1/1 | Complete | 2026-02-20 |
 | 7. Mueble TV | 2/2 | Complete | 2026-02-20 |
 | 8. Closet Extension + Puertas | 2/2 | Complete   | 2026-02-20 |
-| 9. Multi-Tenant SaaS | 0/TBD | Not started | - |
+| 9. Multi-Tenant SaaS | 0/3 | Not started | - |
 | 10. Quality + Polish | 0/TBD | Not started | - |
