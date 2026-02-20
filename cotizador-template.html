@@ -3394,6 +3394,52 @@
                 panel: true,
                 forType: ['puerta']
             },
+            // --- TV modules (Phase 07) — Muebles de TV / Centros de Entretenimiento ---
+            consolaPatas: {
+                n: 'Consola con Patas',
+                w: [120, 150, 180, 200, 240],
+                h: 40,
+                d: 40,
+                d_desc: 'Prof: 35-45cm | Alto cuerpo: 40cm | Patas metalicas 5-15cm',
+                forType: ['tv'],
+                cat: 'TV'
+            },
+            consolaFlotante: {
+                n: 'Consola Flotante',
+                w: [120, 150, 180, 200, 240],
+                h: 40,
+                d: 40,
+                d_desc: 'Prof: 35-45cm | Alto cuerpo: 40cm | Flotante (soportes muro)',
+                forType: ['tv'],
+                cat: 'TV'
+            },
+            torreLateralTV: {
+                n: 'Torre Lateral TV',
+                w: [30, 35, 40, 45, 50],
+                h: 180,
+                d: 30,
+                d_desc: 'Ancho: 300-500mm | Prof: 250-350mm | Alto: piso a panel TV',
+                forType: ['tv'],
+                cat: 'TV'
+            },
+            repisaFlotante: {
+                n: 'Repisa Flotante',
+                w: [60, 80, 100, 120, 150],
+                h: 4,
+                d: 25,
+                d_desc: 'Variante: hueca (caja) o herraje oculto (espigon min 38mm)',
+                forType: ['tv'],
+                cat: 'TV'
+            },
+            panelFondo: {
+                n: 'Panel de Fondo (Lambrin)',
+                w: [120, 150, 180, 200, 240],
+                h: 180,
+                d: 3,
+                d_desc: 'Panel lambrin + bastidor oculto | Espacio cable 20-30mm',
+                forType: ['tv'],
+                cat: 'TV'
+            },
             // Tablered Arauco — Fixed catalog products (exact INSTRUCTIVO dimensions)
             librero: {
                 n: 'Librero KIRA',
@@ -3479,6 +3525,10 @@
         if (!HW_DEFAULTS.piston_150n) HW_DEFAULTS.piston_150n = { desc: 'Piston gas 150N (tapa abatible)', marca: 'DEMO', fallback: 350, cat: 'ACC. TABLERED' };
         if (!HW_DEFAULTS.pata_niveladora) HW_DEFAULTS.pata_niveladora = { desc: 'Pata niveladora 5cm regulable', marca: 'DEMO', fallback: 25, cat: 'ACC. TABLERED' };
         if (!HW_DEFAULTS.cubrecanto_ml) HW_DEFAULTS.cubrecanto_ml = { desc: 'Cubrecanto PVC 0.45mm (por ml)', marca: 'DEMO', fallback: 15, cat: 'ACC. TABLERED' };
+        // TV module hardware keys (Phase 07 — guarded conditionals)
+        if (!HW_DEFAULTS.soporte_flotante) HW_DEFAULTS.soporte_flotante = { desc: 'Soporte muro flotante (consola/repisa)', marca: 'DEMO', fallback: 45, cat: 'ACC. TV' };
+        if (!HW_DEFAULTS.herraje_repisa) HW_DEFAULTS.herraje_repisa = { desc: 'Herraje repisa oculto espigon (par)', marca: 'DEMO', fallback: 120, cat: 'ACC. TV' };
+        if (!HW_DEFAULTS.bastidor_ml) HW_DEFAULTS.bastidor_ml = { desc: 'Bastidor pino 1x2 panel fondo (por ml)', marca: 'DEMO', fallback: 25, cat: 'ACC. TV' };
         /* ── REAL HW_DEFAULTS (uncomment to restore) ──
         var HW_DEFAULTS = {
             corr_eco: { desc: 'Corredera ext total ecoline', marca: 'HERRAXA', fallback: 49.90, cat: 'CORREDERA' },
@@ -5324,6 +5374,83 @@
                 // Cubrecanto totals: 12 ml KIRA + 9 ml NERO = 21 ml total
                 pieces.push({ n: 'Cubrecanto PVC KIRA', q: 1, w: 12000, h: 0, mlTotal: 12, isCubrecanto: true, t: 0, z: 'i' });
                 pieces.push({ n: 'Cubrecanto PVC NERO', q: 1, w: 9000,  h: 0, mlTotal: 9,  isCubrecanto: true, t: 0, z: 'i' });
+
+            // --- TV modules (Phase 07) ---
+            } else if (moduleType === 'consolaPatas') {
+                // TV: consola con patas — standard casco (bajo TV) con patas metalicas (INSTRUCTIVO S.5)
+                // AUDIT: Costados x2 — full h x d; inner width = w - 2*TK
+                pieces.push({ n: 'Costado',       q: 2, w: d,             h: h,         t: TK, z: 'i' });
+                // AUDIT: Piso x1 — (w - 2*TK) x d
+                pieces.push({ n: 'Piso',           q: 1, w: w - 2 * TK,   h: d,         t: TK, z: 'i' });
+                // AUDIT: Techo x1 — (w - 2*TK) x d
+                pieces.push({ n: 'Techo',          q: 1, w: w - 2 * TK,   h: d,         t: TK, z: 'i' });
+                // AUDIT: Fondo HDF x1 — (w - 2*TK) x h; t:3 = 3mm HDF backing
+                pieces.push({ n: 'Fondo HDF',      q: 1, w: w - 2 * TK,   h: h,         t: 3,  z: 'i' });
+                // AUDIT: Amarre frontal x1 — (w - 2*TK) x 80mm structural rigidity brace at front top
+                pieces.push({ n: 'Amarre frontal', q: 1, w: w - 2 * TK,   h: 80,        t: TK, z: 'i' });
+                // AUDIT: Entrepaño x1 — (w - 2*TK - 2*TK) x (d - TK); 15mm holgura each side for pin clearance
+                pieces.push({ n: 'Entrepa\u00f1o', q: 1, w: w - 4 * TK,   h: d - TK,    t: TK, z: 'i' });
+                // Puertas NOT generated here — handled by calc() door block
+
+            } else if (moduleType === 'consolaFlotante') {
+                // TV: consola flotante — identical casco to consolaPatas; mounting via soporte_flotante brackets (INSTRUCTIVO S.5)
+                // AUDIT: Costados x2 — full h x d
+                pieces.push({ n: 'Costado',       q: 2, w: d,             h: h,         t: TK, z: 'i' });
+                // AUDIT: Piso x1 — (w - 2*TK) x d
+                pieces.push({ n: 'Piso',           q: 1, w: w - 2 * TK,   h: d,         t: TK, z: 'i' });
+                // AUDIT: Techo x1 — (w - 2*TK) x d
+                pieces.push({ n: 'Techo',          q: 1, w: w - 2 * TK,   h: d,         t: TK, z: 'i' });
+                // AUDIT: Fondo HDF x1 — (w - 2*TK) x h; t:3 = 3mm HDF backing
+                pieces.push({ n: 'Fondo HDF',      q: 1, w: w - 2 * TK,   h: h,         t: 3,  z: 'i' });
+                // AUDIT: Amarre frontal x1 — (w - 2*TK) x 80mm structural rigidity brace at front top
+                pieces.push({ n: 'Amarre frontal', q: 1, w: w - 2 * TK,   h: 80,        t: TK, z: 'i' });
+                // AUDIT: Entrepaño x1 — (w - 2*TK - 2*TK) x (d - TK); 15mm holgura each side for pin clearance
+                pieces.push({ n: 'Entrepa\u00f1o', q: 1, w: w - 4 * TK,   h: d - TK,    t: TK, z: 'i' });
+                // Puertas NOT generated here — handled by calc() door block
+
+            } else if (moduleType === 'torreLateralTV') {
+                // TV: torre lateral vertical — nichos abiertos con puerta opcional (INSTRUCTIVO S.5)
+                // AUDIT: Costados x2 — full tower height h x depth d (vertical panels)
+                pieces.push({ n: 'Costado',       q: 2, w: d,             h: h,         t: TK, z: 'i' });
+                // AUDIT: Piso x1 — (w - 2*TK) x d (base of tower)
+                pieces.push({ n: 'Piso',           q: 1, w: w - 2 * TK,   h: d,         t: TK, z: 'i' });
+                // AUDIT: Techo x1 — (w - 2*TK) x d (top of tower)
+                pieces.push({ n: 'Techo',          q: 1, w: w - 2 * TK,   h: d,         t: TK, z: 'i' });
+                // AUDIT: Fondo HDF x1 — (w - 2*TK) x h; t:3 = 3mm HDF backing panel
+                pieces.push({ n: 'Fondo HDF',      q: 1, w: w - 2 * TK,   h: h,         t: 3,  z: 'i' });
+                // AUDIT: Entrepaños x2 — 2 shelves dividing tower into 3 sections; (w - 2*TK) x (d - TK) per INSTRUCTIVO 5.1
+                pieces.push({ n: 'Entrepa\u00f1o', q: 2, w: w - 2 * TK,   h: d - TK,    t: TK, z: 'i' });
+                // Door for tower handled by calc() door block (optional — user toggles m.doors)
+
+            } else if (moduleType === 'repisaFlotante') {
+                // TV: repisa flotante — two variants per INSTRUCTIVO S.5 (Metodo 1=hueca, Metodo 2=herraje)
+                var variant = materials.variant || 'hueca';
+                if (variant === 'hueca') {
+                    // AUDIT: Variant hueca — hollow box; tapa superior + inferior + costados + HDF fondo for wall-mount
+                    // tapa_superior x1 — w x d (top face, full width)
+                    pieces.push({ n: 'Tapa superior',  q: 1, w: w,             h: d,         t: TK, z: 'i' });
+                    // tapa_inferior x1 — w x d (bottom face, full width)
+                    pieces.push({ n: 'Tapa inferior',  q: 1, w: w,             h: d,         t: TK, z: 'i' });
+                    // costado_caja x2 — (h - 2*TK) x d; box sides, h=box height (38-40mm nominal)
+                    pieces.push({ n: 'Costado caja',   q: 2, w: h - 2 * TK,   h: d,         t: TK, z: 'i' });
+                    // fondo HDF x1 — (w - 2*TK) x d; t:3 hides wall mount bracket inside box
+                    pieces.push({ n: 'Fondo HDF',      q: 1, w: w - 2 * TK,   h: d,         t: 3,  z: 'i' });
+                } else {
+                    // AUDIT: Variant herraje — hidden espigon bracket; single solid shelf minimum 38mm thick
+                    // AUDIT: min 38mm for herraje oculto insertion (espigon bracket enters from back into shelf)
+                    pieces.push({ n: 'Tablero repisa', q: 1, w: w,             h: d,         t: Math.max(TK, 38), z: 'i' });
+                }
+
+            } else if (moduleType === 'panelFondo') {
+                // TV: panel de fondo (lambrin) con bastidor oculto de madera (INSTRUCTIVO S.5)
+                // AUDIT: Panel principal x1 — full w x h; material frente (premium visible face)
+                pieces.push({ n: 'Panel',                  q: 1, w: w,         h: h,         t: TK, z: 'f' });
+                // AUDIT: Bastidor horizontal x2 — (w - 100) x 50; pine frame top + bottom (50mm from each edge)
+                pieces.push({ n: 'Bastidor horizontal',    q: 2, w: w - 100,   h: 50,        t: 0,  z: 'i', isBastidor: true });
+                // AUDIT: Bastidor vertical x2 — (h - 100) x 50; pine frame left + right sides (50mm from each edge)
+                pieces.push({ n: 'Bastidor vertical',      q: 2, w: h - 100,   h: 50,        t: 0,  z: 'i', isBastidor: true });
+                // AUDIT: Bastidor travesano x1 — (w - 100) x 50; center cross-brace for rigidity
+                pieces.push({ n: 'Bastidor travesano',     q: 1, w: w - 100,   h: 50,        t: 0,  z: 'i', isBastidor: true });
             }
 
             return pieces;
@@ -5673,9 +5800,11 @@
             // Calculate areas by zone — all pieces use project thickness
             // cubierta pieces (isCubierta: true) are excluded from sheet area and priced per m2 separately
             // cubrecanto pieces (isCubrecanto: true) are excluded from sheet area and priced per ml separately
+            // bastidor pieces (isBastidor: true) are excluded from sheet area and priced per ml separately (TV panelFondo)
             var areaF = 0, areaI = 0, cantoF = 0, cantoI = 0;
             var cubiertaCost = 0, cubiertaM2 = 0;
             var cubrecantoCost = 0;
+            var bastidorCost = 0;
             pieces.forEach(function(p) {
                 if (p.isCubierta) {
                     // AUDIT: Cubierta priced per m2 from CONFIG.cubiertaPrices; apply mermaFactor
@@ -5692,6 +5821,13 @@
                     var mlRate = HW_DEFAULTS.cubrecanto_ml ? HW_DEFAULTS.cubrecanto_ml.fallback : 15;
                     cubrecantoCost += (p.mlTotal || 0) * mlRate;
                     return; // skip sheet area accumulation for cubrecanto
+                }
+                if (p.isBastidor) {
+                    // AUDIT: Bastidor pino 1x2 — panelFondo TV; priced per linear meter via HW_DEFAULTS.bastidor_ml
+                    // Piece w = length in mm; q = quantity; total ml = (w * q) / 1000
+                    var bastRate = HW_DEFAULTS.bastidor_ml ? HW_DEFAULTS.bastidor_ml.fallback : 25;
+                    bastidorCost += (p.w * p.q / 1000) * bastRate;
+                    return; // skip sheet area accumulation for bastidor
                 }
                 var a = (p.w / 1000) * (p.h / 1000) * p.q;
                 if (useDual && p.z === 'i') areaI += a;
@@ -5820,6 +5956,8 @@
             extraCost += cubiertaCost;
             // Include cubrecanto ml cost (Tablered Arauco PVC edge banding, priced per linear meter)
             extraCost += cubrecantoCost;
+            // Include bastidor ml cost (TV panelFondo pine frame, priced per linear meter)
+            extraCost += bastidorCost;
             var ledBOM = calcLedBOM();
             if (ledBOM)
                 extraCost += ledBOM.totalCost;
@@ -5890,6 +6028,7 @@
                 cubiertaCost: cubiertaCost,
                 cubiertaM2: cubiertaM2,
                 cubrecantoCost: cubrecantoCost,
+                bastidorCost: bastidorCost,
                 cascoCost: matCostI + (useDual ? chapCostI : 0),
                 frenteCost: matCostF + chapCostF,
                 herrajesCost: hwCostCarpBucket + hwCostPremium,
