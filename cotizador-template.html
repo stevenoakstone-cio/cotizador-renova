@@ -4870,6 +4870,33 @@
         }
         var cloudProjects = null; // null=not loaded yet, []=loaded
 
+        // === CONNECTION STATUS INDICATOR ===
+        // Tracks the current cloud connection state to re-apply after DOM rebuilds
+        var _cloudStatus = sb ? 'none' : 'none'; // initial: gray until first fetch
+
+        // Updates the header dot to reflect cloud connection state
+        // status: 'connected' | 'disconnected' | 'none'
+        function updateCloudStatus(status) {
+            _cloudStatus = status;
+            var el = document.getElementById('cloud-status');
+            if (!el) return;
+            if (status === 'connected') {
+                el.style.background = '#4caf50';
+                el.title = 'Conectado a Supabase';
+            } else if (status === 'disconnected') {
+                el.style.background = '#f44336';
+                el.title = 'Error de conexion';
+            } else {
+                el.style.background = '#666';
+                el.title = 'Sin conexion cloud';
+            }
+        }
+
+        // Re-apply stored status after DOM rebuild
+        function applyCloudStatus() {
+            updateCloudStatus(_cloudStatus);
+        }
+
         function loadSavedProjects() {
             // Return cached cloud data if available, else localStorage fallback
             if (cloudProjects !== null) {
@@ -4905,15 +4932,19 @@
 
         // Fetch all projects from Supabase
         function cloudFetchProjects() {
-            if (!sb)
+            if (!sb) {
+                updateCloudStatus('none');
                 return;
+            }
             sb.from('projects').select('*').order('updated_at', {
                 ascending: false
             }).then(function(res) {
                 if (res.error) {
                     console.error('Supabase fetch error:', res.error);
+                    updateCloudStatus('disconnected');
                     return;
                 }
+                updateCloudStatus('connected');
                 cloudProjects = (res.data || []).map(function(row) {
                     var d = row.data || {};
                     return {
@@ -9312,7 +9343,7 @@
 
             // === PAGE 1: QUOTE ===
 
-            // 1. Title bar — full-width black rect with RENOVA
+            // 1. Title bar — full-width black rect with brand name
             doc.setFillColor(black[0], black[1], black[2]);
             doc.rect(margin, y, cw, 14, 'F');
             doc.setFontSize(18);
@@ -11861,7 +11892,7 @@
             var br = BRANDS[S.brand] || BRANDS.primary;
             var isCustom = S.estProject && S.estProject.mode === 'custom';
             var hdrTitle = isCustom ? 'Nuevo Proyecto' : 'Closet Estandarizado';
-            var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" onclick="APP.goHome()" style="background:#1a1a2e;color:#c49a6c;font-size:12px;cursor:pointer">' + br.mono + '</div><div class="hdr-txt"><h1>' + hdrTitle + '</h1><p>' + br.name + '</p></div></div>';
+            var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" onclick="APP.goHome()" style="background:#1a1a2e;color:#c49a6c;font-size:12px;cursor:pointer">' + br.mono + '</div><div class="hdr-txt"><h1>' + hdrTitle + '</h1><p>' + br.name + '</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div>';
             h += '<div class="hdr-actions"><button class="hdr-btn" onclick="APP.openSettings()">' + svg('settings') + '</button></div></div>';
             h += renderEstStepDots();
             h += '<div class="content" id="content">';
@@ -11902,21 +11933,23 @@
             var br = BRANDS[S.brand] || BRANDS.primary;
             if (S.screen === 'estandarizado') {
                 $('app').innerHTML = renderEstandarizado();
+                applyCloudStatus();
                 var el2 = $('content');
                 if (el2)
                     el2.scrollTop = scrollY;
                 return;
             }
             if (S.screen === 'templates') {
-                var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div></div></div>';
+                var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div></div>';
                 h += '<div class="content" id="content">' + renderTemplates() + '</div>';
                 if (S.imgModal)
                     h += '<div class="img-modal" onclick="APP.closeImg()"><button class="img-modal-close" onclick="APP.closeImg()">' + svg('x') + '</button><img src="' + S.imgModal + '" onclick="event.stopPropagation()"></div>';
                 $('app').innerHTML = h;
+                applyCloudStatus();
                 return;
             }
             var c = calc();
-            var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" onclick="APP.goHome()" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div></div>';
+            var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" onclick="APP.goHome()" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div>';
             h += '<div class="hdr-actions"><button class="hdr-btn" onclick="APP.openSettings()">' + svg('settings') + '</button></div></div>';
             h += '<div class="steps">';
             for (var i = 1; i <= 5; i++) {
@@ -11940,6 +11973,7 @@
             h += renderHWPicker();
             h += renderSettings();
             $('app').innerHTML = h;
+            applyCloudStatus();
             var el2 = $('content');
             if (el2)
                 el2.scrollTop = scrollY;
