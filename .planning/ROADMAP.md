@@ -111,7 +111,9 @@ Plans:
   2. User can select Credenza TV and the despiece lists exactly 7 labeled pieces (A–G), 49ml cubrecanto, 8 bisagras, and 4 patas
   3. User can select Mesa de Centro and the despiece shows 2 blocks (KIRA 5 pcs + NERO 4 pcs), 1 pistón 150N, 2 bisagras, and 4 patas
   4. User can select librero, credenza, or mesa_centro as distinct project types with the module picker filtered to only that type
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 06-01-PLAN.md — MODS + TYPES + calculateParts() + assignHardware() + calc() integration for 3 Tablered products
 
 ### Phase 7: Mueble TV
 **Goal**: Users can quote TV unit projects across all four module types with auto despiece and hardware
@@ -171,7 +173,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Cocina Altos + Torres | 2/2 | Complete   | 2026-02-20 |
 | 4. Cocina Extras + UI + Output | 3/3 | Complete | 2026-02-20 |
 | 5. Baños | 1/2 | In Progress|  |
-| 6. Tablered Arauco | 0/TBD | Not started | - |
+| 6. Tablered Arauco | 0/1 | Not started | - |
 | 7. Mueble TV | 0/TBD | Not started | - |
 | 8. Closet Extension + Puertas | 0/TBD | Not started | - |
 | 9. Multi-Tenant SaaS | 0/TBD | Not started | - |
