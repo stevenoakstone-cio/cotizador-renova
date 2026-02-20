@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 ## Current Position
 
 Phase: 5 of 10 (Banos)
-Plan: 1 of 3 in current phase (COMPLETE)
-Status: Phase 5 plan 1 complete — data layer done, ready for UI plan
-Last activity: 2026-02-20 — Plan 05-01 completed: 3 bano MODS entries (bajoLavabo, cajoneraBano, botiquin) with calculateParts despiece and assignHardware wall-mount hardware per INSTRUCTIVO Section 4
+Plan: 2 of 3 in current phase (COMPLETE)
+Status: Phase 5 plan 2 complete — UI wiring done, ready for PDF plan
+Last activity: 2026-02-20 — Plan 05-02 completed: bano added to TYPES, calc() door logic for bano types, MDF-RH validation for all bano modules, cajones selectors for bajoLavabo/cajoneraBano in step2()
 
-Progress: [████████░░] 43%
+Progress: [████████░░] 47%
 
 ## Performance Metrics
 
@@ -92,6 +92,10 @@ Recent decisions affecting current work:
 - saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
 - botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
 - Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
 
 ### Pending Todos
 
@@ -104,5 +108,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 05-01-PLAN.md — Bano data layer: 3 MODS entries + HW_DEFAULTS.soporte_bano + calculateParts + assignHardware for bajoLavabo, cajoneraBano, botiquin.
+Stopped at: Completed 05-02-PLAN.md — Bano UI wiring: TYPES entry, calc() door logic for bano types, MDF-RH validation, cajones selectors in step2().
 Resume file: None

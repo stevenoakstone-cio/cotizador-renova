@@ -56,8 +56,8 @@
 - [x] **BANO-01**: User can add bajo lavabo (MDF RH enforced, cajón with saque en U 220×180mm)
 - [x] **BANO-02**: User can add cajonera baño (MDF RH, 500-600mm height)
 - [x] **BANO-03**: User can add botiquín/espejo (thin depth 100-150mm, wall-mounted)
-- [ ] **BANO-04**: User can select "Baño" as project type with filtered UI
-- [ ] **BANO-05**: Validation shows red warning if non-MDF-RH material selected for baño
+- [x] **BANO-04**: User can select "Baño" as project type with filtered UI
+- [x] **BANO-05**: Validation shows red warning if non-MDF-RH material selected for baño
 
 ### Mueble TV
 
@@ -156,8 +156,8 @@
 | BANO-01 | Phase 5 | Baños | Pending |
 | BANO-02 | Phase 5 | Baños | Pending |
 | BANO-03 | Phase 5 | Baños | Pending |
-| BANO-04 | Phase 5 | Baños | Pending |
-| BANO-05 | Phase 5 | Baños | Pending |
+| BANO-04 | Phase 5 | Baños | Complete |
+| BANO-05 | Phase 5 | Baños | Complete |
 | TABL-01 | Phase 6 | Tablered Arauco | Pending |
 | TABL-02 | Phase 6 | Tablered Arauco | Pending |
 | TABL-03 | Phase 6 | Tablered Arauco | Pending |

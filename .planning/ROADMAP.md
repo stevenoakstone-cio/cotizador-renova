@@ -97,10 +97,10 @@ Plans:
   3. User can add a cajonera baño within the 500-600mm height range with MDF RH material enforced
   4. User can add a botiquín/espejo at 100-150mm depth with wall-mount hardware
   5. Selecting any non-MDF-RH material for any baño module shows a red blocking warning
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans executed
 Plans:
-- [ ] 05-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() + assignHardware() for 3 bano module types
-- [ ] 05-02-PLAN.md — TYPES entry + calc() door logic + MDF-RH validation + cajones selector
+- [x] 05-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() + assignHardware() for 3 bano module types
+- [x] 05-02-PLAN.md — TYPES entry + calc() door logic + MDF-RH validation + cajones selector
 
 ### Phase 6: Tablered Arauco
 **Goal**: Users can generate exact-specification despiece for the three Tablered Arauco catalog products (Librero KIRA, Credenza NERO, Mesa de Centro) with piece labels matching the official catalog
