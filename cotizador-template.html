@@ -4822,6 +4822,105 @@
                 pieces.push({ n: 'Techo/Piso', q: 2, w: w - 2 * TK, h: w2g - 2 * TK,  t: TK, z: 'i' });
                 pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,    t: TK, z: 'i' });
 
+            } else if (moduleType === 'bajoEstandar') {
+                // Cocina: base cabinet with 1-2 puertas (auto by width)
+                // AUDIT: Costados — full casco height x depth (outer structural panels)
+                pieces.push({ n: 'Costado',      q: 2, w: d,           h: h,         t: TK, z: 'i' });
+                // AUDIT: Base — inner width (w - 2*TK = w - 30 at 15mm) x depth
+                pieces.push({ n: 'Base',          q: 1, w: w - 2 * TK,  h: d,         t: TK, z: 'i' });
+                // AUDIT: Techo — same as base (inner width x depth), closes the box on top
+                pieces.push({ n: 'Techo',         q: 1, w: w - 2 * TK,  h: d,         t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height (backs the box); t:3 = 3mm HDF per INSTRUCTIVO
+                pieces.push({ n: 'Fondo',         q: 1, w: w - 2 * TK,  h: h,         t: 3,  z: 'i' });
+                // AUDIT: Amarre frontal superior — inner width x 80mm structural brace at top front
+                pieces.push({ n: 'Amarre sup.',   q: 1, w: w - 2 * TK,  h: 80,        t: TK, z: 'i' });
+                // AUDIT: Amarre frontal inferior — inner width x 80mm structural brace at bottom front
+                pieces.push({ n: 'Amarre inf.',   q: 1, w: w - 2 * TK,  h: 80,        t: TK, z: 'i' });
+                // AUDIT: Entrepa\u00f1o — inner width minus 30mm extra clearance (sits between costados with inset) x (depth - TK for fondo)
+                pieces.push({ n: 'Entrepa\u00f1o', q: 1, w: w - 2 * TK - 30, h: d - TK, t: TK, z: 'i' });
+
+            } else if (moduleType === 'fregadero') {
+                // Cocina: sink module — NO techo (tarja sits on top), 2 amarres only, saque trasero for tuberias
+                // AUDIT: Costados — full casco height x depth
+                pieces.push({ n: 'Costado',          q: 2, w: d,          h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x depth
+                pieces.push({ n: 'Base',              q: 1, w: w - 2 * TK, h: d,  t: TK, z: 'i' });
+                // AUDIT: NO techo — replaced by 2 amarres (tarja occupies the top opening)
+                // AUDIT: Amarre frontal — inner width x 80mm (structural brace where techo would be, front)
+                pieces.push({ n: 'Amarre frontal',   q: 1, w: w - 2 * TK, h: 80, t: TK, z: 'i' });
+                // AUDIT: Amarre trasero — inner width x 80mm (rear structural brace)
+                pieces.push({ n: 'Amarre trasero',   q: 1, w: w - 2 * TK, h: 80, t: TK, z: 'i' });
+                // AUDIT: Fondo HDF with saque notation — inner width x casco height; t:3 = 3mm HDF; saque for plumbing
+                pieces.push({ n: 'Fondo (saque trasero)', q: 1, w: w - 2 * TK, h: h, t: 3, z: 'i' });
+                // NO entrepa\u00f1o — space is free for plumbing
+
+            } else if (moduleType === 'cajonera') {
+                // Cocina: drawer module with 2-4 cajones and Blum Tandem correderas
+                var caj = typeof materials.cajones === 'number' ? materials.cajones : 3;
+                // AUDIT: Costados — full casco height x depth
+                pieces.push({ n: 'Costado',      q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x depth
+                pieces.push({ n: 'Base',          q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Amarre superior — inner width x 80mm (no techo on cajoneras, just structural amarre)
+                pieces.push({ n: 'Amarre sup.',   q: 1, w: w - 2 * TK,  h: 80, t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height; t:3 = 3mm HDF per INSTRUCTIVO
+                pieces.push({ n: 'Fondo',         q: 1, w: w - 2 * TK,  h: h,  t: 3,  z: 'i' });
+                if (caj > 0) {
+                    // AUDIT: ch = usable casco height minus 100mm structure allowance divided evenly by cajones
+                    var ch = Math.floor((h - 100) / caj);
+                    // AUDIT: Frente caj\u00f3n — inner width - 4mm juego x ch - 4mm juego; 4 edges chapa; zone='f' (frente visible)
+                    pieces.push({ n: 'Frente caj\u00f3n',     q: caj,     w: w - 2 * TK - 4,  h: ch - 4,  t: TK, c: 4, z: 'f' });
+                    // AUDIT: Costado caj\u00f3n — (depth - 80mm for Blum Tandem slide mechanism) x (ch - 30mm slide height)
+                    pieces.push({ n: 'Costado caj\u00f3n',    q: caj * 2, w: d - 80,           h: ch - 30, t: TK,       z: 'i' });
+                    // AUDIT: Frente int. caj\u00f3n — (inner width - 26mm for correderas x2 sides) x (ch - 30mm)
+                    pieces.push({ n: 'Frente int. caj\u00f3n', q: caj,   w: w - 2 * TK - 26,  h: ch - 30, t: TK,       z: 'i' });
+                    // AUDIT: Fondo caj\u00f3n HDF — same width as frente int x (depth - 80mm slide stop); t:3 = 3mm HDF
+                    pieces.push({ n: 'Fondo caj\u00f3n',      q: caj,    w: w - 2 * TK - 26,  h: d - 80,  t: 3,        z: 'i' });
+                }
+
+            } else if (moduleType === 'esquineroCiego') {
+                // Cocina: blind corner module (esquinero ciego) or esquinero en L
+                // w = total width of visible face, w2ec = depth into corner (second leg)
+                var w2ec = dimensions.w2 !== undefined ? dimensions.w2 : w;
+                // AUDIT: Costado visible — full depth x casco height (the exposed outer side)
+                pieces.push({ n: 'Costado visible', q: 1, w: d,           h: h,              t: TK, z: 'i' });
+                // AUDIT: Costado ciego — w2ec leg depth x casco height (the blind/corner side)
+                pieces.push({ n: 'Costado ciego',   q: 1, w: w2ec,         h: h,              t: TK, z: 'i' });
+                // AUDIT: Base — full module footprint (w - TK) x (w2ec - TK) — deduct one TK per leg for costado overlap
+                pieces.push({ n: 'Base',             q: 1, w: w - TK,       h: w2ec - TK,      t: TK, z: 'i' });
+                // AUDIT: Techo — same dimensions as base
+                pieces.push({ n: 'Techo',            q: 1, w: w - TK,       h: w2ec - TK,      t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height; t:3 = 3mm HDF per INSTRUCTIVO
+                pieces.push({ n: 'Fondo',            q: 1, w: w - 2 * TK,   h: h,              t: 3,  z: 'i' });
+                // AUDIT: Entrepa\u00f1o — same as base minus clearance (30mm extra inset per side)
+                pieces.push({ n: 'Entrepa\u00f1o',   q: 1, w: w - TK - 30,  h: w2ec - TK - TK, t: TK, z: 'i' });
+
+            } else if (moduleType === 'hornoBase') {
+                // Cocina: oven base module — entrepa\u00f1o at 595mm for oven niche, caj\u00f3n inferior, ventilaci\u00f3n
+                // AUDIT: Costados — full casco height x depth
+                pieces.push({ n: 'Costado',  q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x depth
+                pieces.push({ n: 'Base',     q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Techo — inner width x depth (closes the top of the module)
+                pieces.push({ n: 'Techo',    q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Entrepa\u00f1o horno — at 595mm from top for oven niche (INSTRUCTIVO: 595-598mm nicho); same depth as casco
+                pieces.push({ n: 'Entrepa\u00f1o horno (595mm)', q: 1, w: w - 2 * TK, h: d, t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height; note: needs 100mm ventilaci\u00f3n clearance behind oven; t:3 = 3mm HDF
+                pieces.push({ n: 'Fondo (ventilaci\u00f3n 100mm)', q: 1, w: w - 2 * TK, h: h, t: 3, z: 'i' });
+                // AUDIT: Caj\u00f3n inferior pieces — below the oven niche
+                // Caj\u00f3n height = casco height - 595mm oven niche - TK entrepa\u00f1o - TK base - 10mm clearance
+                var cajH = h - 595 - TK - TK - 10;
+                if (cajH > 50) {
+                    // AUDIT: Frente caj\u00f3n inferior — 150mm standard height per INSTRUCTIVO; 4 chapa edges; zone='f'
+                    pieces.push({ n: 'Frente caj\u00f3n inferior',   q: 1, w: w - 2 * TK - 4, h: 150, t: TK, c: 4, z: 'f' });
+                    // AUDIT: Costado caj\u00f3n — (depth - 80mm Blum slide) x (150mm frente - 30mm slide height = 120mm)
+                    pieces.push({ n: 'Costado caj\u00f3n',           q: 2, w: d - 80,          h: 120, t: TK,       z: 'i' });
+                    // AUDIT: Frente int. caj\u00f3n — (inner width - 26mm for correderas x2) x 120mm
+                    pieces.push({ n: 'Frente int. caj\u00f3n',       q: 1, w: w - 2 * TK - 26, h: 120, t: TK,       z: 'i' });
+                    // AUDIT: Fondo caj\u00f3n HDF — same width as frente int x (depth - 80mm slide stop); t:3 = 3mm HDF
+                    pieces.push({ n: 'Fondo caj\u00f3n',             q: 1, w: w - 2 * TK - 26, h: d - 80, t: 3,     z: 'i' });
+                }
+
             } else if (moduleType === 'puerta') {
                 // Individual door panel with optional marco (frame)
                 // AUDIT: Panel puerta — full w x h; 4 edges chapacanto; zone='f'
