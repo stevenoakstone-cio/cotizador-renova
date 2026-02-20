@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Given module dimensions and material selection, instantly generate a complete, accurate despiece with pricing.
-**Current focus:** Phase 5 — Banos (IN PROGRESS)
+**Current focus:** Phase 6 — Tablered Arauco (IN PROGRESS)
 
 ## Current Position
 
-Phase: 5 of 10 (Banos)
-Plan: 2 of 3 in current phase (COMPLETE)
-Status: Phase 5 plan 2 complete — UI wiring done, ready for PDF plan
-Last activity: 2026-02-20 — Plan 05-02 completed: bano added to TYPES, calc() door logic for bano types, MDF-RH validation for all bano modules, cajones selectors for bajoLavabo/cajoneraBano in step2()
+Phase: 6 of 10 (Tablered Arauco)
+Plan: 1 of 1 in current phase (COMPLETE)
+Status: Phase 6 plan 1 complete — 3 Tablered products (Librero KIRA, Credenza TV NERO, Mesa de Centro) fully implemented
+Last activity: 2026-02-20 — Plan 06-01 completed: TYPES+MODS+calculateParts+assignHardware for all 3 Tablered Arauco catalog products, cubrecanto pricing per ml
 
-Progress: [████████░░] 47%
+Progress: [█████████░] 53%
 
 ## Performance Metrics
 
@@ -96,6 +96,10 @@ Recent decisions affecting current work:
 - MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
 - botiquin excluded from door skip guard — correctly generates puertas via calc() door block
 - Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
 
 ### Pending Todos
 
@@ -108,5 +112,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 05-02-PLAN.md — Bano UI wiring: TYPES entry, calc() door logic for bano types, MDF-RH validation, cajones selectors in step2().
+Stopped at: Completed 06-01-PLAN.md — Tablered Arauco: TYPES+MODS+calculateParts+assignHardware for Librero KIRA, Credenza TV NERO, Mesa de Centro; cubrecanto per-ml pricing; 5 new HW_DEFAULTS keys.
 Resume file: None

@@ -69,10 +69,10 @@
 
 ### Tablered Arauco
 
-- [ ] **TABL-01**: Librero with exact 9-piece despiece KIRA (A-I), 59.2ml cubrecanto, 8 bisagras, 6 regatones
-- [ ] **TABL-02**: Credenza TV with exact 7-piece despiece NERO (A-G), 49ml cubrecanto, 8 bisagras, 4 patas
-- [ ] **TABL-03**: Mesa de Centro with 2-block despiece (KIRA 5 pcs + NERO 4 pcs), 1 pistón 150N, 2 bisagras, 4 patas
-- [ ] **TABL-04**: User can select librero/credenza/mesa_centro as project types with filtered UI
+- [x] **TABL-01**: Librero with exact 9-piece despiece KIRA (A-I), 59.2ml cubrecanto, 8 bisagras, 6 regatones
+- [x] **TABL-02**: Credenza TV with exact 7-piece despiece NERO (A-G), 49ml cubrecanto, 8 bisagras, 4 patas
+- [x] **TABL-03**: Mesa de Centro with 2-block despiece (KIRA 5 pcs + NERO 4 pcs), 1 pistón 150N, 2 bisagras, 4 patas
+- [x] **TABL-04**: User can select librero/credenza/mesa_centro as project types with filtered UI
 
 ### Closet Extension
 
@@ -158,10 +158,10 @@
 | BANO-03 | Phase 5 | Baños | Pending |
 | BANO-04 | Phase 5 | Baños | Complete |
 | BANO-05 | Phase 5 | Baños | Complete |
-| TABL-01 | Phase 6 | Tablered Arauco | Pending |
-| TABL-02 | Phase 6 | Tablered Arauco | Pending |
-| TABL-03 | Phase 6 | Tablered Arauco | Pending |
-| TABL-04 | Phase 6 | Tablered Arauco | Pending |
+| TABL-01 | Phase 6 | Tablered Arauco | Complete |
+| TABL-02 | Phase 6 | Tablered Arauco | Complete |
+| TABL-03 | Phase 6 | Tablered Arauco | Complete |
+| TABL-04 | Phase 6 | Tablered Arauco | Complete |
 | MTV-01 | Phase 7 | Mueble TV | Pending |
 | MTV-02 | Phase 7 | Mueble TV | Pending |
 | MTV-03 | Phase 7 | Mueble TV | Pending |

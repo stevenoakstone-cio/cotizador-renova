@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Cocina Altos + Torres** - Wall cabinets (alacenas) and full-height tower columns (completed 2026-02-20)
 - [x] **Phase 4: Cocina Extras + UI + Output** - Finishing pieces, cocina wizard UI, validations, and PDF
 - [ ] **Phase 5: Baños** - Bathroom module types with MDF RH enforcement and filtered UI
-- [ ] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
+- [x] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
 - [ ] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
 - [ ] **Phase 8: Closet Extension + Puertas** - Missing closet modules and interior door quotation
 - [ ] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen
@@ -113,7 +113,7 @@ Plans:
   4. User can select librero, credenza, or mesa_centro as distinct project types with the module picker filtered to only that type
 **Plans:** 1 plan
 Plans:
-- [ ] 06-01-PLAN.md — MODS + TYPES + calculateParts() + assignHardware() + calc() integration for 3 Tablered products
+- [x] 06-01-PLAN.md — MODS + TYPES + calculateParts() + assignHardware() + calc() integration for 3 Tablered products
 
 ### Phase 7: Mueble TV
 **Goal**: Users can quote TV unit projects across all four module types with auto despiece and hardware
@@ -172,8 +172,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Cocina Bajos | 3/3 | Complete   | 2026-02-20 |
 | 3. Cocina Altos + Torres | 2/2 | Complete   | 2026-02-20 |
 | 4. Cocina Extras + UI + Output | 3/3 | Complete | 2026-02-20 |
-| 5. Baños | 1/2 | In Progress|  |
-| 6. Tablered Arauco | 0/1 | Not started | - |
+| 5. Baños | 2/3 | In Progress|  |
+| 6. Tablered Arauco | 1/1 | Complete | 2026-02-20 |
 | 7. Mueble TV | 0/TBD | Not started | - |
 | 8. Closet Extension + Puertas | 0/TBD | Not started | - |
 | 9. Multi-Tenant SaaS | 0/TBD | Not started | - |
