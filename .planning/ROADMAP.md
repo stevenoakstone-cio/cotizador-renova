@@ -125,7 +125,10 @@ Plans:
   3. User can add a torre lateral TV (300-500mm wide) with an open or glass door option
   4. User can add a repisa flotante choosing between hollow-box construction or hidden bracket, and the despiece reflects the chosen method
   5. User can add a panel de fondo (lambrín) and the despiece includes the hidden bastidor pieces
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [x] 07-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() + assignHardware() for 5 TV module types
+- [x] 07-02-PLAN.md — calc() door logic + step2() variant selectors for all 5 TV module types
 
 ### Phase 8: Closet Extension + Puertas
 **Goal**: Closet module coverage is complete and users can quote interior doors as a standalone project type
@@ -174,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Cocina Extras + UI + Output | 3/3 | Complete | 2026-02-20 |
 | 5. Baños | 2/3 | In Progress|  |
 | 6. Tablered Arauco | 1/1 | Complete | 2026-02-20 |
-| 7. Mueble TV | 0/TBD | Not started | - |
+| 7. Mueble TV | 1/2 | In Progress | 2026-02-20 |
 | 8. Closet Extension + Puertas | 0/TBD | Not started | - |
 | 9. Multi-Tenant SaaS | 0/TBD | Not started | - |
 | 10. Quality + Polish | 0/TBD | Not started | - |

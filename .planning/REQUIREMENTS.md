@@ -61,11 +61,11 @@
 
 ### Mueble TV
 
-- [ ] **MTV-01**: User can add consola con patas and consola flotante
-- [ ] **MTV-02**: User can add torre lateral TV (300-500mm wide, open or glass door)
-- [ ] **MTV-03**: User can add repisa flotante (hollow box or hidden bracket, user chooses method)
-- [ ] **MTV-04**: User can add panel de fondo (lambrín with hidden bastidor)
-- [ ] **MTV-05**: User can select "TV" as project type with filtered UI
+- [x] **MTV-01**: User can add consola con patas and consola flotante
+- [x] **MTV-02**: User can add torre lateral TV (300-500mm wide, open or glass door)
+- [x] **MTV-03**: User can add repisa flotante (hollow box or hidden bracket, user chooses method)
+- [x] **MTV-04**: User can add panel de fondo (lambrín with hidden bastidor)
+- [x] **MTV-05**: User can select "TV" as project type with filtered UI
 
 ### Tablered Arauco
 
@@ -162,11 +162,11 @@
 | TABL-02 | Phase 6 | Tablered Arauco | Complete |
 | TABL-03 | Phase 6 | Tablered Arauco | Complete |
 | TABL-04 | Phase 6 | Tablered Arauco | Complete |
-| MTV-01 | Phase 7 | Mueble TV | Pending |
-| MTV-02 | Phase 7 | Mueble TV | Pending |
-| MTV-03 | Phase 7 | Mueble TV | Pending |
-| MTV-04 | Phase 7 | Mueble TV | Pending |
-| MTV-05 | Phase 7 | Mueble TV | Pending |
+| MTV-01 | Phase 7 | Mueble TV | Complete (07-01) |
+| MTV-02 | Phase 7 | Mueble TV | Complete (07-01) |
+| MTV-03 | Phase 7 | Mueble TV | Complete (07-01) |
+| MTV-04 | Phase 7 | Mueble TV | Complete (07-01) |
+| MTV-05 | Phase 7 | Mueble TV | Complete (07-02) |
 | CLOS-01 | Phase 8 | Closet Extension + Puertas | Pending |
 | CLOS-02 | Phase 8 | Closet Extension + Puertas | Pending |
 | PTED-01 | Phase 8 | Closet Extension + Puertas | Pending |

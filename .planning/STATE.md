@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Given module dimensions and material selection, instantly generate a complete, accurate despiece with pricing.
-**Current focus:** Phase 6 — Tablered Arauco (IN PROGRESS)
+**Current focus:** Phase 7 — Mueble TV (IN PROGRESS)
 
 ## Current Position
 
-Phase: 6 of 10 (Tablered Arauco)
-Plan: 1 of 1 in current phase (COMPLETE)
-Status: Phase 6 plan 1 complete — 3 Tablered products (Librero KIRA, Credenza TV NERO, Mesa de Centro) fully implemented
-Last activity: 2026-02-20 — Plan 06-01 completed: TYPES+MODS+calculateParts+assignHardware for all 3 Tablered Arauco catalog products, cubrecanto pricing per ml
+Phase: 7 of 10 (Mueble TV)
+Plan: 2 of 3 in current phase (COMPLETE)
+Status: Phase 7 plan 2 complete — calc() door logic + step2() UI for all 5 TV module types fully wired; TV quotation flow complete end-to-end
+Last activity: 2026-02-20 — Plan 07-02 completed: calc() door logic for consolaPatas/consolaFlotante/torreLateralTV, noPuertas skip guard, step2() variant selector for repisaFlotante, torreLateralTV noPuertas toggle
 
-Progress: [█████████░] 53%
+Progress: [███████████] 60%
 
 ## Performance Metrics
 
@@ -100,6 +100,15 @@ Recent decisions affecting current work:
 - isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
 - cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
 - Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
 
 ### Pending Todos
 
@@ -112,5 +121,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 06-01-PLAN.md — Tablered Arauco: TYPES+MODS+calculateParts+assignHardware for Librero KIRA, Credenza TV NERO, Mesa de Centro; cubrecanto per-ml pricing; 5 new HW_DEFAULTS keys.
+Stopped at: Completed 07-02-PLAN.md — Mueble TV UI wiring: calc() door logic for consolaPatas/consolaFlotante/torreLateralTV, noPuertas skip guard, step2() variant selector for repisaFlotante, torreLateralTV noPuertas toggle. TV quotation flow complete end-to-end.
 Resume file: None
