@@ -3055,6 +3055,53 @@
             bundledProjects: []
         };
 
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  APP_CONFIG — Multi-tenant runtime configuration layer       ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        var APP_CONFIG_KEY = CONFIG.storage.prefix + 'app_config';
+
+        function loadAppConfig() {
+            try {
+                var raw = localStorage.getItem(APP_CONFIG_KEY);
+                if (!raw) return null;
+                var appConfig = JSON.parse(raw);
+                // Override CONFIG.brand fields
+                if (appConfig.companyName) CONFIG.brand.name = appConfig.companyName;
+                if (appConfig.monogram)    CONFIG.brand.mono = appConfig.monogram;
+                if (appConfig.tagline)     CONFIG.brand.tagline = appConfig.tagline;
+                if (appConfig.legalTerms)  CONFIG.brand.legalTerms = appConfig.legalTerms;
+                // Override CONFIG.contact fields
+                if (appConfig.contactName)   CONFIG.contact.name   = appConfig.contactName;
+                if (appConfig.contactCity)   CONFIG.contact.city   = appConfig.contactCity;
+                if (appConfig.contactOffice) CONFIG.contact.office = appConfig.contactOffice;
+                if (appConfig.contactCell)   CONFIG.contact.cell   = appConfig.contactCell;
+                if (appConfig.contactEmail)  CONFIG.contact.email  = appConfig.contactEmail;
+                // Override CONFIG.supabase fields
+                if (appConfig.supabaseUrl) CONFIG.supabase.url = appConfig.supabaseUrl;
+                if (appConfig.supabaseKey) CONFIG.supabase.key = appConfig.supabaseKey;
+                // If logo was saved in APP_CONFIG, persist it to the standard logo key
+                if (appConfig.logoBase64) {
+                    try { localStorage.setItem(CONFIG.storage.prefix + 'logo_base64', appConfig.logoBase64); } catch(e) {}
+                }
+                return appConfig;
+            } catch(e) { return null; }
+        }
+
+        function saveAppConfig(data) {
+            try {
+                localStorage.setItem(APP_CONFIG_KEY, JSON.stringify(data));
+                loadAppConfig();
+                return true;
+            } catch(e) { return false; }
+        }
+
+        function hasAppConfig() {
+            return !!localStorage.getItem(APP_CONFIG_KEY);
+        }
+
+        // Apply APP_CONFIG overrides immediately (before BRANDS are initialized)
+        loadAppConfig();
+
         // Helper: get bisagra count based on door height (cm) and material type
         function getBisagraCount(heightCm, materialType) {
             var rules = CONFIG.hardware.autoAssignRules.puertas;
@@ -13789,7 +13836,11 @@
                 APP.estInitPdfData();
                 genEstInternalPDF();
                 APP.saveProject(true);
-            }
+            },
+            // APP_CONFIG API — multi-tenant setup
+            hasAppConfig:   function() { return hasAppConfig(); },
+            saveAppConfig:  function(data) { return saveAppConfig(data); },
+            loadAppConfig:  function() { return loadAppConfig(); }
         };
 
         render();
