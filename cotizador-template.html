@@ -3473,6 +3473,12 @@
         if (!HW_DEFAULTS.aventos_hs) HW_DEFAULTS.aventos_hs = { desc: 'Blum Aventos HS', marca: 'DEMO', fallback: 1500, cat: 'AVENTOS' };
         if (!HW_DEFAULTS.soporte_alacena) HW_DEFAULTS.soporte_alacena = { desc: 'Soporte colgante alacena', marca: 'DEMO', fallback: 25, cat: 'ACC. COCINA' };
         if (!HW_DEFAULTS.soporte_bano) HW_DEFAULTS.soporte_bano = { desc: 'Escuadra muro bano flotante', marca: 'DEMO', fallback: 35, cat: 'ACC. BANO' };
+        // Tablered Arauco hardware keys (guarded conditionals — matching Phase 1 pattern)
+        if (!HW_DEFAULTS.regaton) HW_DEFAULTS.regaton = { desc: 'Regaton nivelador tachuela plastica', marca: 'DEMO', fallback: 8, cat: 'ACC. TABLERED' };
+        if (!HW_DEFAULTS.pata_metalica) HW_DEFAULTS.pata_metalica = { desc: 'Pata metalica 10cm', marca: 'DEMO', fallback: 85, cat: 'ACC. TABLERED' };
+        if (!HW_DEFAULTS.piston_150n) HW_DEFAULTS.piston_150n = { desc: 'Piston gas 150N (tapa abatible)', marca: 'DEMO', fallback: 350, cat: 'ACC. TABLERED' };
+        if (!HW_DEFAULTS.pata_niveladora) HW_DEFAULTS.pata_niveladora = { desc: 'Pata niveladora 5cm regulable', marca: 'DEMO', fallback: 25, cat: 'ACC. TABLERED' };
+        if (!HW_DEFAULTS.cubrecanto_ml) HW_DEFAULTS.cubrecanto_ml = { desc: 'Cubrecanto PVC 0.45mm (por ml)', marca: 'DEMO', fallback: 15, cat: 'ACC. TABLERED' };
         /* ── REAL HW_DEFAULTS (uncomment to restore) ──
         var HW_DEFAULTS = {
             corr_eco: { desc: 'Corredera ext total ecoline', marca: 'HERRAXA', fallback: 49.90, cat: 'CORREDERA' },
@@ -5483,6 +5489,23 @@
                 // AUDIT: no patas/zoclo_clip — flotante wall-mounted (INSTRUCTIVO 4.3)
                 hw.push({ key: 'soporte_bano', q: 2 });
 
+            } else if (moduleType === 'librero') {
+                // AUDIT: Tablered Librero KIRA — 8 bisagras (4 puertas x 2), 6 regatones (INSTRUCTIVO S.9)
+                // Bisagras are fixed here (puertas already in calculateParts with isPuerta, not in calc door block)
+                hw.push({ key: 'bisagra', q: 8 });
+                hw.push({ key: 'regaton', q: 6 });
+
+            } else if (moduleType === 'credenzaTV') {
+                // AUDIT: Tablered Credenza TV NERO — 8 bisagras (4 puertas x 2), 4 patas metalicas 10cm (INSTRUCTIVO S.8)
+                hw.push({ key: 'bisagra', q: 8 });
+                hw.push({ key: 'pata_metalica', q: 4 });
+
+            } else if (moduleType === 'mesaCentro') {
+                // AUDIT: Tablered Mesa Centro — 2 bisagras (tapa abatible), 1 piston 150N, 4 patas 5cm (INSTRUCTIVO S.10)
+                hw.push({ key: 'bisagra', q: 2 });
+                hw.push({ key: 'piston_150n', q: 1 });
+                hw.push({ key: 'pata_niveladora', q: 4 });
+
             }
             // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
             // alacenaAlta, gabineteBase, despensa, espacioCampana, esquineroGiratorio):
@@ -5550,10 +5573,11 @@
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
                     // Skip door generation for module types that have no doors (drawers/oven use their own frentes)
-                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano') {
+                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'librero' || m.type === 'credenzaTV' || m.type === 'mesaCentro') {
                         // cajonera: frentes are in calculateParts(); hornoBase: oven has its own door
                         // torreHornos: oven has its own door, caj\u00f3n frente in calculateParts()
                         // zoclo/vistaLateral/panelRelleno/cubierta: extras have no puertas
+                        // librero/credenzaTV/mesaCentro: puertas already in calculateParts (isPuerta flag); bisagras in assignHardware()
                         // Do nothing — skip door generation
                     } else {
                     var doorCnt;
@@ -5648,8 +5672,10 @@
 
             // Calculate areas by zone — all pieces use project thickness
             // cubierta pieces (isCubierta: true) are excluded from sheet area and priced per m2 separately
+            // cubrecanto pieces (isCubrecanto: true) are excluded from sheet area and priced per ml separately
             var areaF = 0, areaI = 0, cantoF = 0, cantoI = 0;
             var cubiertaCost = 0, cubiertaM2 = 0;
+            var cubrecantoCost = 0;
             pieces.forEach(function(p) {
                 if (p.isCubierta) {
                     // AUDIT: Cubierta priced per m2 from CONFIG.cubiertaPrices; apply mermaFactor
@@ -5659,6 +5685,13 @@
                     var cubPriceM2 = CONFIG.pricing.cubiertaPrices[cubType] || CONFIG.pricing.cubiertaPrices.postformado;
                     cubiertaCost += cubArea * CONFIG.pricing.mermaFactor * cubPriceM2;
                     return; // skip sheet area accumulation for cubierta
+                }
+                if (p.isCubrecanto) {
+                    // AUDIT: Cubrecanto PVC 0.45mm — Tablered Arauco products use fixed ml totals from INSTRUCTIVO
+                    // Priced per linear meter (not sheet area); cost rate from HW_DEFAULTS.cubrecanto_ml
+                    var mlRate = HW_DEFAULTS.cubrecanto_ml ? HW_DEFAULTS.cubrecanto_ml.fallback : 15;
+                    cubrecantoCost += (p.mlTotal || 0) * mlRate;
+                    return; // skip sheet area accumulation for cubrecanto
                 }
                 var a = (p.w / 1000) * (p.h / 1000) * p.q;
                 if (useDual && p.z === 'i') areaI += a;
@@ -5785,6 +5818,8 @@
             var extraCost = 0;
             // Include cubierta m2 cost in extras bucket
             extraCost += cubiertaCost;
+            // Include cubrecanto ml cost (Tablered Arauco PVC edge banding, priced per linear meter)
+            extraCost += cubrecantoCost;
             var ledBOM = calcLedBOM();
             if (ledBOM)
                 extraCost += ledBOM.totalCost;
@@ -5854,6 +5889,7 @@
                 extraCost: extraCost,
                 cubiertaCost: cubiertaCost,
                 cubiertaM2: cubiertaM2,
+                cubrecantoCost: cubrecantoCost,
                 cascoCost: matCostI + (useDual ? chapCostI : 0),
                 frenteCost: matCostF + chapCostF,
                 herrajesCost: hwCostCarpBucket + hwCostPremium,
