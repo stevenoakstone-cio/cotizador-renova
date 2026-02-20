@@ -97,7 +97,7 @@ Plans:
   3. User can add a cajonera baño within the 500-600mm height range with MDF RH material enforced
   4. User can add a botiquín/espejo at 100-150mm depth with wall-mount hardware
   5. Selecting any non-MDF-RH material for any baño module shows a red blocking warning
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 05-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() + assignHardware() for 3 bano module types
 - [ ] 05-02-PLAN.md — TYPES entry + calc() door logic + MDF-RH validation + cajones selector
@@ -170,7 +170,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Cocina Bajos | 3/3 | Complete   | 2026-02-20 |
 | 3. Cocina Altos + Torres | 2/2 | Complete   | 2026-02-20 |
 | 4. Cocina Extras + UI + Output | 3/3 | Complete | 2026-02-20 |
-| 5. Baños | 0/2 | Planning | - |
+| 5. Baños | 1/2 | In Progress|  |
 | 6. Tablered Arauco | 0/TBD | Not started | - |
 | 7. Mueble TV | 0/TBD | Not started | - |
 | 8. Closet Extension + Puertas | 0/TBD | Not started | - |
