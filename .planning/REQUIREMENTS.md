@@ -96,9 +96,9 @@
 ### Quality
 
 - [ ] **QUAL-01**: End-to-end manual test of cocina quotation (despiece, herrajes, PDF, Supabase save)
-- [ ] **QUAL-02**: Cocina PDF with cover page, module index, despiece per module, material/hardware summaries
-- [ ] **QUAL-03**: Tooltips on module types showing standard dimensions and description
-- [ ] **QUAL-04**: Sheet optimization calculator (pieces → number of 1220×2440mm sheets needed)
+- [x] **QUAL-02**: Cocina PDF with cover page, module index, despiece per module, material/hardware summaries
+- [x] **QUAL-03**: Tooltips on module types showing standard dimensions and description
+- [x] **QUAL-04**: Sheet optimization calculator (pieces → number of 1220×2440mm sheets needed)
 
 ## v2 Requirements
 

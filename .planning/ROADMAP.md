@@ -169,7 +169,7 @@ Plans:
   2. The cocina PDF has a cover page, module index, per-module despiece, and material + hardware summary sections
   3. Hovering over any module type button shows a tooltip with standard dimensions and a description
   4. The sheet optimizer calculates the number of 1220×2440mm sheets needed from the full despiece piece list
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 Plans:
 - [ ] 10-01-PLAN.md — Module type tooltips + sheet optimization calculator
 - [ ] 10-02-PLAN.md — Cocina PDF cover page (client + internal)
@@ -191,4 +191,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Mueble TV | 2/2 | Complete | 2026-02-20 |
 | 8. Closet Extension + Puertas | 2/2 | Complete   | 2026-02-20 |
 | 9. Multi-Tenant SaaS | 3/3 | Complete   | 2026-02-20 |
-| 10. Quality + Polish | 0/3 | Not started | - |
+| 10. Quality + Polish | 2/3 | In Progress|  |

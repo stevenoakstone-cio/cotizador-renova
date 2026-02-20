@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Given module dimensions and material selection, instantly generate a complete, accurate despiece with pricing.
-**Current focus:** Phase 9 (next phase after Phase 8 complete)
+**Current focus:** Phase 10 (Quality Polish)
 
 ## Current Position
 
-Phase: 9 of 10 (Multi-Tenant SaaS)
-Plan: 3 of 3 in current phase
-Status: Phase 9 plan 03 complete — License key validation, lock screen, and license info screen deployed
-Last activity: 2026-02-20 — Plan 09-03 completed: validateLicense/showLockScreen/generateLicenseKey/showLicenseInfo functions, licenseKey setup field, header license buttons, boot gate
+Phase: 10 of 10 (Quality Polish)
+Plan: 1 of 1 in current phase
+Status: Phase 10 plan 01 complete — Module tooltips and sheet optimization calculator deployed
+Last activity: 2026-02-20 — Plan 10-01 completed: native title tooltips on step2() add-btn buttons, calcSheets() function, Laminas Necesarias display in step3()
 
-Progress: [██████████████] 75%
+Progress: [████████████████] 100%
 
 ## Performance Metrics
 
@@ -39,12 +39,4238 @@ Progress: [██████████████] 75%
 | Phase 08-closet-extension-puertas P02 | 15 | 2 tasks | 1 files |
 | Phase 09-multi-tenant-saas P02 | 5 | 1 tasks | 1 files |
 | Phase 09-multi-tenant-saas P03 | 2 | 2 tasks | 1 files |
+| Phase 10-quality-polish P02 | 10 | 2 tasks | 1 files |
+| Phase 10-quality-polish P01 | 3 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- Architecture: Single HTML monolith — keep all code in one file, no build step
+- Hardware pricing: Threshold-based ($500 split) — items at/below go into carpentry bucket (3x), above get premium margin (30%)
+- Block execution order: Cocinas first (Phase 2-4) because it is the product for the first sale
+- Generic functions (FOUND-01, FOUND-02): Build these in Phase 1 before any new module type to avoid duplication
+- calculateParts() return pattern changed: now returns plain pieces[] only (hwHints pattern retired in Plan 01-02)
+- assignHardware() handles all module-specific hardware; puerta bisagra/base_clip now in assignHardware() (not calc())
+- AUDIT comments: every dimension formula subtraction constant documented inline with // AUDIT: prefix
+- esquinero gets tubo + soporte (same as colgador) — corner module has a hanging bar per plan spec
+- Cocina bajo casco: h=720mm, d=580mm standard; inner width = w - 2*TK (at 15mm = w-30)
+- fregadero omits techo and entrepaño entirely — 2 amarres (frontal+trasero 80mm) for structural rigidity + plumbing space
+- Blum Tandem corredera dimensions: -80mm depth, -26mm width (13mm per side for clip system)
+- esquineroCiego Base/Techo footprint: (w-TK) x (w2-TK) to account for costado on each leg
+- hornoBase entrepaño at 595mm from top per INSTRUCTIVO; cajH guard >50mm prevents degenerate cajón
+- HW_DEFAULTS new keys: guarded conditionals (if !HW_DEFAULTS.key) matching Phase 1 pattern
+- assignHardware() bajo types: pata x4 + zoclo_clip x4 for all bajos; corr_tandem for cajonera (per cajón) + hornoBase (x1)
+- calc() door guard: cajonera + hornoBase skip door block entirely (no puertas)
+- calc() bajoEstandar: 1 puerta if m.width<=50cm, 2 if >50cm per INSTRUCTIVO 3.3
+- calc() fregadero: always doorCnt=2 regardless of width
+- calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
+- Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
+- Phase 3 plans 03-01 + 03-02 complete (03-03 is PDF/output for phase 3, may be phase 4 scope)
+- forType filter pattern: MODS entries use forType array + cat for step2() filtering + grouping
+- cubierta pricing: isCubierta flag on piece + cubiertaType from module; m2-based pricing separate from sheet area
+- Extras modules (zoclo/vistaLateral/panelRelleno/cubierta): no hardware, no door toggles, no quoteMode
+- zoclo auto-width: addMod('zoclo') sums all bajo module widths to pre-populate width field
+- [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Architecture: Single HTML monolith — keep all code in one file, no build step
@@ -9467,6 +13693,5206 @@ Recent decisions affecting current work:
 - [Phase 09-multi-tenant-saas]: PDF branding confirmed dynamic via br.name from BRANDS (already overridden by APP_CONFIG at boot) — no hardcoded strings
 - [Phase 09-multi-tenant-saas]: License key is base64(JSON{client,exp,hash}) with simpleHash deterrent — not crypto-grade, acceptable for single-file distribution model
 - [Phase 09-multi-tenant-saas]: Boot order: setup check (hasAppConfig) before license check (validateLicense) — tenant always configured before license validated
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+- [Phase 09-multi-tenant-saas]: PDF branding confirmed dynamic via br.name from BRANDS (already overridden by APP_CONFIG at boot) — no hardcoded strings
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+- [Phase 09-multi-tenant-saas]: PDF branding confirmed dynamic via br.name from BRANDS (already overridden by APP_CONFIG at boot) — no hardcoded strings
+- [Phase 09-multi-tenant-saas]: License key is base64(JSON{client,exp,hash}) with simpleHash deterrent — not crypto-grade, acceptable for single-file distribution model
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+- [Phase 09-multi-tenant-saas]: PDF branding confirmed dynamic via br.name from BRANDS (already overridden by APP_CONFIG at boot) — no hardcoded strings
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+5 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
+- togModProp reused for ventilacion toggle on horno modules (already existed from puerta marco toggle)
+- cubiertaM2 tracks raw area before mermaFactor for display; mermaFactor applied only to cost calculation
+- cascoCost = matCostI + chapCostI (when useDual) in calc() return; frenteCost = matCostF + chapCostF
+- Subtotales por Categoria card conditional on P.type === 'cocina' only; closet/tv unaffected
+- PDF pieces use p.q field (not p.qty) — plan spec had wrong field name, corrected during implementation
+- genClientPDF() cocina sections: module index, despiece, hardware summary, extras (conditional), technical note
+- genInternalPDF() cocina sections: module index with cost/margin columns, hardware detail with Carpinteria/Premium bucket, category cost summary
+- Phase 4 complete: all 3 plans executed (04-01, 04-02, 04-03)
+- Bano modules are all flotante (wall-mounted): no patas, no zoclo_clip for any bano type
+- bajoLavabo cajH formula: (h-2*TK)/2 for 2-cajón, (h-TK) for 1-cajón (techo amarre difference)
+- saqueU:true flag on bajoLavabo top cajon frente interno piece documents cespol notch (not separate piece)
+- botiquin bisagras delegated to calc() door block (same as alacenaEstandar) — assignHardware only handles non-door hardware
+- Phase 5 plan 05-01 complete: bajoLavabo/cajoneraBano/botiquin MODS + calculateParts + assignHardware + HW_DEFAULTS.soporte_bano
+- cajones selector uses APP.setModC (not setModShelves) — plan spec had wrong function; setModC sets m.cajones which flows to calculateParts via materials.cajones
+- MDF-RH condition extended to all wet-zone types: fregadero || bajoLavabo || cajoneraBano || botiquin (single DRY check)
+- botiquin excluded from door skip guard — correctly generates puertas via calc() door block
+- Phase 5 plan 05-02 complete: bano TYPES entry, calc() door logic, MDF-RH validation, cajones selectors
+- Tablered bisagras in assignHardware (not calc door block) — puertas are fixed pieces in calculateParts for Tablered types
+- isCubrecanto pattern: Tablered cubrecanto pieces excluded from sheet area, priced per ml via HW_DEFAULTS.cubrecanto_ml
+- cubrecantoCost: added to extraCost bucket (parallel to cubiertaCost), returned in calc() result object
+- Phase 6 plan 06-01 complete: 3 Tablered Arauco products (librero, credenzaTV, mesaCentro) — TYPES, MODS, calculateParts, assignHardware, calc() integration, 5 new HW_DEFAULTS keys
+- Phase 7 plan 07-01 complete: 5 TV module types (consolaPatas, consolaFlotante, torreLateralTV, repisaFlotante, panelFondo) — MODS, calculateParts, assignHardware, 3 HW_DEFAULTS keys, isBastidor pricing pattern
+- consolaPatas/consolaFlotante: identical casco despiece, mounting differs (patas vs soporte_flotante)
+- repisaFlotante variant='herraje' forces min 38mm thickness for espigon insertion
+- isBastidor pattern: pine bastidor pieces for panelFondo priced per ml in calc() extraCost (parallel to isCubrecanto)
+- m.variant prop flow: passed from calc() to calculateParts() and assignHardware() for variant-driven TV modules
+- Phase 7 plan 07-02 complete: calc() door logic + step2() UI wiring for all 5 TV module types; TV quotation flow complete
+- TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
+- torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
+- repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
+- [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
+- [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
+- [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
+- [Phase 09-multi-tenant-saas]: Connection status dot persists via _cloudStatus variable; applyCloudStatus() called after every DOM rebuild
+- [Phase 09-multi-tenant-saas]: PDF branding confirmed dynamic via br.name from BRANDS (already overridden by APP_CONFIG at boot) — no hardcoded strings
+- [Phase 09-multi-tenant-saas]: License key is base64(JSON{client,exp,hash}) with simpleHash deterrent — not crypto-grade, acceptable for single-file distribution model
+- [Phase 09-multi-tenant-saas]: Boot order: setup check (hasAppConfig) before license check (validateLicense) — tenant always configured before license validated
+- [Phase 10-quality-polish]: Cover page inserted in genClientPDF() before PAGE 1: QUOTE block; dark theme for client PDF, simple white for internal PDF
 
 ### Pending Todos
 
