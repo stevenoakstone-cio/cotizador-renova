@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
 - [x] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
 - [x] **Phase 8: Closet Extension + Puertas** - Missing closet modules and interior door quotation (completed 2026-02-20)
-- [x] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen (completed 2026-02-20)
+- [x] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen (completed 2026-02-20)
 - [ ] **Phase 10: Quality + Polish** - End-to-end cocina test, professional PDF, tooltips, sheet optimizer
 
 ## Phase Details
@@ -169,7 +169,11 @@ Plans:
   2. The cocina PDF has a cover page, module index, per-module despiece, and material + hardware summary sections
   3. Hovering over any module type button shows a tooltip with standard dimensions and a description
   4. The sheet optimizer calculates the number of 1220×2440mm sheets needed from the full despiece piece list
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 10-01-PLAN.md — Module type tooltips + sheet optimization calculator
+- [ ] 10-02-PLAN.md — Cocina PDF cover page (client + internal)
+- [ ] 10-03-PLAN.md — End-to-end cocina verification and bug fix pass
 
 ## Progress
 
@@ -187,4 +191,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Mueble TV | 2/2 | Complete | 2026-02-20 |
 | 8. Closet Extension + Puertas | 2/2 | Complete   | 2026-02-20 |
 | 9. Multi-Tenant SaaS | 3/3 | Complete   | 2026-02-20 |
-| 10. Quality + Polish | 0/TBD | Not started | - |
+| 10. Quality + Polish | 0/3 | Not started | - |
