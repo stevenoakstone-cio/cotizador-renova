@@ -87,7 +87,7 @@
 
 ### Multi-Tenant
 
-- [ ] **MTNT-01**: First-run config screen (Supabase URL, anon key, company name, logo upload)
+- [x] **MTNT-01**: First-run config screen (Supabase URL, anon key, company name, logo upload)
 - [ ] **MTNT-02**: PDF uses company name and logo from APP_CONFIG instead of hardcoded Renova
 - [ ] **MTNT-03**: Connection status indicator in header (green=cloud, red=offline)
 - [ ] **MTNT-04**: License screen with version, client name, expiration date, support contact
@@ -172,7 +172,7 @@
 | PTED-01 | Phase 8 | Closet Extension + Puertas | Pending |
 | PTED-02 | Phase 8 | Closet Extension + Puertas | Pending |
 | PTED-03 | Phase 8 | Closet Extension + Puertas | Pending |
-| MTNT-01 | Phase 9 | Multi-Tenant SaaS | Pending |
+| MTNT-01 | Phase 9 | Multi-Tenant SaaS | Complete |
 | MTNT-02 | Phase 9 | Multi-Tenant SaaS | Pending |
 | MTNT-03 | Phase 9 | Multi-Tenant SaaS | Pending |
 | MTNT-04 | Phase 9 | Multi-Tenant SaaS | Pending |

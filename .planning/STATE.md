@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 
 ## Current Position
 
-Phase: 8 of 10 (Closet Extension + Puertas)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: Phase 8 complete — all 2 plans executed; puerta interior rewritten as bastidor sandwich with relleno-driven bisagra libro count and step2() relleno selector
-Last activity: 2026-02-20 — Plan 08-02 completed: puerta calculateParts rewrite (bastidor sandwich), assignHardware (relleno bisagra_libro), HW_DEFAULTS keys, step2() relleno selector + marco toggle update
+Phase: 9 of 10 (Multi-Tenant SaaS)
+Plan: 1 of 2 in current phase
+Status: Phase 9 plan 01 complete — APP_CONFIG localStorage layer + first-run setup screen deployed
+Last activity: 2026-02-20 — Plan 09-01 completed: loadAppConfig/saveAppConfig/hasAppConfig functions, CONFIG.brand/contact/supabase override at boot, showSetupScreen() full-screen wizard, boot guard
 
-Progress: [█████████████] 70%
+Progress: [██████████████] 75%
 
 ## Performance Metrics
 
@@ -625,6 +625,11 @@ Recent decisions affecting current work:
 - [Phase 08-closet-extension-puertas]: bisagra_libro replaces bisagra + base_clip for puerta — libro/mariposa hinge type, no base_clip needed
 - [Phase 08-closet-extension-puertas]: Puerta marco toggle default: m.marco !== false — marco ON by default (undefined != false), user must explicitly toggle off
 - [Phase 08-closet-extension-puertas]: Puerta isBastidor pattern: larguero/travesano pieces reuse Phase 7 bastidorCost accumulator — no new pricing code needed
+- [Phase 09-multi-tenant-saas]: APP_CONFIG key = CONFIG.storage.prefix + 'app_config' = 'cot_app_config' (consistent with storage prefix pattern)
+- [Phase 09-multi-tenant-saas]: loadAppConfig() called before BRANDS initialization — CONFIG is fully patched before any derived objects computed
+- [Phase 09-multi-tenant-saas]: Logo stored in APP_CONFIG.logoBase64 AND re-written to cot_logo_base64 so existing S.logoBase64 pickup works unchanged
+- [Phase 09-multi-tenant-saas]: Boot guard uses return inside IIFE to skip render()/PWA setup; setup screen triggers location.reload() for clean boot
+- [Phase 09-multi-tenant-saas]: APP.hasAppConfig, APP.saveAppConfig, APP.loadAppConfig exposed on APP object for future settings UI
 
 ### Pending Todos
 
@@ -637,5 +642,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 08-02-PLAN.md — Puerta interior rewrite: bastidor sandwich despiece (largueros + travesanos + tapas MDF + marco chambrana), relleno-driven bisagra_libro count in assignHardware, step2() relleno selector with bisagra hint, marco toggle updated to 'Con marco chambrana'.
+Stopped at: Completed 09-01-PLAN.md — APP_CONFIG localStorage layer: loadAppConfig/saveAppConfig/hasAppConfig functions, CONFIG.brand/contact/supabase override at boot, showSetupScreen() full-screen setup wizard, boot guard blocks main app until setup complete.
 Resume file: None

@@ -156,7 +156,7 @@ Plans:
   5. An invalid or expired licenseKey shows a lock screen preventing app use
 **Plans:** 3 plans
 Plans:
-- [ ] 09-01-PLAN.md — APP_CONFIG localStorage layer + first-run setup screen
+- [x] 09-01-PLAN.md — APP_CONFIG localStorage layer + first-run setup screen
 - [ ] 09-02-PLAN.md — PDF branding via APP_CONFIG + connection status indicator
 - [ ] 09-03-PLAN.md — License key validation + lock screen + license info screen
 
