@@ -3075,6 +3075,7 @@
         // ║  CONFIG — Edit this section to customize for your business  ║
         // ╚══════════════════════════════════════════════════════════════╝
         var CONFIG = {
+            version: '1.0',
             brand: {
                 name: 'Renova',
                 mono: 'RN',
@@ -3225,6 +3226,106 @@
             return !!localStorage.getItem(APP_CONFIG_KEY);
         }
 
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  LICENSE VALIDATION                                          ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        var LICENSE_SALT = 'renova-cotizador-2024';
+
+        function simpleHash(str) {
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                var chr = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + chr;
+                hash |= 0;
+            }
+            return hash.toString(36);
+        }
+
+        function validateLicense() {
+            var appCfgRaw = localStorage.getItem(APP_CONFIG_KEY);
+            if (!appCfgRaw) return { valid: false, reason: 'no_key' };
+            var appCfg;
+            try { appCfg = JSON.parse(appCfgRaw); } catch(e) { return { valid: false, reason: 'no_key' }; }
+            var licenseKey = appCfg.licenseKey;
+            if (!licenseKey) return { valid: false, reason: 'no_key' };
+            try {
+                var decoded = JSON.parse(atob(licenseKey));
+                var expectedHash = simpleHash(decoded.client + decoded.exp + LICENSE_SALT);
+                if (decoded.hash !== expectedHash) return { valid: false, reason: 'invalid' };
+                if (new Date(decoded.exp) < new Date()) {
+                    return { valid: false, reason: 'expired', client: decoded.client, exp: decoded.exp };
+                }
+                return { valid: true, client: decoded.client, exp: decoded.exp };
+            } catch(e) {
+                return { valid: false, reason: 'invalid' };
+            }
+        }
+
+        function generateLicenseKey(client, expDate) {
+            var hash = simpleHash(client + expDate + LICENSE_SALT);
+            var payload = { client: client, exp: expDate, hash: hash };
+            return btoa(JSON.stringify(payload));
+        }
+
+        function showLockScreen(reason, details) {
+            var existing = document.getElementById('license-lock');
+            if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+            var messages = {
+                no_key: 'Licencia No Configurada &mdash; Ingrese su clave de licencia para utilizar el cotizador.',
+                invalid: 'Licencia Invalida &mdash; La clave de licencia no es valida. Contacte soporte.',
+                expired: 'Licencia Expirada &mdash; Su licencia expiro el ' + (details && details.exp ? details.exp : '') + '. Contacte soporte para renovar.'
+            };
+            var msg = messages[reason] || messages.invalid;
+            var supportEmail = (CONFIG.contact && CONFIG.contact.email) ? CONFIG.contact.email : 'soporte@renova.mx';
+
+            var overlay = document.createElement('div');
+            overlay.id = 'license-lock';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#0d0d0d;z-index:10001;display:flex;align-items:center;justify-content:center;font-family:sans-serif;';
+            overlay.innerHTML = [
+                '<div style="max-width:420px;width:90%;text-align:center;padding:40px 32px;background:#141414;border-radius:16px;border:1px solid #2a2a2a;">',
+                '  <div style="font-size:56px;margin-bottom:16px;">&#x1F512;</div>',
+                '  <h2 style="color:#c49a6c;font-size:20px;margin:0 0 12px;font-weight:600;">Acceso Bloqueado</h2>',
+                '  <p style="color:#aaa;font-size:14px;line-height:1.5;margin:0 0 24px;">' + msg + '</p>',
+                '  <div style="margin-bottom:12px;">',
+                '    <input id="lic-key-input" type="text" placeholder="Ingrese clave de licencia" style="width:100%;box-sizing:border-box;padding:10px 12px;background:#1e1e1e;border:1px solid #333;border-radius:8px;color:#fff;font-size:13px;outline:none;">',
+                '  </div>',
+                '  <button id="lic-validate-btn" style="width:100%;padding:12px;background:#c49a6c;color:#1a1a2e;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:20px;">Validar</button>',
+                '  <p style="color:#555;font-size:12px;margin:0;">Soporte: <a href="mailto:' + supportEmail + '" style="color:#c49a6c;text-decoration:none;">' + supportEmail + '</a></p>',
+                '</div>'
+            ].join('\n');
+
+            document.body.appendChild(overlay);
+
+            var btn = document.getElementById('lic-validate-btn');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    var keyInput = document.getElementById('lic-key-input');
+                    var newKey = keyInput ? keyInput.value.trim() : '';
+                    if (!newKey) return;
+
+                    var appCfgRaw = localStorage.getItem(APP_CONFIG_KEY);
+                    var appCfg = {};
+                    try { appCfg = JSON.parse(appCfgRaw) || {}; } catch(e) {}
+                    appCfg.licenseKey = newKey;
+                    saveAppConfig(appCfg);
+
+                    var result = validateLicense();
+                    if (result.valid) {
+                        if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                        window.location.reload();
+                    } else {
+                        var inputEl = document.getElementById('lic-key-input');
+                        if (inputEl) {
+                            inputEl.style.borderColor = '#f44336';
+                            inputEl.placeholder = 'Clave invalida. Intente nuevamente.';
+                            inputEl.value = '';
+                        }
+                    }
+                });
+            }
+        }
+
         function showSetupScreen() {
             var overlay = document.createElement('div');
             overlay.className = 'setup-overlay';
@@ -3252,6 +3353,13 @@
                 '    <label class="setup-file-label" for="su-logo-input">Seleccionar imagen</label>',
                 '    <input type="file" id="su-logo-input" class="setup-file-input" accept="image/*">',
                 '    <img id="su-logo-preview" class="setup-logo-preview" alt="Logo preview">',
+                '  </div>',
+
+                '  <div class="setup-divider">Licencia</div>',
+                '  <div class="setup-field">',
+                '    <label>Clave de Licencia (opcional)</label>',
+                '    <input type="text" id="su-lickey" placeholder="Pegue su clave de licencia aqui">',
+                '    <div class="setup-hint">Puede ingresar o actualizar la clave de licencia despues</div>',
                 '  </div>',
 
                 '  <div class="setup-divider">Conexion Cloud (Supabase)</div>',
@@ -3341,6 +3449,7 @@
                         companyName:   company,
                         monogram:      mono,
                         tagline:       (document.getElementById('su-tagline')  || {}).value || '',
+                        licenseKey:    (document.getElementById('su-lickey')   || {}).value || '',
                         supabaseUrl:   (document.getElementById('su-sburl')    || {}).value || '',
                         supabaseKey:   (document.getElementById('su-sbkey')    || {}).value || '',
                         contactName:   (document.getElementById('su-cname')    || {}).value || '',
@@ -14138,15 +14247,25 @@
                 APP.saveProject(true);
             },
             // APP_CONFIG API — multi-tenant setup
-            hasAppConfig:   function() { return hasAppConfig(); },
-            saveAppConfig:  function(data) { return saveAppConfig(data); },
-            loadAppConfig:  function() { return loadAppConfig(); }
+            hasAppConfig:      function() { return hasAppConfig(); },
+            saveAppConfig:     function(data) { return saveAppConfig(data); },
+            loadAppConfig:     function() { return loadAppConfig(); },
+            // License API
+            generateLicenseKey: function(client, expDate) { return generateLicenseKey(client, expDate); },
+            validateLicense:    function() { return validateLicense(); }
         };
 
         // First-run check: show setup screen if no APP_CONFIG exists yet
         if (!hasAppConfig()) {
             showSetupScreen();
             return; // Do not render main app until setup is complete
+        }
+
+        // License check: validate license key before rendering main app
+        var licResult = validateLicense();
+        if (!licResult.valid) {
+            showLockScreen(licResult.reason, licResult);
+            return; // Do not render main app until license is valid
         }
 
         render();
