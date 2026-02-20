@@ -7899,6 +7899,22 @@
                             h += '<div style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#facc15">\u26a0 Horno sin ventilacion trasera \u2014 riesgo de sobrecalentamiento</div>';
                         }
                     }
+                    // TV: repisaFlotante variant selector (hueca vs herraje)
+                    if (m.type === 'repisaFlotante') {
+                        var repVariant = m.variant || 'hueca';
+                        h += '<div class="module-row"><span>Tipo de Repisa:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [['hueca', 'Caja hueca'], ['herraje', 'Herraje oculto']].forEach(function(opt) {
+                            h += '<button class="opt-btn' + (repVariant === opt[0] ? ' sel' : '') + '" onclick="APP.setModProp(\'' + m.id + '\',\'variant\',\'' + opt[0] + '\')">' + opt[1] + '</button>';
+                        });
+                        h += '</div></div>';
+                        if (repVariant === 'herraje') {
+                            h += '<div style="background:rgba(196,154,108,0.1);border:1px solid rgba(196,154,108,0.3);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#c49a6c">Minimo 38mm de grosor para herraje oculto (espigon de metal)</div>';
+                        }
+                    }
+                    // TV: torreLateralTV open/closed toggle (noPuertas = open nicho)
+                    if (m.type === 'torreLateralTV') {
+                        h += '<div class="module-row"><span>Configuracion:</span><button class="opt-btn' + (m.noPuertas ? ' sel' : '') + '" onclick="APP.togModProp(\'' + m.id + '\',\'noPuertas\')">' + svg(m.noPuertas ? 'check' : 'plus') + ' Sin puerta (nichos abiertos)</button></div>';
+                    }
                     if (m.type === 'fregadero' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'botiquin') {
                         var matI = P.matInterior || {};
                         var matF = P.matFrentes || {};
