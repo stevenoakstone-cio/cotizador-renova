@@ -3223,6 +3223,32 @@
                 w: [90],
                 d: 'Esquinero con charola giratoria'
             },
+            // Cocina Bajos — Prof: 58cm, Alto casco: 72cm, Alto total: 85-90cm con patas y cubierta
+            bajoEstandar: {
+                n: 'Bajo Estandar',
+                w: [30, 40, 45, 50, 60, 75, 80, 90, 100],
+                d: 'Gabinete base 1-2 puertas | Prof: 58cm, Alto: 72cm'
+            },
+            fregadero: {
+                n: 'Fregadero',
+                w: [60, 75, 80, 90],
+                d: 'Sin techo, 2 amarres, saque trasero | Prof: 58cm'
+            },
+            cajonera: {
+                n: 'Cajonera',
+                w: [30, 40, 45, 50, 60, 75, 80, 90],
+                d: '2-4 cajones Blum Tandem | Prof: 58cm'
+            },
+            esquineroCiego: {
+                n: 'Esquinero Ciego',
+                w: [90],
+                d: 'Esquinero 90x90 ciego o en L (165\u00b0)'
+            },
+            hornoBase: {
+                n: 'Horno Base',
+                w: [60, 75, 90],
+                d: 'Nicho horno 595mm + caj\u00f3n inferior'
+            },
             // Puertas — Ancho: 80-90cm (int), 100cm (principal) | Alto: 200, 210, 240cm
             puerta: {
                 n: 'Puerta',
@@ -3277,6 +3303,11 @@
         if (!HW_DEFAULTS.tubo) HW_DEFAULTS.tubo = { desc: 'Tubo colgador', marca: 'DEMO', fallback: 150, cat: 'ACC. CLOSET' };
         if (!HW_DEFAULTS.soporte) HW_DEFAULTS.soporte = { desc: 'Soporte tubo', marca: 'DEMO', fallback: 45, cat: 'ACC. CLOSET' };
         if (!HW_DEFAULTS.nivelador) HW_DEFAULTS.nivelador = { desc: 'Nivelador', marca: 'DEMO', fallback: 6, cat: 'NIVELADOR' };
+        // Cocina bajo hardware — patas, zoclo, Blum Tandem, bisagra 165 para esquinero
+        if (!HW_DEFAULTS.pata) HW_DEFAULTS.pata = { desc: 'Pata regulable cocina', marca: 'DEMO', fallback: 35, cat: 'ACC. COCINA' };
+        if (!HW_DEFAULTS.zoclo_clip) HW_DEFAULTS.zoclo_clip = { desc: 'Clip zoclo cocina', marca: 'DEMO', fallback: 8, cat: 'ACC. COCINA' };
+        if (!HW_DEFAULTS.corr_tandem) HW_DEFAULTS.corr_tandem = { desc: 'Corredera Blum Tandem soft-close', marca: 'DEMO', fallback: 350, cat: 'CORREDERA' };
+        if (!HW_DEFAULTS.bisagra_165) HW_DEFAULTS.bisagra_165 = { desc: 'Bisagra 165\u00b0 esquinero', marca: 'DEMO', fallback: 45, cat: 'BISAGRA' };
         /* ── REAL HW_DEFAULTS (uncomment to restore) ──
         var HW_DEFAULTS = {
             corr_eco: { desc: 'Corredera ext total ecoline', marca: 'HERRAXA', fallback: 49.90, cat: 'CORREDERA' },
@@ -3290,7 +3321,11 @@
             jaladera: { desc: 'Jaladera', marca: 'HERRAXA', fallback: 15.00, cat: 'JALADERA' },
             tubo: { desc: 'Tubo colgador', marca: 'HERRAXA', fallback: 120.00, cat: 'ACC. CLOSET' },
             soporte: { desc: 'Soporte tubo', marca: 'HERRAXA', fallback: 35.00, cat: 'ACC. CLOSET' },
-            nivelador: { desc: 'Nivelador', marca: 'HERRAXA', fallback: 5.00, cat: 'NIVELADOR' }
+            nivelador: { desc: 'Nivelador', marca: 'HERRAXA', fallback: 5.00, cat: 'NIVELADOR' },
+            pata: { desc: 'Pata regulable cocina 100-150mm', marca: 'HERRAXA', fallback: 28.00, cat: 'ACC. COCINA' },
+            zoclo_clip: { desc: 'Clip fijacion zoclo', marca: 'HERRAXA', fallback: 6.50, cat: 'ACC. COCINA' },
+            corr_tandem: { desc: 'Blum Tandem cierre suave', marca: 'HERRAXA', fallback: 289.00, cat: 'CORREDERA' },
+            bisagra_165: { desc: 'Bisagra 165 grados esquinero', marca: 'HERRAXA', fallback: 38.00, cat: 'BISAGRA' }
         };
         ── END REAL HW_DEFAULTS ── */
 
