@@ -8308,7 +8308,8 @@
                     h += '<div style="width:100%;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px;padding-top:6px;border-top:1px solid #333">' + gName + '</div>';
                 }
                 groups[gName].forEach(function(mk) {
-                    h += '<button class="add-btn" onclick="APP.addMod(\'' + mk + '\')">' + svg('plus') + MODS[mk].n + '</button>';
+                    var tip = (MODS[mk].d || '') + (MODS[mk].w ? ' | Anchos: ' + MODS[mk].w.join(', ') + 'cm' : '');
+                    h += '<button class="add-btn" title="' + tip + '" onclick="APP.addMod(\'' + mk + '\')">' + svg('plus') + MODS[mk].n + '</button>';
                 });
             });
             h += '</div>';
@@ -9521,6 +9522,70 @@
             var white = [255, 255, 255];
             var pw = 215.9, ph = 279.4, margin = 15, cw = pw - margin * 2;
             var y = margin;
+
+            // === COVER PAGE (cocina only) ===
+            if (P.type === 'cocina') {
+                // Full-page dark background
+                doc.setFillColor(13, 13, 13); // #0d0d0d matching client PDF dark theme
+                doc.rect(0, 0, pw, ph, 'F');
+
+                // Company logo centered at top
+                var coverY = 50;
+                if (S.logoBase64) {
+                    try {
+                        doc.addImage(S.logoBase64, 'PNG', (pw - 60) / 2, coverY, 60, 24);
+                        coverY += 35;
+                    } catch (e) { coverY += 10; }
+                }
+
+                // Company name
+                doc.setFontSize(28);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(196, 154, 108); // #c49a6c gold accent
+                doc.text(br.name.toUpperCase(), pw / 2, coverY, { align: 'center' });
+                coverY += 15;
+
+                // Decorative line
+                doc.setDrawColor(196, 154, 108);
+                doc.setLineWidth(0.5);
+                doc.line(pw / 2 - 40, coverY, pw / 2 + 40, coverY);
+                coverY += 20;
+
+                // "COTIZACION DE COCINA" title
+                doc.setFontSize(22);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(255, 255, 255);
+                doc.text('COTIZACION DE COCINA', pw / 2, coverY, { align: 'center' });
+                coverY += 30;
+
+                // Project info block
+                doc.setFontSize(13);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(200, 200, 200);
+                var infoLines = [
+                    'Proyecto: ' + (P.name || 'Sin nombre'),
+                    'Cliente: ' + (P.client || 'Sin cliente'),
+                    'Fecha: ' + fmtDatePDF(),
+                    'Cotizacion: ' + d.quoteNum,
+                    'Modulos: ' + P.modules.length
+                ];
+                infoLines.forEach(function(ln) {
+                    doc.text(ln, pw / 2, coverY, { align: 'center' });
+                    coverY += 8;
+                });
+
+                // Footer with contact info
+                doc.setFontSize(9);
+                doc.setTextColor(120, 120, 120);
+                var contactLine = br.contact || '';
+                if (contactLine) {
+                    doc.text(contactLine, pw / 2, ph - 20, { align: 'center' });
+                }
+
+                // Add new page for the actual quote content
+                doc.addPage();
+                y = margin; // Reset y position for quote page
+            }
 
             // === PAGE 1: QUOTE ===
 
