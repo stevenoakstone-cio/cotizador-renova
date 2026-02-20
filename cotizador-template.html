@@ -4952,6 +4952,100 @@
                     pieces.push({ n: 'Fondo caj\u00f3n',             q: 1, w: w - 2 * TK - 26, h: d - 80, t: 3,     z: 'i' });
                 }
 
+            } else if (moduleType === 'alacenaEstandar') {
+                // Cocina: wall-mounted upper cabinet — 1-2 puertas, 1-2 entrepa\u00f1os
+                // No amarres: wall-mounted, not free-standing (fixed to wall via soporte_alacena)
+                // AUDIT: Costados — full casco height x depth (h and d from caller, typically 700-900mm x 300-350mm)
+                pieces.push({ n: 'Costado',  q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width (w - 2*TK) x depth
+                pieces.push({ n: 'Base',     q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Techo — inner width x depth (closes top of wall cabinet)
+                pieces.push({ n: 'Techo',    q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height; t:3 = 3mm HDF per INSTRUCTIVO
+                pieces.push({ n: 'Fondo',    q: 1, w: w - 2 * TK,  h: h,  t: 3,  z: 'i' });
+                // AUDIT: Entrepa\u00f1o — depth is d-TK to clear fondo; count from materials.shelves (default 1)
+                var entEst = typeof materials.shelves === 'number' ? materials.shelves : 1;
+                if (entEst > 0) {
+                    pieces.push({ n: 'Entrepa\u00f1o', q: entEst, w: w - 2 * TK, h: d - TK, t: TK, z: 'i' });
+                }
+
+            } else if (moduleType === 'alacenaAventos') {
+                // Cocina: wall cabinet with Blum Aventos elevating door (HK-S / HL / HS)
+                // Same casco as alacenaEstandar; NO entrepa\u00f1o — single open cavity for aventos door sweep arc
+                // Door piece generated in calc() door block (Plan 02); hardware in assignHardware()
+                // AUDIT: Costados — full casco height x depth
+                pieces.push({ n: 'Costado',  q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x depth
+                pieces.push({ n: 'Base',     q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Techo — inner width x depth
+                pieces.push({ n: 'Techo',    q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height; t:3 = 3mm HDF
+                pieces.push({ n: 'Fondo',    q: 1, w: w - 2 * TK,  h: h,  t: 3,  z: 'i' });
+                // No entrepa\u00f1o: aventos door requires unobstructed cavity for full lift sweep
+
+            } else if (moduleType === 'alacenaSobreCampana') {
+                // Same casco as alacenaEstandar but depth comes from caller (typically 200-300mm for campana/refri)
+                // Caller passes reduced d value; piece formulas are identical to alacenaEstandar
+                // AUDIT: Costados — full casco height x caller-supplied reduced depth
+                pieces.push({ n: 'Costado',  q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x reduced depth
+                pieces.push({ n: 'Base',     q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Techo — inner width x reduced depth
+                pieces.push({ n: 'Techo',    q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x casco height; t:3 = 3mm HDF
+                pieces.push({ n: 'Fondo',    q: 1, w: w - 2 * TK,  h: h,  t: 3,  z: 'i' });
+                // AUDIT: Entrepa\u00f1o — depth d-TK to clear fondo; default 1 (shorter cabinet)
+                var entSC = typeof materials.shelves === 'number' ? materials.shelves : 1;
+                if (entSC > 0) {
+                    pieces.push({ n: 'Entrepa\u00f1o', q: entSC, w: w - 2 * TK, h: d - TK, t: TK, z: 'i' });
+                }
+
+            } else if (moduleType === 'torreHornos') {
+                // Cocina: full-height tower with microondas niche + horno niche at 595mm + caj\u00f3n inferior
+                // AUDIT: Costados — full tower height x depth (h typically 2200mm, d 580-600mm)
+                pieces.push({ n: 'Costado',  q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x depth (bottom of tower)
+                pieces.push({ n: 'Base',     q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Techo — inner width x depth (top of tower)
+                pieces.push({ n: 'Techo',    q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Entrepa\u00f1o microondas — at microH mm from top (default 400mm); defines microwave niche ceiling
+                var microH = materials.microHeight || 400;
+                pieces.push({ n: 'Entrepa\u00f1o microondas', q: 1, w: w - 2 * TK, h: d, t: TK, z: 'i' });
+                // AUDIT: Entrepa\u00f1o horno — 595mm below microondas entrepa\u00f1o per INSTRUCTIVO spec (same as hornoBase)
+                pieces.push({ n: 'Entrepa\u00f1o horno (595mm)', q: 1, w: w - 2 * TK, h: d, t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x full tower height; needs 100mm ventilaci\u00f3n clearance behind oven; t:3 = 3mm HDF
+                pieces.push({ n: 'Fondo (ventilaci\u00f3n 100mm)', q: 1, w: w - 2 * TK, h: h, t: 3, z: 'i' });
+                // AUDIT: Caj\u00f3n inferior — below oven niche
+                // cajH = total height - microH niche - 595mm oven - 3*TK (entrepa\u00f1os + base) - 10mm clearance
+                var cajHTorre = h - microH - 595 - 3 * TK - 10;
+                if (cajHTorre > 50) {
+                    // AUDIT: Frente caj\u00f3n inferior — 150mm standard height; 4 chapa edges; zone='f'
+                    pieces.push({ n: 'Frente caj\u00f3n inferior',   q: 1, w: w - 2 * TK - 4,  h: 150,   t: TK, c: 4, z: 'f' });
+                    // AUDIT: Costado caj\u00f3n — (depth - 80mm Blum slide) x 120mm
+                    pieces.push({ n: 'Costado caj\u00f3n',           q: 2, w: d - 80,            h: 120,   t: TK,       z: 'i' });
+                    // AUDIT: Frente int. caj\u00f3n — (inner width - 26mm correderas) x 120mm
+                    pieces.push({ n: 'Frente int. caj\u00f3n',       q: 1, w: w - 2 * TK - 26,  h: 120,   t: TK,       z: 'i' });
+                    // AUDIT: Fondo caj\u00f3n HDF — same width as frente int x (depth - 80mm slide stop); t:3 = 3mm HDF
+                    pieces.push({ n: 'Fondo caj\u00f3n',             q: 1, w: w - 2 * TK - 26,  h: d - 80, t: 3,       z: 'i' });
+                }
+
+            } else if (moduleType === 'torreDespensa') {
+                // Cocina: full-height pantry tower with adjustable shelves on 32mm system
+                // AUDIT: Costados — full tower height x depth
+                pieces.push({ n: 'Costado',  q: 2, w: d,           h: h,  t: TK, z: 'i' });
+                // AUDIT: Base — inner width x depth
+                pieces.push({ n: 'Base',     q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Techo — inner width x depth
+                pieces.push({ n: 'Techo',    q: 1, w: w - 2 * TK,  h: d,  t: TK, z: 'i' });
+                // AUDIT: Fondo HDF — inner width x full tower height; t:3 = 3mm HDF
+                pieces.push({ n: 'Fondo',    q: 1, w: w - 2 * TK,  h: h,  t: 3,  z: 'i' });
+                // AUDIT: entrepa\u00f1os on 32mm system — adjustable via shelf pins, not fixed
+                var entDesp = typeof materials.shelves === 'number' ? materials.shelves : 4;
+                if (entDesp > 0) {
+                    // AUDIT: Entrepa\u00f1o — depth d-TK to clear fondo; count from materials.shelves (default 4)
+                    pieces.push({ n: 'Entrepa\u00f1o', q: entDesp, w: w - 2 * TK, h: d - TK, t: TK, z: 'i' });
+                }
+
             } else if (moduleType === 'puerta') {
                 // Individual door panel with optional marco (frame)
                 // AUDIT: Panel puerta — full w x h; 4 edges chapacanto; zone='f'
