@@ -4612,9 +4612,7 @@
         // dimensions: { w: mm, h: mm, d: mm, w2: mm (optional, for esquinero/esquineroGiratorio) }
         // materials: { thickness: number (16 or 25), cajones: number, shelves: number,
         //              quoteMode: string, corrTier: string, marco: bool, materialType: string }
-        // Returns: { pieces: [...], hwHints: [...] }
-        //   pieces: array of { n, q, w, h, t, c, z }   (no mid/mn/mw — caller stamps those)
-        //   hwHints: array of { key, q }                (hardware auto-assignments; caller pushes into autoHW)
+        // Returns: array of { n, q, w, h, t, c, z }   (no mid/mn/mw — caller stamps those)
         function calculateParts(moduleType, dimensions, materials) {
             var w  = dimensions.w;
             var h  = dimensions.h;
@@ -4622,7 +4620,6 @@
             var w2 = dimensions.w2 !== undefined ? dimensions.w2 : w;
             var TK = materials.thickness || 16;
             var pieces  = [];
-            var hwHints = [];
 
             if (moduleType === 'modulo') {
                 // Closet drawer/shelf module
@@ -4644,9 +4641,6 @@
                     pieces.push({ n: 'Int. cajon',    q: caj * 2, w: w - 100,  h: ch - 80, t: TK, c: 1, z: 'i' });
                     // AUDIT: Fondo cajon — same 100mm width deduction; 50mm depth deduction for slide stop
                     pieces.push({ n: 'Fondo cajon',   q: caj,     w: w - 100,  h: d - 50,  t: TK, z: 'i' });
-                    var corrKey = materials.corrTier || 'corr_eco';
-                    hwHints.push({ key: corrKey, q: caj });
-                    if (!materials.doors) hwHints.push({ key: 'jaladera', q: caj });
                 } else {
                     var msh = typeof materials.shelves === 'number' ? materials.shelves : 3;
                     if (msh > 0) {
@@ -4665,8 +4659,6 @@
                 pieces.push({ n: 'Entrepano', q: 1, w: w - 32, h: d,             t: TK, z: 'i' });
                 // AUDIT: Fondo — inset by TK on all sides (w - 2*TK, h - 2*TK)
                 pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                hwHints.push({ key: 'tubo',   q: 1 });
-                hwHints.push({ key: 'soporte', q: 2 });
 
             } else if (moduleType === 'zapatero') {
                 // Closet shoe-rack module with pull-out trays
@@ -4678,7 +4670,6 @@
                 pieces.push({ n: 'Charola',   q: 6, w: w - 100,     h: d - 100,       t: TK, z: 'i' });
                 // AUDIT: Fondo — inset by TK on all sides
                 pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
-                hwHints.push({ key: 'corr_eco', q: 6 });
 
             } else if (moduleType === 'esquinero') {
                 // Closet L-shape corner module
@@ -4771,7 +4762,6 @@
                     pieces.push({ n: 'Resp. cajon',  q: caj * 2, w: w - 80,   h: ch - 30, t: TK, z: 'i' });
                     // AUDIT: Base cajon — 80mm deducted from both w and d for slide clearance
                     pieces.push({ n: 'Base cajon',   q: caj,     w: w - 80,   h: d - 80,  t: TK, z: 'i' });
-                    hwHints.push({ key: 'corr_oculta', q: caj });
                 }
 
             } else if (moduleType === 'despensa') {
@@ -4807,11 +4797,76 @@
                     // AUDIT: Cabezal — horizontal top frame; w + 200mm to overlap both jambas
                     pieces.push({ n: 'Cabezal', q: 1, w: w + 200,  h: 100, t: TK, z: 'f' });
                 }
-                // Note: bisagra/base_clip for puerta type are handled in calc() because
-                // they require getBisagraCount() and materialType — kept there intentionally.
+                // Note: bisagra/base_clip for puerta type are handled in assignHardware()
+                // because they require getBisagraCount() with heightCm + materialType options.
             }
 
-            return { pieces: pieces, hwHints: hwHints };
+            return pieces;
+        }
+
+        // === assignHardware: Generic hardware auto-assignment engine ===
+        // Called by calc() to get hardware items for any module type.
+        // moduleType: string matching MODS keys
+        // dimensions: { w: mm, h: mm, d: mm }
+        // options: { cajones, corrTier, doors, tipon, doorCount, doorMaterial, materialType, shelves, heightCm, marco }
+        // Returns: array of { key: string (HW_DEFAULTS key), q: number }
+        function assignHardware(moduleType, dimensions, options) {
+            var hw = [];
+            var opts = options || {};
+
+            if (moduleType === 'modulo') {
+                // Closet drawer/shelf module
+                var caj = typeof opts.cajones === 'number' ? opts.cajones : 0;
+                if (caj > 0) {
+                    // AUDIT: Default slide type is economica; user can upgrade via corrTier property
+                    var corrKey = opts.corrTier || 'corr_eco';
+                    hw.push({ key: corrKey, q: caj });
+                    // AUDIT: Jaladera only when no doors — if doors present, jaladera goes on door not drawer
+                    if (!opts.doors) {
+                        hw.push({ key: 'jaladera', q: caj });
+                    }
+                }
+
+            } else if (moduleType === 'colgador') {
+                // Closet hanging-bar module
+                // AUDIT: One tube per module, two brackets (left + right support)
+                hw.push({ key: 'tubo',    q: 1 });
+                hw.push({ key: 'soporte', q: 2 });
+
+            } else if (moduleType === 'zapatero') {
+                // Closet shoe-rack module with pull-out trays
+                // AUDIT: 6 pull-out shoe trays, each needs one pair of slides
+                hw.push({ key: 'corr_eco', q: 6 });
+
+            } else if (moduleType === 'esquinero') {
+                // Closet L-shape corner module with hanging bar
+                // AUDIT: Corner module gets a hanging bar like colgador
+                hw.push({ key: 'tubo',    q: 1 });
+                hw.push({ key: 'soporte', q: 2 });
+
+            } else if (moduleType === 'cajonBase') {
+                // Cocina base cabinet with drawers
+                var caj = typeof opts.cajones === 'number' ? opts.cajones : 0;
+                if (caj > 0) {
+                    // AUDIT: Cocina base drawers use premium soft-close concealed slides
+                    hw.push({ key: 'corr_oculta', q: caj });
+                }
+
+            } else if (moduleType === 'puerta') {
+                // Individual door panel — bisagra count driven by height + material weight
+                // AUDIT: Hinge count driven by CONFIG rules based on door height and material weight
+                var heightCm = opts.heightCm || 200;
+                var matType  = opts.materialType;
+                var hinges   = getBisagraCount(heightCm, matType);
+                hw.push({ key: 'bisagra',   q: hinges });
+                hw.push({ key: 'base_clip', q: hinges });
+
+            }
+            // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
+            // alacenaAlta, gabineteBase, despensa, espacioCampana, esquineroGiratorio):
+            // AUDIT: These types get hardware only through doors (handled separately in calc) or manual assignment
+
+            return hw;
         }
 
         // === CALC: Cost-based pricing engine ===
@@ -4830,7 +4885,7 @@
                 var qm = m.quoteMode || 'completo';
                 if (qm !== 'solo_puertas') {
                     // Delegate piece generation to calculateParts()
-                    var cpResult = calculateParts(m.type, {
+                    var cPieces = calculateParts(m.type, {
                         w: w,
                         h: h,
                         d: d,
@@ -4846,22 +4901,26 @@
                         doors: m.doors
                     });
                     // Stamp module context onto each piece and push into the pieces array
-                    cpResult.pieces.forEach(function(p) {
+                    cPieces.forEach(function(p) {
                         p.mid = m.id;
                         p.mn  = m.name;
                         p.mw  = m.width;
                         pieces.push(p);
                     });
-                    // Push hardware hints into autoHW
-                    cpResult.hwHints.forEach(function(hw) {
+                    // Delegate hardware assignment to assignHardware()
+                    var modHW = assignHardware(m.type, { w: w, h: h, d: d }, {
+                        cajones: typeof m.cajones === 'number' ? m.cajones : undefined,
+                        corrTier: m.corrTier,
+                        doors: m.doors,
+                        tipon: m.tipon,
+                        shelves: m.shelves,
+                        heightCm: m.height || P.defaultHeight || 200,
+                        materialType: m.materialType,
+                        marco: m.marco
+                    });
+                    modHW.forEach(function(hw) {
                         autoHW.push({ key: hw.key, q: hw.q, modId: m.id });
                     });
-                    // puerta type: bisagras require getBisagraCount() — handled here, not in calculateParts
-                    if (m.type === 'puerta') {
-                        var puertaHinges = getBisagraCount(m.height || P.defaultHeight || 200, m.materialType);
-                        autoHW.push({ key: 'bisagra',   q: puertaHinges, modId: m.id });
-                        autoHW.push({ key: 'base_clip', q: puertaHinges, modId: m.id });
-                    }
                 } // end qm!=='solo_puertas'
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
