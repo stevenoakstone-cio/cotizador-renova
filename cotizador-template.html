@@ -4995,6 +4995,48 @@
                 hw.push({ key: 'bisagra',   q: hinges });
                 hw.push({ key: 'base_clip', q: hinges });
 
+            } else if (moduleType === 'bajoEstandar') {
+                // Cocina: standard base cabinet — patas + zoclo only (door hardware in calc())
+                // AUDIT: 4 adjustable legs per INSTRUCTIVO 3.8 (shared between adjacent modules in real install, but quoted per module)
+                hw.push({ key: 'pata', q: 4 });
+                // AUDIT: 4 zoclo clips (1 per leg) for attaching the decorative zoclo strip
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
+            } else if (moduleType === 'fregadero') {
+                // Cocina: sink module — patas + zoclo only (always 2 puertas, bisagras in calc())
+                // AUDIT: 4 patas + 4 clips per INSTRUCTIVO 3.8
+                hw.push({ key: 'pata', q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
+            } else if (moduleType === 'cajonera') {
+                // Cocina: drawer module — Blum Tandem correderas + patas + zoclo
+                var caj = typeof opts.cajones === 'number' ? opts.cajones : 3;
+                if (caj > 0) {
+                    // AUDIT: 1 pair Blum Tandem soft-close per cajón per INSTRUCTIVO 3.3
+                    hw.push({ key: 'corr_tandem', q: caj });
+                    // AUDIT: 1 jaladera per cajón (drawer pulls)
+                    hw.push({ key: 'jaladera', q: caj });
+                }
+                // AUDIT: 4 patas + 4 clips
+                hw.push({ key: 'pata', q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
+            } else if (moduleType === 'esquineroCiego') {
+                // Cocina: blind corner or L-corner — patas + zoclo (door bisagras in calc())
+                // AUDIT: 4 patas + 4 clips per INSTRUCTIVO 3.8
+                hw.push({ key: 'pata', q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
+            } else if (moduleType === 'hornoBase') {
+                // Cocina: oven base — 1 pair Tandem for cajón inferior + patas + zoclo
+                // AUDIT: 1 corredera Tandem for the single inferior drawer per INSTRUCTIVO 3.8
+                hw.push({ key: 'corr_tandem', q: 1 });
+                // AUDIT: 1 jaladera for the inferior drawer
+                hw.push({ key: 'jaladera', q: 1 });
+                // AUDIT: 4 patas + 4 clips
+                hw.push({ key: 'pata', q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
             }
             // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
             // alacenaAlta, gabineteBase, despensa, espacioCampana, esquineroGiratorio):
