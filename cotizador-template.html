@@ -5457,11 +5457,12 @@
             // Calculate areas by zone — all pieces use project thickness
             // cubierta pieces (isCubierta: true) are excluded from sheet area and priced per m2 separately
             var areaF = 0, areaI = 0, cantoF = 0, cantoI = 0;
-            var cubiertaCost = 0;
+            var cubiertaCost = 0, cubiertaM2 = 0;
             pieces.forEach(function(p) {
                 if (p.isCubierta) {
                     // AUDIT: Cubierta priced per m2 from CONFIG.cubiertaPrices; apply mermaFactor
                     var cubArea = (p.w / 1000) * (p.h / 1000) * p.q;
+                    cubiertaM2 += cubArea;
                     var cubType = (p.cubiertaType || 'postformado');
                     var cubPriceM2 = CONFIG.pricing.cubiertaPrices[cubType] || CONFIG.pricing.cubiertaPrices.postformado;
                     cubiertaCost += cubArea * CONFIG.pricing.mermaFactor * cubPriceM2;
@@ -5660,6 +5661,11 @@
                 hwStdCost: hwStdCost,
                 extraCost: extraCost,
                 cubiertaCost: cubiertaCost,
+                cubiertaM2: cubiertaM2,
+                cascoCost: matCostI + (useDual ? chapCostI : 0),
+                frenteCost: matCostF + chapCostF,
+                herrajesCost: hwCostCarpBucket + hwCostPremium,
+                extrasCost: extraCost,
                 ledBOM: ledBOM,
                 paintCost: paintCost,
                 carpSale: carpSale,
@@ -7576,6 +7582,8 @@
                     });
                     h += '<div class="cost-row" style="border-top:1px solid #3a3a3a;padding-top:4px;margin-top:4px"><span style="color:#fbbf24">Subtotal LED</span><strong style="color:#fbbf24">' + fmtD(c.ledBOM.totalCost) + '</strong></div>';
                 }
+                if (c.cubiertaCost > 0)
+                    h += '<div class="cost-row"><span>Cubierta (' + (c.cubiertaM2 || 0).toFixed(2) + ' m\u00b2)</span><strong>' + fmt(c.cubiertaCost) + '</strong></div>';
                 if (P.glass)
                     h += '<div class="cost-row"><span>Vidrio (' + P.glassM2 + 'm2)</span><strong>' + fmt(P.glassM2 * CONFIG.pricing.glassCostPerM2) + '</strong></div>';
                 if (c.paintCost > 0) {
@@ -7594,6 +7602,16 @@
                 }
                 h += '<div class="cost-total"><span>Costo Extras</span><strong>' + fmt(c.extraCost) + '</strong></div>';
                 h += '<div class="cost-row" style="margin-top:4px"><span>Venta (x' + CONFIG.pricing.extrasMultiplier + ')</span><strong style="color:#ffffff">' + fmt(c.extrasSale) + '</strong></div></div>';
+            }
+            // Subtotales por Categoria (cocina only)
+            if (P.type === 'cocina') {
+                h += '<div class="card"><div class="card-title">' + svg('layers') + ' Subtotales por Categoria</div>';
+                h += '<div class="cost-row"><span>Casco (material interior + canto)</span><strong>' + fmt(c.cascoCost) + '</strong></div>';
+                h += '<div class="cost-row"><span>Frente (material visible + canto)</span><strong>' + fmt(c.frenteCost) + '</strong></div>';
+                h += '<div class="cost-row"><span>Herrajes (std + premium)</span><strong>' + fmt(c.herrajesCost) + '</strong></div>';
+                if (c.extrasCost > 0)
+                    h += '<div class="cost-row"><span>Extras (LED, vidrio, cubierta, pintura)</span><strong>' + fmt(c.extrasCost) + '</strong></div>';
+                h += '</div>';
             }
             // Summary
             h += '<div class="summary">';
@@ -8813,6 +8831,154 @@
             }
 
 
+            // === COCINA-SPECIFIC PAGES (client PDF) ===
+            if (P.type === 'cocina') {
+                // Module index page
+                doc.addPage();
+                y = margin;
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 0, 0);
+                doc.text('Detalle de Modulos', margin, y + 6);
+                y += 12;
+
+                var modRows = P.modules.map(function(m, i) {
+                    var modDef = MODS[m.type] || {};
+                    return [
+                        (i + 1) + '',
+                        modDef.n || m.name,
+                        m.width + ' cm',
+                        (m.height || P.defaultHeight || 200) + ' cm',
+                        (P.sameDepth ? (P.defaultDepth || 50) : (m.depth || P.defaultDepth || 50)) + ' cm',
+                        (m.quantity || 1) + ''
+                    ];
+                });
+
+                doc.autoTable({
+                    startY: y,
+                    head: [['#', 'Modulo', 'Ancho', 'Alto', 'Prof.', 'Cant.']],
+                    body: modRows,
+                    theme: 'grid',
+                    headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontSize: 9 },
+                    bodyStyles: { fontSize: 8 },
+                    columnStyles: { 0: { cellWidth: 10 } },
+                    margin: { left: margin, right: margin }
+                });
+                y = doc.lastAutoTable.finalY + 8;
+
+                // Despiece section
+                if (y > ph - 60) { doc.addPage(); y = margin; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 0, 0);
+                doc.text('Despiece Completo', margin, y + 6);
+                y += 12;
+
+                var despRows = [];
+                c.pieces.forEach(function(p) {
+                    despRows.push([
+                        p.mn || '',
+                        p.n,
+                        p.q + '',
+                        p.w + ' mm',
+                        p.h + ' mm',
+                        (p.t || 15) + ' mm',
+                        p.z === 'f' ? 'Frente' : 'Interior'
+                    ]);
+                });
+
+                doc.autoTable({
+                    startY: y,
+                    head: [['Modulo', 'Pieza', 'Cant.', 'Ancho', 'Alto', 'Esp.', 'Material']],
+                    body: despRows,
+                    theme: 'grid',
+                    headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontSize: 8 },
+                    bodyStyles: { fontSize: 7 },
+                    columnStyles: { 0: { cellWidth: 30 }, 1: { cellWidth: 30 } },
+                    margin: { left: margin, right: margin }
+                });
+                y = doc.lastAutoTable.finalY + 8;
+
+                // Hardware summary
+                if (y > ph - 60) { doc.addPage(); y = margin; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 0, 0);
+                doc.text('Resumen de Herrajes', margin, y + 6);
+                y += 12;
+
+                var hwRows = [];
+                c.allHW.forEach(function(hw) {
+                    hwRows.push([
+                        hw.desc,
+                        hw.marca || '',
+                        Math.ceil(hw.qty) + '',
+                        fmtD(hw.price),
+                        fmtD(Math.ceil(hw.qty) * hw.price)
+                    ]);
+                });
+
+                if (hwRows.length > 0) {
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Herraje', 'Marca', 'Cant.', 'Precio Unit.', 'Total']],
+                        body: hwRows,
+                        theme: 'grid',
+                        headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontSize: 8 },
+                        bodyStyles: { fontSize: 7 },
+                        margin: { left: margin, right: margin }
+                    });
+                    y = doc.lastAutoTable.finalY + 8;
+                }
+
+                // Extras
+                var hasExtras = P.modules.some(function(m) {
+                    return m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta';
+                });
+                if (hasExtras) {
+                    if (y > ph - 50) { doc.addPage(); y = margin; }
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('Extras y Acabados', margin, y + 6);
+                    y += 12;
+
+                    var extRows = [];
+                    P.modules.forEach(function(m) {
+                        if (m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta') {
+                            var desc = MODS[m.type] ? MODS[m.type].n : m.name;
+                            if (m.type === 'cubierta') desc += ' (' + (m.cubiertaType || 'postformado') + ')';
+                            extRows.push([desc, m.width + ' cm', (m.quantity || 1) + '']);
+                        }
+                    });
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Extra', 'Medida', 'Cant.']],
+                        body: extRows,
+                        theme: 'grid',
+                        headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontSize: 9 },
+                        bodyStyles: { fontSize: 8 },
+                        margin: { left: margin, right: margin }
+                    });
+                    y = doc.lastAutoTable.finalY + 8;
+                }
+
+                // Technical note
+                if (y > ph - 40) { doc.addPage(); y = margin; }
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 0, 0);
+                doc.text('Nota Tecnica', margin, y + 5);
+                y += 8;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                var techNote = 'Modulos fabricados en melamina 15mm con cantos sellados. Herrajes Blum importados con garantia. Instalacion incluye nivelacion con patas regulables, anclaje de alacenas a muro, y verificacion de escuadra. Cubierta cotizada por separado segun material seleccionado. Saque trasero de 100mm obligatorio en modulos de horno para ventilacion.';
+                var splitNote = doc.splitTextToSize(techNote, cw);
+                doc.text(splitNote, margin, y);
+                y += splitNote.length * 4 + 4;
+            } // end if cocina (client PDF)
+
             // Plano page
             addPlanoPage(doc, margin);
 
@@ -9026,6 +9192,125 @@
                 }
             });
             y = doc.lastAutoTable.finalY + 8;
+
+            // === COCINA-SPECIFIC PAGES (internal PDF) ===
+            var intP = S.project;
+            var intPh = 279.4;
+            var intCw = pw - margin * 2;
+            if (intP.type === 'cocina') {
+                // Module index table with costs
+                doc.addPage();
+                y = margin;
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(dark[0], dark[1], dark[2]);
+                doc.text('Detalle de Modulos (Interno)', margin, y + 6);
+                y += 12;
+
+                var modRowsInt = intP.modules.map(function(m, i) {
+                    var modDef = MODS[m.type] || {};
+                    var modCost = 0;
+                    if (c.perModule && c.perModule[m.id]) {
+                        modCost = c.perModule[m.id].total || 0;
+                    }
+                    return [
+                        (i + 1) + '',
+                        modDef.n || m.name,
+                        m.width + ' cm',
+                        (m.height || intP.defaultHeight || 200) + ' cm',
+                        (m.quantity || 1) + '',
+                        fmtD(modCost),
+                        fmtD(modCost * (CONFIG.pricing.margin || 0.30))
+                    ];
+                });
+
+                doc.autoTable({
+                    startY: y,
+                    head: [['#', 'Modulo', 'Ancho', 'Alto', 'Cant.', 'Costo', 'Margen']],
+                    body: modRowsInt,
+                    theme: 'grid',
+                    headStyles: { fillColor: [30, 30, 30], textColor: [255, 255, 255], fontSize: 8 },
+                    bodyStyles: { fontSize: 7 },
+                    columnStyles: { 0: { cellWidth: 8 }, 5: { halign: 'right' }, 6: { halign: 'right' } },
+                    margin: { left: margin, right: margin }
+                });
+                y = doc.lastAutoTable.finalY + 8;
+
+                // Hardware detail (internal)
+                if (y > intPh - 60) { doc.addPage(); y = margin; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(dark[0], dark[1], dark[2]);
+                doc.text('Herrajes Detalle (Interno)', margin, y + 6);
+                y += 12;
+
+                var hwRowsInt = [];
+                var hwTotalCost = 0;
+                c.allHW.forEach(function(hw) {
+                    var qty = Math.ceil(hw.qty);
+                    var unitP = hw.price || 0;
+                    var total = qty * unitP;
+                    var bucket = (unitP <= (CONFIG.pricing.hwPremiumThreshold || 500)) ? 'Carpinteria' : 'Premium';
+                    hwTotalCost += total;
+                    hwRowsInt.push([
+                        hw.desc,
+                        hw.marca || '',
+                        qty + '',
+                        fmtD(unitP),
+                        fmtD(total),
+                        bucket
+                    ]);
+                });
+
+                if (hwRowsInt.length > 0) {
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Herraje', 'Marca', 'Cant.', 'P. Unit.', 'Total', 'Tipo']],
+                        body: hwRowsInt,
+                        theme: 'grid',
+                        headStyles: { fillColor: [30, 30, 30], textColor: [255, 255, 255], fontSize: 8 },
+                        bodyStyles: { fontSize: 7 },
+                        columnStyles: { 3: { halign: 'right' }, 4: { halign: 'right' } },
+                        margin: { left: margin, right: margin }
+                    });
+                    y = doc.lastAutoTable.finalY + 4;
+
+                    // Hardware total row
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(dark[0], dark[1], dark[2]);
+                    doc.text('Total Herrajes: ' + fmtD(hwTotalCost), margin, y + 4);
+                    y += 10;
+                }
+
+                // Category cost summary (internal)
+                if (y > intPh - 50) { doc.addPage(); y = margin; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(dark[0], dark[1], dark[2]);
+                doc.text('Resumen por Categoria (Interno)', margin, y + 6);
+                y += 12;
+
+                var catRows = [
+                    ['Casco (interior + canto)', fmtD(c.cascoCost || 0)],
+                    ['Frente (visible + canto)', fmtD(c.frenteCost || 0)],
+                    ['Herrajes', fmtD(c.herrajesCost || 0)],
+                    ['Extras', fmtD(c.extrasCost || 0)]
+                ];
+
+                doc.autoTable({
+                    startY: y,
+                    head: [['Categoria', 'Costo']],
+                    body: catRows,
+                    theme: 'grid',
+                    headStyles: { fillColor: [30, 30, 30], textColor: [255, 255, 255], fontSize: 9 },
+                    bodyStyles: { fontSize: 8 },
+                    columnStyles: { 1: { halign: 'right' } },
+                    margin: { left: margin, right: margin }
+                });
+                y = doc.lastAutoTable.finalY + 8;
+            } // end if cocina (internal PDF)
+
             // Summary box
             if (y > 230) {
                 doc.addPage();
