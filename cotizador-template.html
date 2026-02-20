@@ -7488,6 +7488,24 @@
                         });
                         h += '</div></div>';
                     }
+                    if (m.type === 'bajoLavabo') {
+                        // Cajones selector: 1 or 2 (default 2) per INSTRUCTIVO Section 4
+                        var mcaj = typeof m.cajones === 'number' ? m.cajones : 2;
+                        h += '<div class="module-row"><span>Cajones:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [1, 2].forEach(function(n) {
+                            h += '<button class="opt-btn' + (mcaj === n ? ' sel' : '') + '" onclick="APP.setModC(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
+                    if (m.type === 'cajoneraBano') {
+                        // Cajones selector: 2 or 3 (default 2) per INSTRUCTIVO Section 4
+                        var mcaj = typeof m.cajones === 'number' ? m.cajones : 2;
+                        h += '<div class="module-row"><span>Cajones:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [2, 3].forEach(function(n) {
+                            h += '<button class="opt-btn' + (mcaj === n ? ' sel' : '') + '" onclick="APP.setModC(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
                     if (m.type === 'alacenaAventos') {
                         var aventosM = m.aventosModel || 'hk';
                         h += '<div class="module-row"><span>Aventos:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
@@ -7571,7 +7589,7 @@
                             h += '<div style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#facc15">\u26a0 Horno sin ventilacion trasera \u2014 riesgo de sobrecalentamiento</div>';
                         }
                     }
-                    if (m.type === 'fregadero') {
+                    if (m.type === 'fregadero' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'botiquin') {
                         var matI = P.matInterior || {};
                         var matF = P.matFrentes || {};
                         var matIName = (matI.name || '').toUpperCase();
