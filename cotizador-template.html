@@ -7040,6 +7040,14 @@
                         });
                         h += '</div></div>';
                     }
+                    if (m.type === 'cajonera') {
+                        var mcaj = typeof m.cajones === 'number' ? m.cajones : 3;
+                        h += '<div class="module-row"><span>Cajones:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [2, 3, 4].forEach(function(n) {
+                            h += '<button class="opt-btn' + (mcaj === n ? ' sel' : '') + '" onclick="APP.setModC(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
                     if (m.type === 'esquineroGiratorio') {
                         h += '<div class="module-row"><span>Ancho 2:</span><input type="number" value="' + (m.width2 || m.width) + '" min="30" max="120" step="10" style="width:80px;padding:6px;background:#3a3a3a;border:none;border-radius:8px;color:#fff;text-align:center" onchange="APP.setModW2(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:#999;margin-left:4px">cm (segundo lado)</span></div>';
                     }
