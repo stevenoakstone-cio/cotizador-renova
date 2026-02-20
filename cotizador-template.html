@@ -3326,6 +3326,78 @@
             }
         }
 
+        function showLicenseInfo() {
+            var existing = document.getElementById('license-info-overlay');
+            if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+            var result = validateLicense();
+            var version = CONFIG.version || '1.0';
+            var supportEmail = (CONFIG.contact && CONFIG.contact.email) ? CONFIG.contact.email : 'soporte@renova.mx';
+            var supportPhone = (CONFIG.contact && CONFIG.contact.cell) ? CONFIG.contact.cell : '';
+
+            var clientText = result.client || '&mdash;';
+            var expText = '&mdash;';
+            var statusColor = '#888';
+            var statusText = 'Sin licencia';
+
+            if (result.valid) {
+                statusColor = '#4caf50';
+                statusText = 'Activa';
+                clientText = result.client;
+                // Format date as "DD de Mes YYYY"
+                try {
+                    var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+                    var parts = result.exp.split('-');
+                    expText = parseInt(parts[2], 10) + ' de ' + meses[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+                } catch(e) { expText = result.exp || '&mdash;'; }
+            } else if (result.reason === 'expired') {
+                statusColor = '#f44336';
+                statusText = 'Expirada';
+                clientText = result.client || '&mdash;';
+                try {
+                    var meses2 = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+                    var parts2 = (result.exp || '').split('-');
+                    expText = parseInt(parts2[2], 10) + ' de ' + meses2[parseInt(parts2[1], 10) - 1] + ' ' + parts2[0];
+                } catch(e) { expText = result.exp || '&mdash;'; }
+            }
+
+            var overlay = document.createElement('div');
+            overlay.id = 'license-info-overlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:sans-serif;';
+            overlay.innerHTML = [
+                '<div style="max-width:400px;width:90%;background:#141414;border-radius:16px;border:1px solid #2a2a2a;overflow:hidden;">',
+                '  <div style="padding:24px 28px 0;">',
+                '    <h2 style="color:#c49a6c;font-size:18px;margin:0 0 20px;font-weight:600;">Informacion de Licencia</h2>',
+                '    <table style="width:100%;border-collapse:collapse;font-size:14px;">',
+                '      <tr><td style="color:#666;padding:8px 0 8px;border-bottom:1px solid #1e1e1e;width:100px;">Version</td><td style="color:#eee;padding:8px 0;border-bottom:1px solid #1e1e1e;">Cotizador Pro v' + version + '</td></tr>',
+                '      <tr><td style="color:#666;padding:8px 0 8px;border-bottom:1px solid #1e1e1e;">Cliente</td><td style="color:#eee;padding:8px 0;border-bottom:1px solid #1e1e1e;">' + clientText + '</td></tr>',
+                '      <tr><td style="color:#666;padding:8px 0 8px;border-bottom:1px solid #1e1e1e;">Expiracion</td><td style="color:#eee;padding:8px 0;border-bottom:1px solid #1e1e1e;">' + expText + '</td></tr>',
+                '      <tr><td style="color:#666;padding:8px 0 8px;border-bottom:1px solid #1e1e1e;">Estado</td><td style="color:' + statusColor + ';padding:8px 0;border-bottom:1px solid #1e1e1e;font-weight:600;">' + statusText + '</td></tr>',
+                '      <tr><td style="color:#666;padding:8px 0 8px;">Soporte</td><td style="padding:8px 0;"><a href="mailto:' + supportEmail + '" style="color:#c49a6c;text-decoration:none;font-size:13px;">' + supportEmail + '</a>' + (supportPhone ? '<br><span style="color:#aaa;font-size:12px;">' + supportPhone + '</span>' : '') + '</td></tr>',
+                '    </table>',
+                '  </div>',
+                '  <div style="padding:20px 28px 24px;text-align:right;">',
+                '    <button id="lic-info-close-btn" style="padding:10px 24px;background:#c49a6c;color:#1a1a2e;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Cerrar</button>',
+                '  </div>',
+                '</div>'
+            ].join('\n');
+
+            document.body.appendChild(overlay);
+
+            var closeBtn = document.getElementById('lic-info-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                });
+            }
+            // Also close on backdrop click
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                }
+            });
+        }
+
         function showSetupScreen() {
             var overlay = document.createElement('div');
             overlay.className = 'setup-overlay';
@@ -12002,7 +12074,7 @@
             var isCustom = S.estProject && S.estProject.mode === 'custom';
             var hdrTitle = isCustom ? 'Nuevo Proyecto' : 'Closet Estandarizado';
             var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" onclick="APP.goHome()" style="background:#1a1a2e;color:#c49a6c;font-size:12px;cursor:pointer">' + br.mono + '</div><div class="hdr-txt"><h1>' + hdrTitle + '</h1><p>' + br.name + '</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div>';
-            h += '<div class="hdr-actions"><button class="hdr-btn" onclick="APP.openSettings()">' + svg('settings') + '</button></div></div>';
+            h += '<div class="hdr-actions"><button class="hdr-btn" onclick="APP.showLicenseInfo()" title="Informacion de Licencia" style="font-size:16px;line-height:1;">&#x2139;&#xFE0F;</button><button class="hdr-btn" onclick="APP.openSettings()">' + svg('settings') + '</button></div></div>';
             h += renderEstStepDots();
             h += '<div class="content" id="content">';
             if (S.estScreen === 'builder')
@@ -12049,7 +12121,7 @@
                 return;
             }
             if (S.screen === 'templates') {
-                var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div></div>';
+                var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div><div class="hdr-actions"><button class="hdr-btn" onclick="APP.showLicenseInfo()" title="Informacion de Licencia" style="font-size:16px;line-height:1;">&#x2139;&#xFE0F;</button></div></div>';
                 h += '<div class="content" id="content">' + renderTemplates() + '</div>';
                 if (S.imgModal)
                     h += '<div class="img-modal" onclick="APP.closeImg()"><button class="img-modal-close" onclick="APP.closeImg()">' + svg('x') + '</button><img src="' + S.imgModal + '" onclick="event.stopPropagation()"></div>';
@@ -12059,7 +12131,7 @@
             }
             var c = calc();
             var h = '<div class="hdr"><div style="display:flex;align-items:center"><div class="hdr-logo" onclick="APP.goHome()" style="background:#1a1a2e;color:#c49a6c;font-size:12px">' + br.mono + '</div><div class="hdr-txt"><h1>' + br.name + '</h1><p>Cotizador V2</p></div><span id="cloud-status" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;background:#666;flex-shrink:0" title="Sin conexion cloud"></span></div>';
-            h += '<div class="hdr-actions"><button class="hdr-btn" onclick="APP.openSettings()">' + svg('settings') + '</button></div></div>';
+            h += '<div class="hdr-actions"><button class="hdr-btn" onclick="APP.showLicenseInfo()" title="Informacion de Licencia" style="font-size:16px;line-height:1;">&#x2139;&#xFE0F;</button><button class="hdr-btn" onclick="APP.openSettings()">' + svg('settings') + '</button></div></div>';
             h += '<div class="steps">';
             for (var i = 1; i <= 5; i++) {
                 var cls = i === S.step ? 'active' : i < S.step ? 'done' : 'future';
@@ -14252,7 +14324,8 @@
             loadAppConfig:     function() { return loadAppConfig(); },
             // License API
             generateLicenseKey: function(client, expDate) { return generateLicenseKey(client, expDate); },
-            validateLicense:    function() { return validateLicense(); }
+            validateLicense:    function() { return validateLicense(); },
+            showLicenseInfo:    function() { showLicenseInfo(); }
         };
 
         // First-run check: show setup screen if no APP_CONFIG exists yet
