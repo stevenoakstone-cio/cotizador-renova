@@ -5736,12 +5736,13 @@
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
                     // Skip door generation for module types that have no doors (drawers/oven use their own frentes)
-                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'librero' || m.type === 'credenzaTV' || m.type === 'mesaCentro' || m.type === 'repisaFlotante' || m.type === 'panelFondo') {
+                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'librero' || m.type === 'credenzaTV' || m.type === 'mesaCentro' || m.type === 'repisaFlotante' || m.type === 'panelFondo' || (m.type === 'torreLateralTV' && m.noPuertas)) {
                         // cajonera: frentes are in calculateParts(); hornoBase: oven has its own door
-                        // torreHornos: oven has its own door, caj\u00f3n frente in calculateParts()
+                        // torreHornos: oven has its own door, cajón frente in calculateParts()
                         // zoclo/vistaLateral/panelRelleno/cubierta: extras have no puertas
                         // librero/credenzaTV/mesaCentro: puertas already in calculateParts (isPuerta flag); bisagras in assignHardware()
                         // repisaFlotante: open shelf — no doors; panelFondo: flat panel — no doors
+                        // torreLateralTV with noPuertas: open nicho configuration — no doors
                         // Do nothing — skip door generation
                     } else {
                     var doorCnt;
@@ -5769,11 +5770,31 @@
                     } else if (m.type === 'botiquin') {
                         // AUDIT: botiquin 1 puerta if <=500mm, 2 puertas if >500mm (same as bajoEstandar/alacenaEstandar pattern)
                         doorCnt = m.width <= 50 ? 1 : 2;
+                    } else if (m.type === 'consolaPatas' || m.type === 'consolaFlotante') {
+                        // AUDIT: TV consola — 1 puerta if <=500mm (50cm), 2 puertas if >500mm per INSTRUCTIVO S.5
+                        // m.width is in cm, threshold 50 = 500mm
+                        doorCnt = m.width <= 50 ? 1 : 2;
+                    } else if (m.type === 'torreLateralTV') {
+                        // AUDIT: Torre lateral TV — always 1 puerta (narrow 300-500mm tower, single door)
+                        // noPuertas case already handled in skip guard above
+                        doorCnt = 1;
                     } else {
                         doorCnt = Math.ceil(m.width / 50);
                     }
-                    var doorW = Math.round(w / doorCnt) - 3;
-                    var doorH = h - 3;
+                    var innerW = w - 2 * TK;
+                    var doorW, doorH;
+                    if (m.type === 'consolaPatas' || m.type === 'consolaFlotante') {
+                        // AUDIT: TV consola door dims — doorH = h - 10 (10mm juego total); doorW per door
+                        doorH = h - 10;
+                        doorW = doorCnt === 1 ? (innerW - 4) : (Math.round(innerW / 2) - 2);
+                    } else if (m.type === 'torreLateralTV') {
+                        // AUDIT: Torre lateral TV door dims — doorH = h - 10; doorW = innerW - 4 (single door)
+                        doorH = h - 10;
+                        doorW = innerW - 4;
+                    } else {
+                        doorW = Math.round(w / doorCnt) - 3;
+                        doorH = h - 3;
+                    }
                     // For torreDespensa, doorH is half the tower (2 stacked doors)
                     if (m.type === 'torreDespensa') {
                         doorH = Math.round(h / 2) - 3;
