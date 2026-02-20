@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Given module dimensions and material selection, instantly generate a complete, accurate despiece with pricing.
-**Current focus:** Phase 2 — Cocina Bajos (IN PROGRESS)
+**Current focus:** Phase 3 — Cocina Altos + Torres (IN PROGRESS)
 
 ## Current Position
 
-Phase: 2 of 10 (Cocina Bajos)
-Plan: 3 of 3 in current phase (COMPLETE)
+Phase: 3 of 10 (Cocina Altos + Torres)
+Plan: 1 of 3 in current phase (COMPLETE)
 Status: In progress
-Last activity: 2026-02-20 — Plan 02-03 completed: cajonera cajones selector UI (2/3/4 buttons) in step2(), closing CBAJ-03 gap
+Last activity: 2026-02-20 — Plan 03-01 completed: MODS entries, HW_DEFAULTS, and calculateParts() blocks for 5 alacena/torre types
 
-Progress: [████░░░░░░] 20%
+Progress: [████░░░░░░] 22%
 
 ## Performance Metrics
 
@@ -64,6 +64,11 @@ Recent decisions affecting current work:
 - calc() bisKey pattern: esquineroCiego enL uses bisagra_165; all others use bisagra
 - Phase 2 complete: all 3 plans (02-01 + 02-02 + 02-03) executed
 - [Phase 02-cocina-bajos]: Cajonera cajones selector offers [2,3,4] only — matching MODS '2-4 cajones Blum Tandem'
+- alacenaAventos calculateParts(): no entrepaño block — single open cavity for Aventos lift door sweep arc; door frente in Plan 02 calc()
+- alacenaSobreCampana: structurally identical to alacenaEstandar; depth reduction is caller-driven (smaller d parameter)
+- torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
+- torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
+- soporte_alacena HW_DEFAULTS key: $25 DEMO for wall-mount alacena hardware cost
 
 ### Pending Todos
 
@@ -76,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 02-03-PLAN.md — cajonera cajones selector UI in step2()
+Stopped at: Completed 03-01-PLAN.md — MODS entries, HW_DEFAULTS, and calculateParts() for 5 cocina altos + torres types
 Resume file: None

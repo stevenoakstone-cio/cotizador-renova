@@ -65,7 +65,7 @@ Plans:
   3. User can add an alacena sobre campana or sobre refri with reduced depth correctly reflected in the despiece
   4. User can add a torre de hornos with microondas and horno niches, cajón inferior, and ventilación note
   5. User can add a torre despensa and the despiece shows entrepaños on 32mm system with 2 puertas (superior + inferior)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 03-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() for 5 alto + torre module types
 - [ ] 03-02-PLAN.md — assignHardware() + calc() door logic + step2() UI selectors
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-02-19 |
 | 2. Cocina Bajos | 3/3 | Complete   | 2026-02-20 |
-| 3. Cocina Altos + Torres | 0/2 | Planned | - |
+| 3. Cocina Altos + Torres | 1/2 | In Progress|  |
 | 4. Cocina Extras + UI + Output | 0/TBD | Not started | - |
 | 5. Baños | 0/TBD | Not started | - |
 | 6. Tablered Arauco | 0/TBD | Not started | - |
