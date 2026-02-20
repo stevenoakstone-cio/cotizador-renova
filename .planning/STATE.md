@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 ## Current Position
 
 Phase: 3 of 10 (Cocina Altos + Torres)
-Plan: 1 of 3 in current phase (COMPLETE)
+Plan: 2 of 3 in current phase (COMPLETE)
 Status: In progress
-Last activity: 2026-02-20 — Plan 03-01 completed: MODS entries, HW_DEFAULTS, and calculateParts() blocks for 5 alacena/torre types
+Last activity: 2026-02-20 — Plan 03-02 completed: assignHardware() blocks, calc() door logic, and step2() UI selectors for 5 alacena/torre types
 
-Progress: [████░░░░░░] 22%
+Progress: [█████░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 5 min
-- Total execution time: 0.18 hours
+- Total plans completed: 3 (in phase 03)
+- Average duration: ~4 min
+- Total execution time: 0.23 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [████░░░░░░] 22%
 |-------|-------|-------|----------|
 | 01-foundation | 2 | 10 min | 5 min |
 | 02-cocina-bajos | 3 | 23 min | ~8 min |
+| 03-cocina-altos-torres | 2 (of 3) | 5 min | ~2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min), 01-02 (6 min), 02-01 (12 min), 02-02 (8 min), 02-03 (3 min)
-- Trend: Stable
+- Last 5 plans: 02-01 (12 min), 02-02 (8 min), 02-03 (3 min), 03-01 (2 min), 03-02 (3 min)
+- Trend: Accelerating (data layer plans very fast)
 
 *Updated after each plan completion*
 
@@ -69,6 +70,10 @@ Recent decisions affecting current work:
 - torreHornos microH defaults 400mm via materials.microHeight || 400; cajH formula: h - microH - 595 - 3*TK - 10
 - torreDespensa: 4 entrepaños default on 32mm adjustable pin system (overrideable via materials.shelves)
 - soporte_alacena HW_DEFAULTS key: $25 DEMO for wall-mount alacena hardware cost
+- aventosModel must be passed to assignHardware() call — added to calc() options object in Plan 02
+- alacenaAventos: no bisagra, no jaladera — aventos lift mechanism replaces both
+- torreDespensa: doorH = round(h/2) - 3, doorCnt=2 (2 stacked half-height puertas)
+- APP.setModShelves() added for cocina module shelf count (separate from closet setModS())
 
 ### Pending Todos
 
@@ -81,5 +86,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-01-PLAN.md — MODS entries, HW_DEFAULTS, and calculateParts() for 5 cocina altos + torres types
+Stopped at: Completed 03-02-PLAN.md — assignHardware() blocks, calc() door logic, step2() UI selectors for 5 cocina altos + torres types
 Resume file: None

@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Generic calculateParts() and assignHardware() functions; closet patterns documented
 - [x] **Phase 2: Cocina Bajos** - All base-cabinet module types with auto despiece and hardware
-- [ ] **Phase 3: Cocina Altos + Torres** - Wall cabinets (alacenas) and full-height tower columns
+- [x] **Phase 3: Cocina Altos + Torres** - Wall cabinets (alacenas) and full-height tower columns (completed 2026-02-20)
 - [ ] **Phase 4: Cocina Extras + UI + Output** - Finishing pieces, cocina wizard UI, validations, and PDF
 - [ ] **Phase 5: Baños** - Bathroom module types with MDF RH enforcement and filtered UI
 - [ ] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
@@ -65,7 +65,7 @@ Plans:
   3. User can add an alacena sobre campana or sobre refri with reduced depth correctly reflected in the despiece
   4. User can add a torre de hornos with microondas and horno niches, cajón inferior, and ventilación note
   5. User can add a torre despensa and the despiece shows entrepaños on 32mm system with 2 puertas (superior + inferior)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 03-01-PLAN.md — MODS + HW_DEFAULTS + calculateParts() for 5 alto + torre module types
 - [ ] 03-02-PLAN.md — assignHardware() + calc() door logic + step2() UI selectors
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-02-19 |
 | 2. Cocina Bajos | 3/3 | Complete   | 2026-02-20 |
-| 3. Cocina Altos + Torres | 1/2 | In Progress|  |
+| 3. Cocina Altos + Torres | 2/2 | Complete   | 2026-02-20 |
 | 4. Cocina Extras + UI + Output | 0/TBD | Not started | - |
 | 5. Baños | 0/TBD | Not started | - |
 | 6. Tablered Arauco | 0/TBD | Not started | - |
