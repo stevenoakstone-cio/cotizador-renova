@@ -81,9 +81,9 @@
 
 ### Puertas
 
-- [ ] **PTED-01**: User can add puerta interior (bastidor pino + 2 tapas MDF + marco chambrana + tope)
-- [ ] **PTED-02**: Bisagra count auto-calculated by relleno type (honey-comb/peinazos → 3, sólida → 4)
-- [ ] **PTED-03**: User can select "Puerta" as project type with filtered UI
+- [x] **PTED-01**: User can add puerta interior (bastidor pino + 2 tapas MDF + marco chambrana + tope)
+- [x] **PTED-02**: Bisagra count auto-calculated by relleno type (honey-comb/peinazos → 3, sólida → 4)
+- [x] **PTED-03**: User can select "Puerta" as project type with filtered UI
 
 ### Multi-Tenant
 
