@@ -76,8 +76,8 @@
 
 ### Closet Extension
 
-- [ ] **CLOS-01**: All closet modules from INSTRUCTIVO_TECNICO.md available (colgador largo, corto doble, zapatero, maletero, torre entrepaños)
-- [ ] **CLOS-02**: Anti-vuelco warning for modules >1,500mm height
+- [x] **CLOS-01**: All closet modules from INSTRUCTIVO_TECNICO.md available (colgador largo, corto doble, zapatero, maletero, torre entrepaños)
+- [x] **CLOS-02**: Anti-vuelco warning for modules >1,500mm height
 
 ### Puertas
 
@@ -167,8 +167,8 @@
 | MTV-03 | Phase 7 | Mueble TV | Complete (07-01) |
 | MTV-04 | Phase 7 | Mueble TV | Complete (07-01) |
 | MTV-05 | Phase 7 | Mueble TV | Complete (07-02) |
-| CLOS-01 | Phase 8 | Closet Extension + Puertas | Pending |
-| CLOS-02 | Phase 8 | Closet Extension + Puertas | Pending |
+| CLOS-01 | Phase 8 | Closet Extension + Puertas | Complete (08-01) |
+| CLOS-02 | Phase 8 | Closet Extension + Puertas | Complete (08-01) |
 | PTED-01 | Phase 8 | Closet Extension + Puertas | Pending |
 | PTED-02 | Phase 8 | Closet Extension + Puertas | Pending |
 | PTED-03 | Phase 8 | Closet Extension + Puertas | Pending |

@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Given module dimensions and material selection, instantly generate a complete, accurate despiece with pricing.
-**Current focus:** Phase 7 — Mueble TV (IN PROGRESS)
+**Current focus:** Phase 8 — Closet Extension + Puertas (IN PROGRESS)
 
 ## Current Position
 
-Phase: 7 of 10 (Mueble TV)
-Plan: 2 of 3 in current phase (COMPLETE)
-Status: Phase 7 plan 2 complete — calc() door logic + step2() UI for all 5 TV module types fully wired; TV quotation flow complete end-to-end
-Last activity: 2026-02-20 — Plan 07-02 completed: calc() door logic for consolaPatas/consolaFlotante/torreLateralTV, noPuertas skip guard, step2() variant selector for repisaFlotante, torreLateralTV noPuertas toggle
+Phase: 8 of 10 (Closet Extension + Puertas)
+Plan: 1 of 2 in current phase (COMPLETE)
+Status: Phase 8 plan 1 complete — colgadorCorto + maletero new closet modules with calculateParts/assignHardware; entrepa renamed to Torre Entrepanos; anti-vuelco warning in step2()
+Last activity: 2026-02-20 — Plan 08-01 completed: colgadorCorto/maletero MODS + calculateParts + assignHardware, Torre Entrepanos description with Cremallera 32mm, anti-vuelco warning for closet modules >150cm
 
-Progress: [███████████] 60%
+Progress: [████████████] 65%
 
 ## Performance Metrics
 
@@ -109,6 +109,10 @@ Recent decisions affecting current work:
 - TV consola doorH = h - 10 (10mm juego); doorW from innerW = w - 2*TK formula (not raw w)
 - torreLateralTV noPuertas: conditional in skip guard (m.type === 'torreLateralTV' && m.noPuertas); togModProp in step2()
 - repisaFlotante variant selector: setModProp (string enum hueca/herraje), not togModProp (boolean)
+- maletero MODS key added alongside EST_ZONE_TYPES.maletero — no collision (MODS = custom module; EST_ZONE_TYPES = estandarizado zone)
+- colgadorCorto assignHardware: tubo x2 + soporte x4 (double-bar per INSTRUCTIVO 6.1)
+- Anti-vuelco warning threshold: 150cm (1,500mm) per INSTRUCTIVO 12.2 tip — fires for any forType=closet module
+- entrepa: renamed to 'Torre Entrepanos' with Cremallera 32mm description to satisfy CLOS-01 requirement
 
 ### Pending Todos
 
@@ -121,5 +125,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 07-02-PLAN.md — Mueble TV UI wiring: calc() door logic for consolaPatas/consolaFlotante/torreLateralTV, noPuertas skip guard, step2() variant selector for repisaFlotante, torreLateralTV noPuertas toggle. TV quotation flow complete end-to-end.
+Stopped at: Completed 08-01-PLAN.md — Closet extension: colgadorCorto + maletero MODS/calculateParts/assignHardware, Torre Entrepanos description (Cremallera 32mm), anti-vuelco warning in step2() for closet modules >150cm.
 Resume file: None

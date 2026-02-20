@@ -16,9 +16,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Cocina Bajos** - All base-cabinet module types with auto despiece and hardware
 - [x] **Phase 3: Cocina Altos + Torres** - Wall cabinets (alacenas) and full-height tower columns (completed 2026-02-20)
 - [x] **Phase 4: Cocina Extras + UI + Output** - Finishing pieces, cocina wizard UI, validations, and PDF
-- [ ] **Phase 5: Baños** - Bathroom module types with MDF RH enforcement and filtered UI
+- [x] **Phase 5: Baños** - Bathroom module types with MDF RH enforcement and filtered UI
 - [x] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
-- [ ] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
+- [x] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
 - [ ] **Phase 8: Closet Extension + Puertas** - Missing closet modules and interior door quotation
 - [ ] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen
 - [ ] **Phase 10: Quality + Polish** - End-to-end cocina test, professional PDF, tooltips, sheet optimizer
@@ -139,7 +139,10 @@ Plans:
   2. Adding any closet module taller than 1,500mm shows an anti-vuelco warning
   3. User can select "Puerta" as project type and add a puerta interior with bastidor pino, 2 tapas MDF, marco chambrana, and tope in the despiece
   4. Bisagra count auto-calculates as 3 for honey-comb or peinazos relleno and 4 for sólida relleno
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [x] 08-01-PLAN.md — colgadorCorto + maletero MODS/calculateParts/assignHardware + anti-vuelco warning
+- [ ] 08-02-PLAN.md — Puerta interior bastidor despiece + relleno-based bisagra logic + step2() relleno selector
 
 ### Phase 9: Multi-Tenant SaaS
 **Goal**: The app can be deployed for any carpintería with their own branding, Supabase instance, and license key — without code changes
@@ -175,9 +178,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Cocina Bajos | 3/3 | Complete   | 2026-02-20 |
 | 3. Cocina Altos + Torres | 2/2 | Complete   | 2026-02-20 |
 | 4. Cocina Extras + UI + Output | 3/3 | Complete | 2026-02-20 |
-| 5. Baños | 2/3 | In Progress|  |
+| 5. Baños | 2/2 | Complete | 2026-02-20 |
 | 6. Tablered Arauco | 1/1 | Complete | 2026-02-20 |
-| 7. Mueble TV | 1/2 | In Progress | 2026-02-20 |
-| 8. Closet Extension + Puertas | 0/TBD | Not started | - |
+| 7. Mueble TV | 2/2 | Complete | 2026-02-20 |
+| 8. Closet Extension + Puertas | 1/2 | In Progress | 2026-02-20 |
 | 9. Multi-Tenant SaaS | 0/TBD | Not started | - |
 | 10. Quality + Polish | 0/TBD | Not started | - |
