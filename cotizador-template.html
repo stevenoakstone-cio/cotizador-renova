@@ -3192,10 +3192,24 @@
                 cat: 'Modulos'
             },
             entrepa: {
-                n: 'Entrepaneras',
+                n: 'Torre Entrepanos',
                 w: [30, 40, 50, 60, 70, 80, 90, 100],
-                d: 'Ajuste a medida',
+                d: 'Torre de entrepanos regulables | Cremallera 32mm | Ropa doblada, sueteres',
                 custom: 1,
+                forType: ['closet'],
+                cat: 'Modulos'
+            },
+            colgadorCorto: {
+                n: 'Colgador Corto (Doble)',
+                w: [60, 70, 80, 90],
+                d: 'Doble barra | Camisas arriba, pantalones abajo',
+                forType: ['closet'],
+                cat: 'Modulos'
+            },
+            maletero: {
+                n: 'Maletero',
+                w: [60, 80, 90, 100, 120],
+                d: 'Repisa superior | Maletas y ropa de temporada | Alto: 30-50cm',
                 forType: ['closet'],
                 cat: 'Modulos'
             },
@@ -4952,6 +4966,27 @@
                 // AUDIT: Fondo — inset by TK on all sides
                 pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
 
+            } else if (moduleType === 'colgadorCorto') {
+                // Closet double-bar hanging module (INSTRUCTIVO 6.1)
+                // AUDIT: Lateral — full depth, full height (outer structural panels)
+                pieces.push({ n: 'Lateral',    q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                // AUDIT: Techo/Piso — w - 2*TK (= w - 32 at 16mm), fits between laterales
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,      h: d,             t: TK, z: 'i' });
+                // AUDIT: Entrepano — divider shelf between upper and lower hanging zones (at mid-height)
+                pieces.push({ n: 'Entrepano',  q: 1, w: w - 32,      h: d,             t: TK, z: 'i' });
+                // AUDIT: Fondo — inset by TK on all sides (w - 2*TK, h - 2*TK)
+                pieces.push({ n: 'Fondo',      q: 1, w: w - 2 * TK,  h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'maletero') {
+                // Closet top luggage shelf module (INSTRUCTIVO 6.1)
+                // AUDIT: Lateral — full depth, full height
+                pieces.push({ n: 'Lateral',    q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                // AUDIT: Techo/Piso — w - 2*TK, fits between laterales
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,      h: d,             t: TK, z: 'i' });
+                // AUDIT: Fondo — inset by TK on all sides
+                pieces.push({ n: 'Fondo',      q: 1, w: w - 2 * TK,  h: h - 2 * TK,   t: TK, z: 'i' });
+                // Note: No entrepano — single open cavity for luggage/seasonal storage
+
             } else if (moduleType === 'torreLateral') {
                 // TV: lateral tower unit with shelves
                 var sh = typeof materials.shelves === 'number' ? materials.shelves : 3;
@@ -5495,6 +5530,16 @@
                 // AUDIT: Corner module gets a hanging bar like colgador
                 hw.push({ key: 'tubo',    q: 1 });
                 hw.push({ key: 'soporte', q: 2 });
+
+            } else if (moduleType === 'colgadorCorto') {
+                // Closet double-bar hanging module — 2 tubes + 4 brackets
+                // AUDIT: 2 tubes (upper + lower bar), 2 soportes per tube
+                hw.push({ key: 'tubo',    q: 2 });
+                hw.push({ key: 'soporte', q: 4 });
+
+            } else if (moduleType === 'maletero') {
+                // Closet luggage shelf — no hardware (open shelf, no doors, no bars)
+                // AUDIT: Maletero is a simple open box — no special hardware
 
             } else if (moduleType === 'cajonBase') {
                 // Cocina base cabinet with drawers
@@ -7925,6 +7970,10 @@
                         if (!isRH) {
                             h += '<div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#ef4444">\uD83D\uDD34 Zona humeda \u2014 usar MDF RH (Resistente a Humedad) obligatorio. Material actual no es MDF-RH.</div>';
                         }
+                    }
+                    // Anti-vuelco warning for tall closet modules (>1,500mm = 150cm)
+                    if (MODS[m.type] && MODS[m.type].forType && MODS[m.type].forType.indexOf('closet') !== -1 && m.height > 150) {
+                        h += '<div style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#facc15">\u26a0 Anti-vuelco: modulo > 1,500mm de alto. Anclar a pared con taquetes obligatorio.</div>';
                     }
                     if (MODS[m.type] && !MODS[m.type].custom && MODS[m.type].w && MODS[m.type].w.indexOf(m.width) === -1) {
                         h += '<div style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#facc15">\u26a0 Ancho ' + m.width + 'cm no es estandar para ' + MODS[m.type].n + ' (estandar: ' + MODS[m.type].w.join(', ') + 'cm)</div>';
