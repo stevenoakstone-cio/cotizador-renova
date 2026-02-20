@@ -5162,6 +5162,40 @@
                 hw.push({ key: 'pata', q: 4 });
                 hw.push({ key: 'zoclo_clip', q: 4 });
 
+            } else if (moduleType === 'alacenaEstandar') {
+                // Cocina: standard wall cabinet — wall-mount brackets only (door bisagras in calc())
+                // AUDIT: 2 soporte colgante brackets for wall mounting per INSTRUCTIVO
+                hw.push({ key: 'soporte_alacena', q: 2 });
+
+            } else if (moduleType === 'alacenaAventos') {
+                // Cocina: aventos wall cabinet — specific aventos model + wall-mount brackets
+                // AUDIT: 1 Aventos mechanism set (opts.aventosModel selects HK/HL/HS), default HK-S
+                var aventosKey = 'aventos_' + (opts.aventosModel || 'hk');
+                hw.push({ key: aventosKey, q: 1 });
+                // AUDIT: 2 soporte colgante brackets for wall mounting
+                hw.push({ key: 'soporte_alacena', q: 2 });
+
+            } else if (moduleType === 'alacenaSobreCampana') {
+                // Cocina: over-hood/fridge wall cabinet — wall-mount brackets only (same as standard alacena)
+                // AUDIT: 2 soporte colgante brackets for wall mounting
+                hw.push({ key: 'soporte_alacena', q: 2 });
+
+            } else if (moduleType === 'torreHornos') {
+                // Cocina: tower with microwave + oven niches — 1 Tandem for caj\u00f3n inferior + patas + zoclo
+                // AUDIT: 1 corredera Tandem for the single inferior drawer (same pattern as hornoBase)
+                hw.push({ key: 'corr_tandem', q: 1 });
+                // AUDIT: 1 jaladera for the inferior drawer
+                hw.push({ key: 'jaladera', q: 1 });
+                // AUDIT: 4 patas + 4 clips (tower is floor-standing)
+                hw.push({ key: 'pata', q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
+            } else if (moduleType === 'torreDespensa') {
+                // Cocina: tall pantry tower — patas + zoclo (door bisagras in calc())
+                // AUDIT: 4 patas + 4 clips (tower is floor-standing)
+                hw.push({ key: 'pata', q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
             }
             // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
             // alacenaAlta, gabineteBase, despensa, espacioCampana, esquineroGiratorio):
@@ -5217,7 +5251,8 @@
                         shelves: m.shelves,
                         heightCm: m.height || P.defaultHeight || 200,
                         materialType: m.materialType,
-                        marco: m.marco
+                        marco: m.marco,
+                        aventosModel: m.aventosModel
                     });
                     modHW.forEach(function(hw) {
                         autoHW.push({ key: hw.key, q: hw.q, modId: m.id });
@@ -5226,8 +5261,9 @@
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
                     // Skip door generation for module types that have no doors (drawers/oven use their own frentes)
-                    if (m.type === 'cajonera' || m.type === 'hornoBase') {
+                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos') {
                         // cajonera: frentes are in calculateParts(); hornoBase: oven has its own door
+                        // torreHornos: oven has its own door, caj\u00f3n frente in calculateParts()
                         // Do nothing — skip door generation
                     } else {
                     var doorCnt;
@@ -5243,11 +5279,24 @@
                         doorCnt = (m.esquineroTipo === 'enL') ? 2 : 1;
                     } else if (m.type === 'esquinero') {
                         doorCnt = 2;
+                    } else if (m.type === 'alacenaAventos') {
+                        // AUDIT: Aventos has 1 single elevating door (full width)
+                        doorCnt = 1;
+                    } else if (m.type === 'alacenaEstandar' || m.type === 'alacenaSobreCampana') {
+                        // AUDIT: 1 puerta for <=500mm width, 2 puertas for >500mm (same threshold as bajoEstandar)
+                        doorCnt = m.width <= 50 ? 1 : 2;
+                    } else if (m.type === 'torreDespensa') {
+                        // AUDIT: 2 puertas always — 1 superior + 1 inferior per INSTRUCTIVO torre despensa
+                        doorCnt = 2;
                     } else {
                         doorCnt = Math.ceil(m.width / 50);
                     }
                     var doorW = Math.round(w / doorCnt) - 3;
                     var doorH = h - 3;
+                    // For torreDespensa, doorH is half the tower (2 stacked doors)
+                    if (m.type === 'torreDespensa') {
+                        doorH = Math.round(h / 2) - 3;
+                    }
                     if (m.doorMaterial !== 'vidrio')
                         pieces.push({
                             mid: m.id,
@@ -5263,38 +5312,44 @@
                         });
                     var doorHeightCm = (m.height || P.defaultHeight || 200);
                     var doorMatType = m.doorMaterial || 'melamina';
-                    var bisPerDoor = getBisagraCount(doorHeightCm, doorMatType);
-                    // AUDIT: esquineroCiego en L uses 165-degree bisagras; all other types use standard bisagra
-                    var bisKey = (m.type === 'esquineroCiego' && m.esquineroTipo === 'enL') ? 'bisagra_165' : 'bisagra';
-                    autoHW.push({
-                        key: bisKey,
-                        q: doorCnt * bisPerDoor,
-                        modId: m.id
-                    });
-                    autoHW.push({
-                        key: 'base_clip',
-                        q: doorCnt * bisPerDoor,
-                        modId: m.id
-                    });
-                    if (m.tipon) {
+                    if (m.type !== 'alacenaAventos') {
+                        // Standard bisagra + base_clip push (aventos hardware is already in assignHardware — no bisagras needed)
+                        var bisPerDoor = getBisagraCount(doorHeightCm, doorMatType);
+                        // AUDIT: esquineroCiego en L uses 165-degree bisagras; all other types use standard bisagra
+                        var bisKey = (m.type === 'esquineroCiego' && m.esquineroTipo === 'enL') ? 'bisagra_165' : 'bisagra';
                         autoHW.push({
-                            key: 'tipon',
-                            q: doorCnt,
+                            key: bisKey,
+                            q: doorCnt * bisPerDoor,
                             modId: m.id
                         });
                         autoHW.push({
-                            key: 'placa_tipon',
-                            q: doorCnt,
-                            modId: m.id
-                        });
-                    } else {
-                        autoHW.push({
-                            key: 'jaladera',
-                            q: doorCnt,
+                            key: 'base_clip',
+                            q: doorCnt * bisPerDoor,
                             modId: m.id
                         });
                     }
-                    } // end else (not cajonera/hornoBase)
+                    // Aventos doors have integrated handles — skip jaladera/tipon for alacenaAventos
+                    if (m.type !== 'alacenaAventos') {
+                        if (m.tipon) {
+                            autoHW.push({
+                                key: 'tipon',
+                                q: doorCnt,
+                                modId: m.id
+                            });
+                            autoHW.push({
+                                key: 'placa_tipon',
+                                q: doorCnt,
+                                modId: m.id
+                            });
+                        } else {
+                            autoHW.push({
+                                key: 'jaladera',
+                                q: doorCnt,
+                                modId: m.id
+                            });
+                        }
+                    }
+                    } // end else (not cajonera/hornoBase/torreHornos)
                 }
             });
 
