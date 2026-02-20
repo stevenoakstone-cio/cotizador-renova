@@ -3147,6 +3147,14 @@
             n: 'Puertas',
             i: '&#x1f6aa;'
         }, {
+            id: 'librero',
+            n: 'Librero',
+            i: '&#x1f4da;'
+        }, {
+            id: 'mesa_centro',
+            n: 'Mesa de Centro',
+            i: '&#x2615;'
+        }, {
             id: 'otro',
             n: 'Otro',
             i: '&#x1f4e6;'
@@ -3385,6 +3393,28 @@
                 d: 'Puerta individual | >100cm ancho = doble',
                 panel: true,
                 forType: ['puerta']
+            },
+            // Tablered Arauco — Fixed catalog products (exact INSTRUCTIVO dimensions)
+            librero: {
+                n: 'Librero KIRA',
+                w: [138.5],  // Fixed: 1385mm total width
+                d: 'Tablered Arauco | KIRA 15mm | 1385x400x1800mm | 9 piezas',
+                forType: ['librero'],
+                cat: 'Tablered'
+            },
+            credenzaTV: {
+                n: 'Credenza TV NERO',
+                w: [160],  // Fixed: 1600mm
+                d: 'Tablered Arauco | NERO 15mm | 1600x450x440mm | 7 piezas',
+                forType: ['credenza'],
+                cat: 'Tablered'
+            },
+            mesaCentro: {
+                n: 'Mesa de Centro',
+                w: [100],  // Fixed: 1000mm
+                d: 'Tablered Arauco | NERO+KIRA bicolor | 1000x600x400mm | 9 piezas (2 bloques)',
+                forType: ['mesa_centro'],
+                cat: 'Tablered'
             }
         };
 
@@ -5241,6 +5271,53 @@
                 } else {
                     pieces.push({ n: 'Puerta', q: 2, w: Math.round(iW / 2) - 2, h: h - 10, t: TK, z: 'f' }); // AUDIT: iW/2 - 2mm per door gap
                 }
+
+            } else if (moduleType === 'librero') {
+                // AUDIT: Tablered Arauco Librero KIRA — fixed catalog despiece (INSTRUCTIVO S.9)
+                // Overall: 1385mm wide (1000 izq + 385 der), 400mm deep, 1800mm tall
+                pieces.push({ label: 'A', n: 'Piso/Techo zona izq',         q: 2, w: 1000, h: 385,  cubrecanto: '3 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'B', n: 'Lateral exterior',              q: 2, w: 1770, h: 385,  cubrecanto: '2 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'C', n: 'Fondo trasero',                 q: 1, w: 1770, h: 970,  cubrecanto: 'no',      t: TK, z: 'i' });
+                pieces.push({ label: 'D', n: 'Puerta media',                  q: 2, w: 745,  h: 335,  cubrecanto: '4 lados', t: TK, z: 'f', isPuerta: true });
+                pieces.push({ label: 'E', n: 'Puerta baja',                   q: 2, w: 385,  h: 335,  cubrecanto: '4 lados', t: TK, z: 'f', isPuerta: true });
+                pieces.push({ label: 'F', n: 'Repisa larga horizontal',       q: 2, w: 970,  h: 370,  cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'G', n: 'Paral vertical interno',        q: 4, w: 699,  h: 370,  cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'H', n: 'Repisa corta zona der',         q: 2, w: 310,  h: 370,  cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'I', n: 'Repisa media zona der',         q: 1, w: 645,  h: 370,  cubrecanto: '1 lado',  t: TK, z: 'i' });
+                // Cubrecanto total: 59.2 ml PVC 0.45mm KIRA — priced per ml in calc()
+                pieces.push({ n: 'Cubrecanto PVC KIRA', q: 1, w: 59200, h: 0, mlTotal: 59.2, isCubrecanto: true, t: 0, z: 'i' });
+
+            } else if (moduleType === 'credenzaTV') {
+                // AUDIT: Tablered Arauco Credenza TV NERO — fixed catalog despiece (INSTRUCTIVO S.8)
+                // Overall: 1600mm long, 450mm deep, 440mm tall (540mm with patas)
+                pieces.push({ label: 'A', n: 'Piso/Techo',                   q: 2, w: 1600, h: 450,  cubrecanto: '3 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'B', n: 'Fondo trasero',                 q: 1, w: 1570, h: 435,  cubrecanto: 'no',      t: TK, z: 'i' });
+                pieces.push({ label: 'C', n: 'Costado exterior',              q: 2, w: 410,  h: 450,  cubrecanto: '2 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'D', n: 'Paral interno vertical',        q: 3, w: 410,  h: 435,  cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'E', n: 'Repisa horizontal interna',     q: 4, w: 380,  h: 435,  cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'F', n: 'Puerta central',                q: 2, w: 400,  h: 390,  cubrecanto: '4 lados', t: TK, z: 'f', isPuerta: true });
+                pieces.push({ label: 'G', n: 'Puerta lateral',                q: 2, w: 320,  h: 405,  cubrecanto: '4 lados', t: TK, z: 'f', isPuerta: true });
+                // Cubrecanto total: 49 ml PVC 0.45mm NERO — priced per ml in calc()
+                pieces.push({ n: 'Cubrecanto PVC NERO', q: 1, w: 49000, h: 0, mlTotal: 49, isCubrecanto: true, t: 0, z: 'i' });
+
+            } else if (moduleType === 'mesaCentro') {
+                // AUDIT: Tablered Arauco Mesa de Centro — bicolor KIRA+NERO (INSTRUCTIVO S.10)
+                // Overall: 1000mm long, 600mm wide, 400mm tall (450-500mm with patas)
+                // BLOQUE 1 = KIRA (tapa abatible), BLOQUE 2 = NERO (nicho abierto)
+                // BLOQUE 1 — KIRA
+                pieces.push({ label: 'A', n: 'Tapa abatible',      q: 1, w: 600, h: 645, bloque: 'KIRA', cubrecanto: '4 lados', t: TK, z: 'f', isPuerta: true });
+                pieces.push({ label: 'B', n: 'Costado',             q: 2, w: 385, h: 650, bloque: 'KIRA', cubrecanto: '2 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'C', n: 'Frente',              q: 1, w: 360, h: 570, bloque: 'KIRA', cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'D', n: 'Fondo interno',       q: 1, w: 385, h: 570, bloque: 'KIRA', cubrecanto: 'no',      t: TK, z: 'i' });
+                pieces.push({ label: 'E', n: 'Piso interno',        q: 1, w: 570, h: 635, bloque: 'KIRA', cubrecanto: '1 lado',  t: TK, z: 'i' });
+                // BLOQUE 2 — NERO
+                pieces.push({ label: 'F', n: 'Piso',                q: 1, w: 570, h: 350, bloque: 'NERO', cubrecanto: '1 lado',  t: TK, z: 'i' });
+                pieces.push({ label: 'G', n: 'Techo/Cubierta',      q: 1, w: 600, h: 350, bloque: 'NERO', cubrecanto: '3 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'H', n: 'Costado',             q: 2, w: 385, h: 350, bloque: 'NERO', cubrecanto: '2 lados', t: TK, z: 'i' });
+                pieces.push({ label: 'I', n: 'Fondo interno',       q: 1, w: 370, h: 570, bloque: 'NERO', cubrecanto: 'no',      t: TK, z: 'i' });
+                // Cubrecanto totals: 12 ml KIRA + 9 ml NERO = 21 ml total
+                pieces.push({ n: 'Cubrecanto PVC KIRA', q: 1, w: 12000, h: 0, mlTotal: 12, isCubrecanto: true, t: 0, z: 'i' });
+                pieces.push({ n: 'Cubrecanto PVC NERO', q: 1, w: 9000,  h: 0, mlTotal: 9,  isCubrecanto: true, t: 0, z: 'i' });
             }
 
             return pieces;
