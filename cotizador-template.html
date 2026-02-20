@@ -3352,6 +3352,28 @@
                 cat: 'Extras',
                 custom: 1
             },
+            // Bano modules — Material: MDF RH obligatorio | Prof: 45-50cm, Alto: 50-60cm
+            bajoLavabo: {
+                n: 'Bajo Lavabo',
+                w: [60, 75, 80, 90, 100],
+                d: 'Cajon con saque U para cespol | MDF RH | Prof: 45-50cm',
+                forType: ['bano'],
+                cat: 'Bajos'
+            },
+            cajoneraBano: {
+                n: 'Cajonera Bano',
+                w: [40, 45, 50, 60],
+                d: '2-3 cajones auxiliar | MDF RH | Alto: 50-60cm',
+                forType: ['bano'],
+                cat: 'Bajos'
+            },
+            botiquin: {
+                n: 'Botiquin / Espejo',
+                w: [40, 50, 60, 80],
+                d: 'Modulo pared delgado 10-15cm prof | MDF RH',
+                forType: ['bano'],
+                cat: 'Altos'
+            },
             // Puertas — Ancho: 80-90cm (int), 100cm (principal) | Alto: 200, 210, 240cm
             puerta: {
                 n: 'Puerta',
@@ -3416,6 +3438,7 @@
         if (!HW_DEFAULTS.aventos_hl) HW_DEFAULTS.aventos_hl = { desc: 'Blum Aventos HL', marca: 'DEMO', fallback: 1200, cat: 'AVENTOS' };
         if (!HW_DEFAULTS.aventos_hs) HW_DEFAULTS.aventos_hs = { desc: 'Blum Aventos HS', marca: 'DEMO', fallback: 1500, cat: 'AVENTOS' };
         if (!HW_DEFAULTS.soporte_alacena) HW_DEFAULTS.soporte_alacena = { desc: 'Soporte colgante alacena', marca: 'DEMO', fallback: 25, cat: 'ACC. COCINA' };
+        if (!HW_DEFAULTS.soporte_bano) HW_DEFAULTS.soporte_bano = { desc: 'Escuadra muro bano flotante', marca: 'DEMO', fallback: 35, cat: 'ACC. BANO' };
         /* ── REAL HW_DEFAULTS (uncomment to restore) ──
         var HW_DEFAULTS = {
             corr_eco: { desc: 'Corredera ext total ecoline', marca: 'HERRAXA', fallback: 49.90, cat: 'CORREDERA' },
@@ -5152,6 +5175,68 @@
                 }
                 // Note: bisagra/base_clip for puerta type are handled in assignHardware()
                 // because they require getBisagraCount() with heightCm + materialType options.
+
+            } else if (moduleType === 'bajoLavabo') {
+                // Bano: bajo lavabo flotante (INSTRUCTIVO 4.2)
+                // AUDIT: Standard bano bajo h=500-600mm, d=450-500mm — wall-mounted flotante
+                var cajCount = materials.cajones || 2;
+                var cajH = cajCount === 1
+                    ? Math.round(h - TK) // single cajon: full inner height minus top amarre
+                    : Math.round((h - 2 * TK) / 2); // 2-cajón: split height with techo amarre
+                // Casco pieces
+                pieces.push({ n: 'Costado',         q: 2, w: d,        h: h,   t: TK, z: 'i' }); // AUDIT: h x d full height
+                pieces.push({ n: 'Piso',             q: 1, w: iW,       h: d,   t: TK, z: 'i' }); // AUDIT: iW = w - 2*TK
+                pieces.push({ n: 'Amarre sup',       q: 1, w: iW,       h: 80,  t: TK, z: 'i' }); // AUDIT: 80mm structural top amarre
+                pieces.push({ n: 'Fondo HDF',        q: 1, w: iW,       h: h,   t: 3,  z: 'i' }); // AUDIT: 3mm HDF fondo trasero
+                // Cajon superior WITH saque en U for cespol
+                pieces.push({ n: 'Costado cajon',   q: 2, w: cajH,     h: d - 80, t: TK, z: 'i' }); // AUDIT: cajH x (d-80) Blum Tandem depth
+                pieces.push({ n: 'Frente int caj 1', q: 1, w: iW - 26,  h: cajH,   t: TK, z: 'i', saqueU: true }); // AUDIT: -26mm = 13mm per side clip; saqueU=true: 220x180mm centered notch for cespol
+                pieces.push({ n: 'Fondo cajon HDF', q: 1, w: iW - 26,  h: d - 80, t: 3,  z: 'i' }); // AUDIT: HDF 3mm cajon base
+                if (cajCount >= 2) {
+                    // Bottom cajon — same dimensions WITHOUT saqueU
+                    pieces.push({ n: 'Costado cajon 2', q: 2, w: cajH,    h: d - 80, t: TK, z: 'i' }); // AUDIT: same as top cajon costados
+                    pieces.push({ n: 'Frente int caj 2', q: 1, w: iW - 26, h: cajH,   t: TK, z: 'i' }); // AUDIT: no saqueU on bottom cajon
+                    pieces.push({ n: 'Fondo caj 2 HDF', q: 1, w: iW - 26, h: d - 80, t: 3,  z: 'i' });
+                }
+                // Frente pieces (z:'f') — exterior cajon fronts
+                pieces.push({ n: 'Frente cajon', q: cajCount, w: iW - 4, h: cajH - 5, t: TK, z: 'f' }); // AUDIT: -4mm total gap; -5mm height gap
+
+            } else if (moduleType === 'cajoneraBano') {
+                // Bano: cajonera auxiliar (INSTRUCTIVO 4.2)
+                // AUDIT: Auxiliary bano bajo h=500-600mm, d=450-500mm — same logic as cocina cajonera but shorter
+                var cajCount = materials.cajones || 2;
+                // AUDIT: cajH = (h - TK) / cajCount — minus one TK for top amarre only
+                var cajH = Math.round((h - TK) / cajCount);
+                // Casco pieces
+                pieces.push({ n: 'Costado',         q: 2, w: d,        h: h,   t: TK, z: 'i' }); // AUDIT: h x d full height
+                pieces.push({ n: 'Piso',             q: 1, w: iW,       h: d,   t: TK, z: 'i' }); // AUDIT: iW = w - 2*TK
+                pieces.push({ n: 'Amarre sup',       q: 1, w: iW,       h: 80,  t: TK, z: 'i' }); // AUDIT: 80mm top amarre
+                pieces.push({ n: 'Fondo HDF',        q: 1, w: iW,       h: h,   t: 3,  z: 'i' }); // AUDIT: 3mm HDF fondo trasero
+                // Per-cajon pieces
+                for (var ci = 0; ci < cajCount; ci++) {
+                    pieces.push({ n: 'Costado cajon', q: 2, w: cajH,     h: d - 80,  t: TK, z: 'i' }); // AUDIT: cajH x (d-80mm) Blum Tandem clip depth
+                    pieces.push({ n: 'Frente int caj', q: 1, w: iW - 26,  h: cajH,    t: TK, z: 'i' }); // AUDIT: -26mm = 13mm per side for Blum Tandem clip
+                    pieces.push({ n: 'Fondo cajon HDF', q: 1, w: iW - 26, h: d - 80,  t: 3,  z: 'i' }); // AUDIT: HDF 3mm cajon base
+                }
+                // Frente pieces (z:'f') — exterior cajon fronts
+                pieces.push({ n: 'Frente cajon', q: cajCount, w: iW - 4, h: cajH - 5, t: TK, z: 'f' }); // AUDIT: -4mm total gap; -5mm height gap
+
+            } else if (moduleType === 'botiquin') {
+                // Bano: botiquin/espejo wall-mount thin module (INSTRUCTIVO 4.2)
+                // AUDIT: d=100-150mm (thin wall cabinet), h=600-900mm, w=400-800mm
+                var doorCnt = w <= 500 ? 1 : 2;
+                // Casco pieces
+                pieces.push({ n: 'Costado',      q: 2, w: d,        h: h,       t: TK, z: 'i' }); // AUDIT: h x d full height
+                pieces.push({ n: 'Piso',          q: 1, w: iW,       h: d,       t: TK, z: 'i' }); // AUDIT: iW = w - 2*TK
+                pieces.push({ n: 'Techo',         q: 1, w: iW,       h: d,       t: TK, z: 'i' }); // AUDIT: same as piso
+                pieces.push({ n: 'Fondo HDF',     q: 1, w: iW,       h: h,       t: 3,  z: 'i' }); // AUDIT: 3mm HDF fondo trasero
+                pieces.push({ n: 'Entrepano',     q: 1, w: iW - 30,  h: d - 15,  t: TK, z: 'i' }); // AUDIT: -30mm = 15mm per side pin clearance; -15mm depth clearance
+                // Frente pieces (z:'f') — door(s)
+                if (doorCnt === 1) {
+                    pieces.push({ n: 'Puerta', q: 1, w: iW - 4,        h: h - 10, t: TK, z: 'f' }); // AUDIT: -4mm total gap; -10mm height gap
+                } else {
+                    pieces.push({ n: 'Puerta', q: 2, w: Math.round(iW / 2) - 2, h: h - 10, t: TK, z: 'f' }); // AUDIT: iW/2 - 2mm per door gap
+                }
             }
 
             return pieces;
@@ -5293,6 +5378,29 @@
             } else if (moduleType === 'zoclo' || moduleType === 'vistaLateral' || moduleType === 'panelRelleno' || moduleType === 'cubierta') {
                 // Cocina extras: finishing pieces — no hardware required
                 // AUDIT: zoclo/vistaLateral/panelRelleno/cubierta are panel-only; no hinges, legs, or clips
+
+            } else if (moduleType === 'bajoLavabo') {
+                // Bano: bajo lavabo flotante — Blum Tandem per cajon + wall-mount brackets
+                // AUDIT: no patas/zoclo_clip — flotante wall-mounted (INSTRUCTIVO 4.3)
+                var cajCount = opts.cajones || 2;
+                for (var ci = 0; ci < cajCount; ci++) {
+                    hw.push({ key: 'corr_tandem', q: 1 });
+                }
+                hw.push({ key: 'soporte_bano', q: 2 });
+
+            } else if (moduleType === 'cajoneraBano') {
+                // Bano: cajonera auxiliar — Blum Tandem per cajon + wall-mount brackets (flotante)
+                // AUDIT: no patas/zoclo_clip — flotante wall-mounted (INSTRUCTIVO 4.3)
+                var cajCount = opts.cajones || 2;
+                for (var ci = 0; ci < cajCount; ci++) {
+                    hw.push({ key: 'corr_tandem', q: 1 });
+                }
+                hw.push({ key: 'soporte_bano', q: 2 });
+
+            } else if (moduleType === 'botiquin') {
+                // Bano: botiquin/espejo — wall-mount brackets only, bisagras handled in calc() door block
+                // AUDIT: no patas/zoclo_clip — flotante wall-mounted (INSTRUCTIVO 4.3)
+                hw.push({ key: 'soporte_bano', q: 2 });
 
             }
             // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
