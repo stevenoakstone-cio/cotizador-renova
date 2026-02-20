@@ -3139,6 +3139,10 @@
             n: 'Cocina',
             i: '&#x1f373;'
         }, {
+            id: 'bano',
+            n: 'Bano',
+            i: '&#x1f6bf;'
+        }, {
             id: 'puerta',
             n: 'Puertas',
             i: '&#x1f6aa;'
@@ -5469,7 +5473,7 @@
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
                     // Skip door generation for module types that have no doors (drawers/oven use their own frentes)
-                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta') {
+                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano') {
                         // cajonera: frentes are in calculateParts(); hornoBase: oven has its own door
                         // torreHornos: oven has its own door, caj\u00f3n frente in calculateParts()
                         // zoclo/vistaLateral/panelRelleno/cubierta: extras have no puertas
@@ -5497,6 +5501,9 @@
                     } else if (m.type === 'torreDespensa') {
                         // AUDIT: 2 puertas always — 1 superior + 1 inferior per INSTRUCTIVO torre despensa
                         doorCnt = 2;
+                    } else if (m.type === 'botiquin') {
+                        // AUDIT: botiquin 1 puerta if <=500mm, 2 puertas if >500mm (same as bajoEstandar/alacenaEstandar pattern)
+                        doorCnt = m.width <= 50 ? 1 : 2;
                     } else {
                         doorCnt = Math.ceil(m.width / 50);
                     }
