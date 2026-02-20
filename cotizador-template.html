@@ -7909,13 +7909,18 @@
                         h += '<div class="module-row"><span>Ancho 2:</span><input type="number" value="' + (m.width2 || m.width) + '" min="30" max="120" step="10" style="width:80px;padding:6px;background:#3a3a3a;border:none;border-radius:8px;color:#fff;text-align:center" onchange="APP.setModW2(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:#999;margin-left:4px">cm (segundo lado)</span></div>';
                     }
                     if (m.type === 'puerta') {
-                        // Puerta-specific: marco toggle and material type
-                        h += '<div class="module-row"><span>Marco:</span><button class="opt-btn' + (m.marco ? ' sel' : '') + '" onclick="APP.togModProp(\'' + m.id + '\',\'marco\')">' + svg(m.marco ? 'check' : 'plus') + ' Con marco</button></div>';
-                        h += '<div class="module-row"><span>Material:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
-                        [{k:'standard',l:'Melamina'},{k:'vidrio',l:'Vidrio'},{k:'metal',l:'Metal'}].forEach(function(mt) {
-                            h += '<button class="opt-btn' + ((m.materialType || 'standard') === mt.k ? ' sel' : '') + '" onclick="APP.setModProp(\'' + m.id + '\',\'materialType\',\'' + mt.k + '\')">' + mt.l + '</button>';
+                        // Puerta-specific: relleno type selector (drives bisagra count) + marco toggle
+                        var relleno = m.relleno || 'honeycomb';
+                        h += '<div class="module-row"><span>Relleno:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        var rellenoOpts = [['honeycomb', 'Honey-comb (ligera)'], ['peinazos', 'Peinazos pino'], ['solida', 'Solida (pesada)']];
+                        rellenoOpts.forEach(function(r) {
+                            h += '<button class="opt-btn' + (relleno === r[0] ? ' sel' : '') + '" onclick="APP.setModProp(\'' + m.id + '\',\'relleno\',\'' + r[0] + '\')">' + r[1] + '</button>';
                         });
                         h += '</div></div>';
+                        var bisHint = relleno === 'solida' ? '4 bisagras (puerta pesada)' : '3 bisagras';
+                        h += '<div style="font-size:11px;color:#888;margin:2px 0 4px 0">Bisagras: ' + bisHint + '</div>';
+                        // Marco chambrana toggle
+                        h += '<div class="module-row"><span>Marco:</span><button class="opt-btn' + (m.marco !== false ? ' sel' : '') + '" onclick="APP.togModProp(\'' + m.id + '\',\'marco\')">' + svg(m.marco !== false ? 'check' : 'plus') + ' Con marco chambrana</button></div>';
                     }
                     if (m.type === 'cubierta') {
                         var cubT = m.cubiertaType || 'postformado';
