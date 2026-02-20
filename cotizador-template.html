@@ -10131,6 +10131,22 @@
             var pw = 215.9,
                 margin = 20;
             var y = margin;
+
+            // === COVER PAGE (cocina internal) ===
+            if (S.project.type === 'cocina') {
+                doc.setFontSize(20);
+                doc.setFont('helvetica', 'bold');
+                doc.text('COTIZACION INTERNA - COCINA', pw / 2, 30, { align: 'center' });
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Proyecto: ' + (S.project.name || ''), pw / 2, 42, { align: 'center' });
+                doc.text('Cliente: ' + (S.project.client || ''), pw / 2, 50, { align: 'center' });
+                doc.text('Fecha: ' + new Date().toLocaleDateString('es-MX'), pw / 2, 58, { align: 'center' });
+                doc.text('Modulos: ' + S.project.modules.length, pw / 2, 66, { align: 'center' });
+                doc.addPage();
+                y = margin;
+            }
+
             // Header
             doc.setFontSize(16);
             doc.setFont('helvetica', 'bold');
