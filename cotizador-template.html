@@ -7443,6 +7443,27 @@
                     }
                     h += renderModuleLed(m);
                     h += renderModulePaint(m);
+                    // Cocina-specific validation warnings
+                    if (m.type === 'hornoBase' || m.type === 'torreHornos') {
+                        h += '<div class="module-row"><span>Ventilacion:</span><button class="opt-btn' + (m.ventilacion !== false ? ' sel' : '') + '" onclick="APP.togModProp(\'' + m.id + '\',\'ventilacion\')">' + svg(m.ventilacion !== false ? 'check' : 'plus') + ' Saque trasero 100mm</button></div>';
+                        if (m.ventilacion === false) {
+                            h += '<div style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#facc15">\u26a0 Horno sin ventilacion trasera \u2014 riesgo de sobrecalentamiento</div>';
+                        }
+                    }
+                    if (m.type === 'fregadero') {
+                        var matI = P.matInterior || {};
+                        var matF = P.matFrentes || {};
+                        var matIName = (matI.name || '').toUpperCase();
+                        var matFName = (matF.name || '').toUpperCase();
+                        var isRH = (matIName.indexOf('RH') !== -1 || matIName.indexOf('RESISTENTE') !== -1)
+                                && (matFName.indexOf('RH') !== -1 || matFName.indexOf('RESISTENTE') !== -1);
+                        if (!isRH) {
+                            h += '<div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#ef4444">\uD83D\uDD34 Zona humeda \u2014 usar MDF RH (Resistente a Humedad) obligatorio. Material actual no es MDF-RH.</div>';
+                        }
+                    }
+                    if (MODS[m.type] && !MODS[m.type].custom && MODS[m.type].w && MODS[m.type].w.indexOf(m.width) === -1) {
+                        h += '<div style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:12px;color:#facc15">\u26a0 Ancho ' + m.width + 'cm no es estandar para ' + MODS[m.type].n + ' (estandar: ' + MODS[m.type].w.join(', ') + 'cm)</div>';
+                    }
                     h += '<p class="module-desc">' + MODS[m.type].d + '</p></div>';
                 });
                 var tw = P.modules.reduce(function(a, m) {
