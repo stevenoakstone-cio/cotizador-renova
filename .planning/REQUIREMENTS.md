@@ -88,10 +88,10 @@
 ### Multi-Tenant
 
 - [x] **MTNT-01**: First-run config screen (Supabase URL, anon key, company name, logo upload)
-- [ ] **MTNT-02**: PDF uses company name and logo from APP_CONFIG instead of hardcoded Renova
-- [ ] **MTNT-03**: Connection status indicator in header (green=cloud, red=offline)
-- [ ] **MTNT-04**: License screen with version, client name, expiration date, support contact
-- [ ] **MTNT-05**: Basic license protection (licenseKey in APP_CONFIG, hash validation, lock screen)
+- [x] **MTNT-02**: PDF uses company name and logo from APP_CONFIG instead of hardcoded Renova
+- [x] **MTNT-03**: Connection status indicator in header (green=cloud, red=offline)
+- [x] **MTNT-04**: License screen with version, client name, expiration date, support contact
+- [x] **MTNT-05**: Basic license protection (licenseKey in APP_CONFIG, hash validation, lock screen)
 
 ### Quality
 

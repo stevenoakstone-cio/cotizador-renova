@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Tablered Arauco** - Exact-piece despiece for Librero, Credenza TV, and Mesa de Centro
 - [x] **Phase 7: Mueble TV** - TV unit module types (consola, torre, repisa, fondo panel)
 - [x] **Phase 8: Closet Extension + Puertas** - Missing closet modules and interior door quotation (completed 2026-02-20)
-- [ ] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen
+- [x] **Phase 9: Multi-Tenant SaaS** - First-run config, branded PDFs, connection indicator, license screen (completed 2026-02-20)
 - [ ] **Phase 10: Quality + Polish** - End-to-end cocina test, professional PDF, tooltips, sheet optimizer
 
 ## Phase Details
@@ -154,7 +154,7 @@ Plans:
   3. The app header shows a green indicator when connected to Supabase and a red indicator when offline
   4. A license screen shows the app version, client name, expiration date, and support contact
   5. An invalid or expired licenseKey shows a lock screen preventing app use
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 Plans:
 - [x] 09-01-PLAN.md — APP_CONFIG localStorage layer + first-run setup screen
 - [ ] 09-02-PLAN.md — PDF branding via APP_CONFIG + connection status indicator
@@ -186,5 +186,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Tablered Arauco | 1/1 | Complete | 2026-02-20 |
 | 7. Mueble TV | 2/2 | Complete | 2026-02-20 |
 | 8. Closet Extension + Puertas | 2/2 | Complete   | 2026-02-20 |
-| 9. Multi-Tenant SaaS | 0/3 | Not started | - |
+| 9. Multi-Tenant SaaS | 3/3 | Complete   | 2026-02-20 |
 | 10. Quality + Polish | 0/TBD | Not started | - |
