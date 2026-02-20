@@ -5633,6 +5633,40 @@
                 hw.push({ key: 'piston_150n', q: 1 });
                 hw.push({ key: 'pata_niveladora', q: 4 });
 
+            // --- TV modules (Phase 07) ---
+            } else if (moduleType === 'consolaPatas') {
+                // AUDIT: Consola con patas — 4 patas regulables + 4 zoclo clips (floor-standing TV console)
+                // Bisagras handled by calc() door block — NOT assigned here
+                hw.push({ key: 'pata',       q: 4 });
+                hw.push({ key: 'zoclo_clip', q: 4 });
+
+            } else if (moduleType === 'consolaFlotante') {
+                // AUDIT: Consola flotante — 2 soportes muro (parallel to soporte_bano pattern for bano flotante)
+                // Bisagras handled by calc() door block — NOT assigned here
+                hw.push({ key: 'soporte_flotante', q: 2 });
+
+            } else if (moduleType === 'torreLateralTV') {
+                // AUDIT: Torre lateral TV — 4 patas regulables (floor-standing tower, same pattern as cocina torres)
+                // Bisagras for door option handled by calc() door block — NOT assigned here
+                hw.push({ key: 'pata', q: 4 });
+
+            } else if (moduleType === 'repisaFlotante') {
+                // AUDIT: Repisa flotante — hardware depends on variant (hueca or herraje)
+                // No bisagras, no jaladeras — open shelf (no doors)
+                var variant = opts.variant || 'hueca';
+                if (variant === 'hueca') {
+                    // AUDIT: Hueca variant — 2 soportes_flotante hidden inside box as internal wall brackets
+                    hw.push({ key: 'soporte_flotante', q: 2 });
+                } else {
+                    // AUDIT: Herraje variant — 1 pair of hidden espigon brackets (herraje_repisa counted per pair)
+                    hw.push({ key: 'herraje_repisa', q: 1 });
+                }
+
+            } else if (moduleType === 'panelFondo') {
+                // AUDIT: Panel fondo (lambrin) — no standard hardware; bastidor priced via isBastidor pieces in calculateParts
+                // Panel attaches to bastidor with tornillos (absorbed in carpentry cost, not tracked separately)
+                // Push nothing — empty hardware array for this module type
+
             }
             // All other module types (entrepa, torreLateral, panelTV, moduloCentral, lateralAbierto,
             // alacenaAlta, gabineteBase, despensa, espacioCampana, esquineroGiratorio):
@@ -5670,7 +5704,8 @@
                         corrTier: m.corrTier,
                         marco: m.marco,
                         materialType: m.materialType,
-                        doors: m.doors
+                        doors: m.doors,
+                        variant: m.variant  // TV: repisaFlotante variant ('hueca' or 'herraje')
                     });
                     // Stamp module context onto each piece and push into the pieces array
                     cPieces.forEach(function(p) {
@@ -5691,7 +5726,8 @@
                         heightCm: m.height || P.defaultHeight || 200,
                         materialType: m.materialType,
                         marco: m.marco,
-                        aventosModel: m.aventosModel
+                        aventosModel: m.aventosModel,
+                        variant: m.variant  // TV: repisaFlotante variant ('hueca' or 'herraje')
                     });
                     modHW.forEach(function(hw) {
                         autoHW.push({ key: hw.key, q: hw.q, modId: m.id });
@@ -5700,11 +5736,12 @@
                 // Door pieces
                 if (m.doors || qm === 'solo_puertas') {
                     // Skip door generation for module types that have no doors (drawers/oven use their own frentes)
-                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'librero' || m.type === 'credenzaTV' || m.type === 'mesaCentro') {
+                    if (m.type === 'cajonera' || m.type === 'hornoBase' || m.type === 'torreHornos' || m.type === 'zoclo' || m.type === 'vistaLateral' || m.type === 'panelRelleno' || m.type === 'cubierta' || m.type === 'bajoLavabo' || m.type === 'cajoneraBano' || m.type === 'librero' || m.type === 'credenzaTV' || m.type === 'mesaCentro' || m.type === 'repisaFlotante' || m.type === 'panelFondo') {
                         // cajonera: frentes are in calculateParts(); hornoBase: oven has its own door
                         // torreHornos: oven has its own door, caj\u00f3n frente in calculateParts()
                         // zoclo/vistaLateral/panelRelleno/cubierta: extras have no puertas
                         // librero/credenzaTV/mesaCentro: puertas already in calculateParts (isPuerta flag); bisagras in assignHardware()
+                        // repisaFlotante: open shelf — no doors; panelFondo: flat panel — no doors
                         // Do nothing — skip door generation
                     } else {
                     var doorCnt;
