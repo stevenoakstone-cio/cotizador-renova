@@ -4606,6 +4606,214 @@
             };
         }
 
+        // === calculateParts: Generic piece-generation engine ===
+        // Called by calc() and future calc engines to generate cut pieces for any module type.
+        // moduleType: string matching MODS keys (e.g. 'modulo', 'colgador', 'zapatero', 'esquinero', 'entrepa', etc.)
+        // dimensions: { w: mm, h: mm, d: mm, w2: mm (optional, for esquinero/esquineroGiratorio) }
+        // materials: { thickness: number (16 or 25), cajones: number, shelves: number,
+        //              quoteMode: string, corrTier: string, marco: bool, materialType: string }
+        // Returns: { pieces: [...], hwHints: [...] }
+        //   pieces: array of { n, q, w, h, t, c, z }   (no mid/mn/mw — caller stamps those)
+        //   hwHints: array of { key, q }                (hardware auto-assignments; caller pushes into autoHW)
+        function calculateParts(moduleType, dimensions, materials) {
+            var w  = dimensions.w;
+            var h  = dimensions.h;
+            var d  = dimensions.d;
+            var w2 = dimensions.w2 !== undefined ? dimensions.w2 : w;
+            var TK = materials.thickness || 16;
+            var pieces  = [];
+            var hwHints = [];
+
+            if (moduleType === 'modulo') {
+                // Closet drawer/shelf module
+                var caj = typeof materials.cajones === 'number' ? materials.cajones : 4;
+                // AUDIT: Lateral — full depth, full height — no deductions (outer structural panels)
+                pieces.push({ n: 'Lateral',   q: 2, w: d,       h: h,        t: TK, z: 'i' });
+                // AUDIT: Techo/Piso — deduct 2x panel thickness from width (w - 2*TK = w - 32 at 16mm) so they fit between laterales
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32, h: d,        t: TK, z: 'i' });
+                // AUDIT: Fondo — inset by 1x TK on all sides so it fits inside the box (w - 2*TK, h - 2*TK)
+                pieces.push({ n: 'Fondo',      q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                if (caj > 0) {
+                    // AUDIT: ch = usable height (h minus 100mm structure allowance) divided evenly by drawer count
+                    var ch = Math.floor((h - 100) / caj);
+                    // AUDIT: Frente cajon — 6mm gap on all sides for alignment tolerance (w-6, ch-6); 4 edges chapacanto; zone='f' (frente)
+                    pieces.push({ n: 'Frente cajon', q: caj,     w: w - 6,     h: ch - 6,  t: TK, c: 4, z: 'f' });
+                    // AUDIT: Costado cajon — 50mm deducted from depth for slide mechanism clearance; 80mm deducted from height for slide height
+                    pieces.push({ n: 'Costado cajon', q: caj * 2, w: d - 50,   h: ch - 80, t: TK, c: 1, z: 'i' });
+                    // AUDIT: Int. cajon — 100mm deducted from width for slide + structure on both sides; 80mm height clearance for slide
+                    pieces.push({ n: 'Int. cajon',    q: caj * 2, w: w - 100,  h: ch - 80, t: TK, c: 1, z: 'i' });
+                    // AUDIT: Fondo cajon — same 100mm width deduction; 50mm depth deduction for slide stop
+                    pieces.push({ n: 'Fondo cajon',   q: caj,     w: w - 100,  h: d - 50,  t: TK, z: 'i' });
+                    var corrKey = materials.corrTier || 'corr_eco';
+                    hwHints.push({ key: corrKey, q: caj });
+                    if (!materials.doors) hwHints.push({ key: 'jaladera', q: caj });
+                } else {
+                    var msh = typeof materials.shelves === 'number' ? materials.shelves : 3;
+                    if (msh > 0) {
+                        // AUDIT: Entrepano — same width deduction as Techo/Piso (fits between laterales)
+                        pieces.push({ n: 'Entrepano', q: msh, w: w - 32, h: d, t: TK, z: 'i' });
+                    }
+                }
+
+            } else if (moduleType === 'colgador') {
+                // Closet hanging-bar module
+                // AUDIT: Lateral — full depth, full height (outer structural panels)
+                pieces.push({ n: 'Lateral',   q: 2, w: d,       h: h,             t: TK, z: 'i' });
+                // AUDIT: Techo/Piso — w - 2*TK (= w - 32 at 16mm), fits between laterales
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32, h: d,             t: TK, z: 'i' });
+                // AUDIT: Entrepano — single shelf, same width deduction as Techo/Piso (single shelf at mid-height)
+                pieces.push({ n: 'Entrepano', q: 1, w: w - 32, h: d,             t: TK, z: 'i' });
+                // AUDIT: Fondo — inset by TK on all sides (w - 2*TK, h - 2*TK)
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
+                hwHints.push({ key: 'tubo',   q: 1 });
+                hwHints.push({ key: 'soporte', q: 2 });
+
+            } else if (moduleType === 'zapatero') {
+                // Closet shoe-rack module with pull-out trays
+                // AUDIT: Lateral — full depth, full height (outer structural panels)
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                // AUDIT: Techo/Piso — w - 2*TK (= w - 32 at 16mm)
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                // AUDIT: Charola — pull-out tray; 100mm inset on width for slide mechanism on both sides; 100mm inset on depth for slide stop
+                pieces.push({ n: 'Charola',   q: 6, w: w - 100,     h: d - 100,       t: TK, z: 'i' });
+                // AUDIT: Fondo — inset by TK on all sides
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+                hwHints.push({ key: 'corr_eco', q: 6 });
+
+            } else if (moduleType === 'esquinero') {
+                // Closet L-shape corner module
+                // AUDIT: Lateral A — full width A, full height (one outer panel of the L)
+                pieces.push({ n: 'Lateral A', q: 1, w: w,  h: h,            t: TK, z: 'i' });
+                // AUDIT: Lateral B — uses w2 (second leg of L), full height
+                pieces.push({ n: 'Lateral B', q: 1, w: w2, h: h,            t: TK, z: 'i' });
+                // AUDIT: Diagonal — hypotenuse face panel; width = half hypotenuse (sqrt(w^2+w2^2)*0.5) rounded; 2 edges chapacanto; zone='f'
+                pieces.push({ n: 'Diagonal',  q: 1, w: Math.round(Math.sqrt(w * w + w2 * w2) * 0.5), h: h, t: TK, c: 2, z: 'f' });
+                // AUDIT: Techo/Piso — horizontal panels; deduct TK from both w and w2 (fit inside both laterales)
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 2 * TK, h: w2 - 2 * TK, t: TK, z: 'i' });
+                // AUDIT: Entrepano — same deductions as Techo/Piso (fits inside the L-box)
+                pieces.push({ n: 'Entrepano', q: 1, w: w - 2 * TK, h: w2 - 2 * TK,  t: TK, z: 'i' });
+
+            } else if (moduleType === 'entrepa') {
+                // Closet open shelving unit
+                var sh = typeof materials.shelves === 'number' ? materials.shelves : 5;
+                // AUDIT: Lateral — full depth, full height (outer structural panels)
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                // AUDIT: Techo/Piso — w - 2*TK (= w - 32 at 16mm), fits between laterales
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                // AUDIT: Entrepano — same width deduction as Techo/Piso; shelves||5 count
+                pieces.push({ n: 'Entrepano', q: sh, w: w - 32,     h: d,             t: TK, z: 'i' });
+                // AUDIT: Fondo — inset by TK on all sides
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'torreLateral') {
+                // TV: lateral tower unit with shelves
+                var sh = typeof materials.shelves === 'number' ? materials.shelves : 3;
+                // AUDIT: Lateral — zone='f' (visible front material) for TV towers
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'f' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepano', q: sh, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'panelTV') {
+                // TV: decorative TV background panel with crossbars
+                // AUDIT: Panel — fixed 1200mm height regardless of module height (standard TV back panel)
+                pieces.push({ n: 'Panel',     q: 1, w: w,       h: 1200,  t: TK, c: 4, z: 'f' });
+                // AUDIT: Travesano — horizontal cross-member; 100mm tall; w - 2*TK width
+                pieces.push({ n: 'Travesano', q: 2, w: w - 32,  h: 100,   t: TK,       z: 'i' });
+
+            } else if (moduleType === 'moduloCentral') {
+                // TV: central base module with single shelf
+                // AUDIT: Lateral — zone='f' (visible front material) for TV modules
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'f' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepano', q: 1, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'lateralAbierto') {
+                // TV: open lateral unit with shelves
+                // AUDIT: Lateral — zone='f' (visible front material) for TV laterals
+                var sh = typeof materials.shelves === 'number' ? materials.shelves : 3;
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'f' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepano', q: sh, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'alacenaAlta') {
+                // Cocina: upper wall cabinet
+                // AUDIT: alacH uses module h directly (already resolved by caller in mm)
+                var alacH = h;
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: alacH,             t: TK, z: 'i' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,                 t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepano', q: 1, w: w - 32,     h: d,                 t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: alacH - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'gabineteBase') {
+                // Cocina: base cabinet with single shelf
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepano', q: 1, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'cajonBase') {
+                // Cocina: base cabinet with drawers
+                var caj = typeof materials.cajones === 'number' ? materials.cajones : 3;
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+                if (caj > 0) {
+                    // AUDIT: ch = usable height divided by drawer count (100mm structure allowance)
+                    var ch = Math.floor((h - 100) / caj);
+                    // AUDIT: Frente cajon — 6mm gap; 4 edges chapacanto; zone='f'
+                    pieces.push({ n: 'Frente cajon', q: caj,     w: w - 6,    h: ch - 6,  t: TK, c: 4, z: 'f' });
+                    // AUDIT: Lat. cajon — 80mm deducted from depth for kitchen drawer slide; 30mm height clearance
+                    pieces.push({ n: 'Lat. cajon',   q: caj * 2, w: d - 80,   h: ch - 30, t: TK, z: 'i' });
+                    // AUDIT: Resp. cajon — 80mm deducted from width for kitchen slide; 30mm height clearance
+                    pieces.push({ n: 'Resp. cajon',  q: caj * 2, w: w - 80,   h: ch - 30, t: TK, z: 'i' });
+                    // AUDIT: Base cajon — 80mm deducted from both w and d for slide clearance
+                    pieces.push({ n: 'Base cajon',   q: caj,     w: w - 80,   h: d - 80,  t: TK, z: 'i' });
+                    hwHints.push({ key: 'corr_oculta', q: caj });
+                }
+
+            } else if (moduleType === 'despensa') {
+                // Cocina: tall pantry with adjustable shelves
+                var sh = typeof materials.shelves === 'number' ? materials.shelves : 4;
+                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: h,             t: TK, z: 'i' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepano', q: sh, w: w - 32,     h: d,             t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,   t: TK, z: 'i' });
+
+            } else if (moduleType === 'espacioCampana') {
+                // Cocina: open frame for range hood — no back, fixed 400mm lateral height
+                // AUDIT: Lateral — fixed 400mm height (standard hood clearance frame)
+                pieces.push({ n: 'Lateral',   q: 2, w: d,      h: 400, t: TK, z: 'i' });
+                // AUDIT: Travesano — 100mm tall horizontal cross-member; w - 2*TK width
+                pieces.push({ n: 'Travesano', q: 2, w: w - 32, h: 100, t: TK, z: 'i' });
+
+            } else if (moduleType === 'esquineroGiratorio') {
+                // Cocina: corner unit with lazy-susan hardware
+                var w2g = dimensions.w2 !== undefined ? dimensions.w2 : w;
+                pieces.push({ n: 'Lateral A', q: 1, w: w,           h: h,              t: TK, z: 'i' });
+                pieces.push({ n: 'Lateral B', q: 1, w: w2g,          h: h,              t: TK, z: 'i' });
+                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 2 * TK, h: w2g - 2 * TK,  t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: h - 2 * TK,    t: TK, z: 'i' });
+
+            } else if (moduleType === 'puerta') {
+                // Individual door panel with optional marco (frame)
+                // AUDIT: Panel puerta — full w x h; 4 edges chapacanto; zone='f'
+                pieces.push({ n: 'Panel puerta', q: 1, w: w, h: h, t: TK, c: 4, z: 'f' });
+                if (materials.marco) {
+                    // AUDIT: Jamba — 100mm wide vertical frame members; zone='f'
+                    pieces.push({ n: 'Jamba',   q: 2, w: 100,      h: h,   t: TK, z: 'f' });
+                    // AUDIT: Cabezal — horizontal top frame; w + 200mm to overlap both jambas
+                    pieces.push({ n: 'Cabezal', q: 1, w: w + 200,  h: 100, t: TK, z: 'f' });
+                }
+                // Note: bisagra/base_clip for puerta type are handled in calc() because
+                // they require getBisagraCount() and materialType — kept there intentionally.
+            }
+
+            return { pieces: pieces, hwHints: hwHints };
+        }
+
         // === CALC: Cost-based pricing engine ===
         function calc() {
             var P = S.project,
@@ -4621,476 +4829,37 @@
                     h = (m.height || P.defaultHeight || 200) * 10;
                 var qm = m.quoteMode || 'completo';
                 if (qm !== 'solo_puertas') {
-                    if (m.type === 'modulo') {
-                        var caj = typeof m.cajones === 'number' ? m.cajones : 4;
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral',
-                            q: 2,
-                            w: d,
-                            h: h,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Techo/Piso',
-                            q: 2,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Fondo',
-                            q: 1,
-                            w: w - 2 * TK,
-                            h: h - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                        if (caj > 0) {
-                            var ch = Math.floor((h - 100) / caj);
-                            pieces.push({
-                                mid: m.id,
-                                mn: m.name,
-                                mw: m.width,
-                                n: 'Frente cajon',
-                                q: caj,
-                                w: w - 6,
-                                h: ch - 6,
-                                t: TK,
-                                c: 4,
-                                z: 'f'
-                            });
-                            pieces.push({
-                                mid: m.id,
-                                mn: m.name,
-                                mw: m.width,
-                                n: 'Costado cajon',
-                                q: caj * 2,
-                                w: d - 50,
-                                h: ch - 80,
-                                t: TK,
-                                c: 1,
-                                z: 'i'
-                            });
-                            pieces.push({
-                                mid: m.id,
-                                mn: m.name,
-                                mw: m.width,
-                                n: 'Int. cajon',
-                                q: caj * 2,
-                                w: w - 100,
-                                h: ch - 80,
-                                t: TK,
-                                c: 1,
-                                z: 'i'
-                            });
-                            pieces.push({
-                                mid: m.id,
-                                mn: m.name,
-                                mw: m.width,
-                                n: 'Fondo cajon',
-                                q: caj,
-                                w: w - 100,
-                                h: d - 50,
-                                t: TK,
-                                z: 'i'
-                            });
-                            // CUSTOMIZE: Hardware auto-rules — change default slide type, add rules for new module types
-                            var corrKey = m.corrTier || 'corr_eco';
-                            autoHW.push({
-                                key: corrKey,
-                                q: caj,
-                                modId: m.id
-                            });
-                            if (!m.doors)
-                                autoHW.push({
-                                    key: 'jaladera',
-                                    q: caj,
-                                    modId: m.id
-                                });
-                        } else {
-                            var msh = typeof m.shelves === 'number' ? m.shelves : 3;
-                            if (msh > 0)
-                                pieces.push({
-                                    mid: m.id,
-                                    mn: m.name,
-                                    mw: m.width,
-                                    n: 'Entrepano',
-                                    q: msh,
-                                    w: w - 32,
-                                    h: d,
-                                    t: TK,
-                                    z: 'i'
-                                });
-                        }
-                    } else if (m.type === 'colgador') {
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral',
-                            q: 2,
-                            w: d,
-                            h: h,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Techo/Piso',
-                            q: 2,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Entrepano',
-                            q: 1,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Fondo',
-                            q: 1,
-                            w: w - 2 * TK,
-                            h: h - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                        autoHW.push({
-                            key: 'tubo',
-                            q: 1,
-                            modId: m.id
-                        });
-                        autoHW.push({
-                            key: 'soporte',
-                            q: 2,
-                            modId: m.id
-                        });
-                    } else if (m.type === 'zapatero') {
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral',
-                            q: 2,
-                            w: d,
-                            h: h,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Techo/Piso',
-                            q: 2,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Charola',
-                            q: 6,
-                            w: w - 100,
-                            h: d - 100,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Fondo',
-                            q: 1,
-                            w: w - 2 * TK,
-                            h: h - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                        autoHW.push({
-                            key: 'corr_eco',
-                            q: 6,
-                            modId: m.id
-                        });
-                    } else if (m.type === 'esquinero') {
-                        var w2 = (m.width2 || m.width) * 10;
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral A',
-                            q: 1,
-                            w: w,
-                            h: h,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral B',
-                            q: 1,
-                            w: w2,
-                            h: h,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Diagonal',
-                            q: 1,
-                            w: Math.round(Math.sqrt(w * w + w2 * w2) * 0.5),
-                            h: h,
-                            t: TK,
-                            c: 2,
-                            z: 'f'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Techo/Piso',
-                            q: 2,
-                            w: w - 2 * TK,
-                            h: w2 - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Entrepano',
-                            q: 1,
-                            w: w - 2 * TK,
-                            h: w2 - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                        autoHW.push({
-                            key: 'tubo',
-                            q: 1,
-                            modId: m.id
-                        });
-                        autoHW.push({
-                            key: 'soporte',
-                            q: 2,
-                            modId: m.id
-                        });
-                    } else if (m.type === 'entrepa') {
-                        var sh = m.shelves || 5;
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral',
-                            q: 2,
-                            w: d,
-                            h: h,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Techo/Piso',
-                            q: 2,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Entrepano',
-                            q: sh,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Fondo',
-                            q: 1,
-                            w: w - 2 * TK,
-                            h: h - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                    } else if (m.type === 'torreLateral') {
-                        var sh = m.shelves || 3;
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Lateral',
-                            q: 2,
-                            w: d,
-                            h: h,
-                            t: TK,
-                            z: 'f'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Techo/Piso',
-                            q: 2,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Entrepano',
-                            q: sh,
-                            w: w - 32,
-                            h: d,
-                            t: TK,
-                            z: 'i'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Fondo',
-                            q: 1,
-                            w: w - 2 * TK,
-                            h: h - 2 * TK,
-                            t: TK,
-                            z: 'i'
-                        });
-                    } else if (m.type === 'panelTV') {
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Panel',
-                            q: 1,
-                            w: w,
-                            h: 1200,
-                            t: TK,
-                            c: 4,
-                            z: 'f'
-                        });
-                        pieces.push({
-                            mid: m.id,
-                            mn: m.name,
-                            mw: m.width,
-                            n: 'Travesano',
-                            q: 2,
-                            w: w - 32,
-                            h: 100,
-                            t: TK,
-                            z: 'i'
-                        });
-                    } else if (m.type === 'alacenaAlta') {
-                        // Cocina: alacena alta (upper cabinet)
-                        var alacH = m.height ? m.height * 10 : 700; // default 70cm tall
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: alacH, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: 1, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: alacH - 2 * TK, t: TK, z: 'i' });
-                    } else if (m.type === 'gabineteBase') {
-                        // Cocina: gabinete base
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: 1, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                    } else if (m.type === 'cajonBase') {
-                        // Cocina: base con cajones
-                        var caj = typeof m.cajones === 'number' ? m.cajones : 3;
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                        if (caj > 0) {
-                            var ch = Math.floor((h - 100) / caj);
-                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Frente cajon', q: caj, w: w - 6, h: ch - 6, t: TK, c: 4, z: 'f' });
-                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lat. cajon', q: caj * 2, w: d - 80, h: ch - 30, t: TK, z: 'i' });
-                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Resp. cajon', q: caj * 2, w: w - 80, h: ch - 30, t: TK, z: 'i' });
-                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Base cajon', q: caj, w: w - 80, h: d - 80, t: TK, z: 'i' });
-                            autoHW.push({ key: 'corr_oculta', q: caj, modId: m.id });
-                        }
-                    } else if (m.type === 'despensa') {
-                        // Cocina: despensa (tall pantry)
-                        var sh = m.shelves || 4;
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: sh, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                    } else if (m.type === 'espacioCampana') {
-                        // Cocina: espacio campana — open frame, no back
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: 400, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Travesano', q: 2, w: w - 32, h: 100, t: TK, z: 'i' });
-                    } else if (m.type === 'esquineroGiratorio') {
-                        // Cocina: esquinero giratorio
-                        var w2 = (m.width2 || m.width) * 10;
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral A', q: 1, w: w, h: h, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral B', q: 1, w: w2, h: h, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 2 * TK, h: w2 - 2 * TK, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                    } else if (m.type === 'moduloCentral') {
-                        // TV: modulo central
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'f' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: 1, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                    } else if (m.type === 'lateralAbierto') {
-                        // TV: lateral abierto con entrepaños
-                        var sh = m.shelves || 3;
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Lateral', q: 2, w: d, h: h, t: TK, z: 'f' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Techo/Piso', q: 2, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Entrepano', q: sh, w: w - 32, h: d, t: TK, z: 'i' });
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Fondo', q: 1, w: w - 2 * TK, h: h - 2 * TK, t: TK, z: 'i' });
-                    } else if (m.type === 'puerta') {
-                        // Puerta: single panel + optional marco, no zones
-                        var marco = m.marco;
-                        pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Panel puerta', q: 1, w: w, h: h, t: TK, c: 4, z: 'f' });
-                        if (marco) {
-                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Jamba', q: 2, w: 100, h: h, t: TK, z: 'f' });
-                            pieces.push({ mid: m.id, mn: m.name, mw: m.width, n: 'Cabezal', q: 1, w: w + 200, h: 100, t: TK, z: 'f' });
-                        }
-                        // Auto-assign bisagras using CONFIG rules
+                    // Delegate piece generation to calculateParts()
+                    var cpResult = calculateParts(m.type, {
+                        w: w,
+                        h: h,
+                        d: d,
+                        w2: m.width2 ? m.width2 * 10 : undefined
+                    }, {
+                        thickness: TK,
+                        cajones: typeof m.cajones === 'number' ? m.cajones : undefined,
+                        shelves: m.shelves,
+                        quoteMode: qm,
+                        corrTier: m.corrTier,
+                        marco: m.marco,
+                        materialType: m.materialType,
+                        doors: m.doors
+                    });
+                    // Stamp module context onto each piece and push into the pieces array
+                    cpResult.pieces.forEach(function(p) {
+                        p.mid = m.id;
+                        p.mn  = m.name;
+                        p.mw  = m.width;
+                        pieces.push(p);
+                    });
+                    // Push hardware hints into autoHW
+                    cpResult.hwHints.forEach(function(hw) {
+                        autoHW.push({ key: hw.key, q: hw.q, modId: m.id });
+                    });
+                    // puerta type: bisagras require getBisagraCount() — handled here, not in calculateParts
+                    if (m.type === 'puerta') {
                         var puertaHinges = getBisagraCount(m.height || P.defaultHeight || 200, m.materialType);
-                        autoHW.push({ key: 'bisagra', q: puertaHinges, modId: m.id });
+                        autoHW.push({ key: 'bisagra',   q: puertaHinges, modId: m.id });
                         autoHW.push({ key: 'base_clip', q: puertaHinges, modId: m.id });
                     }
                 } // end qm!=='solo_puertas'
