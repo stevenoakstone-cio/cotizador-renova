@@ -7228,6 +7228,30 @@
                         });
                         h += '</div></div>';
                     }
+                    if (m.type === 'alacenaAventos') {
+                        var aventosM = m.aventosModel || 'hk';
+                        h += '<div class="module-row"><span>Aventos:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [['hk', 'HK-S'], ['hl', 'HL'], ['hs', 'HS']].forEach(function(opt) {
+                            h += '<button class="opt-btn' + (aventosM === opt[0] ? ' sel' : '') + '" onclick="APP.setModAventos(\'' + m.id + '\',\'' + opt[0] + '\')">' + opt[1] + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
+                    if (m.type === 'alacenaEstandar' || m.type === 'alacenaSobreCampana') {
+                        var entCnt = typeof m.shelves === 'number' ? m.shelves : 1;
+                        h += '<div class="module-row"><span>Entrepa\u00f1os:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [0, 1, 2, 3].forEach(function(n) {
+                            h += '<button class="opt-btn' + (entCnt === n ? ' sel' : '') + '" onclick="APP.setModShelves(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
+                    if (m.type === 'torreDespensa') {
+                        var entCnt = typeof m.shelves === 'number' ? m.shelves : 4;
+                        h += '<div class="module-row"><span>Entrepa\u00f1os:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
+                        [2, 3, 4, 5, 6].forEach(function(n) {
+                            h += '<button class="opt-btn' + (entCnt === n ? ' sel' : '') + '" onclick="APP.setModShelves(\'' + m.id + '\',' + n + ')">' + n + '</button>';
+                        });
+                        h += '</div></div>';
+                    }
                     if (m.type === 'esquineroGiratorio') {
                         h += '<div class="module-row"><span>Ancho 2:</span><input type="number" value="' + (m.width2 || m.width) + '" min="30" max="120" step="10" style="width:80px;padding:6px;background:#3a3a3a;border:none;border-radius:8px;color:#fff;text-align:center" onchange="APP.setModW2(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:#999;margin-left:4px">cm (segundo lado)</span></div>';
                     }
@@ -11052,6 +11076,14 @@
             setModW2: function(id, w) {
                 var m = S.project.modules.find(function(x) { return x.id === id; });
                 if (m) { m.width2 = w; S.editedPieces = {}; render(); }
+            },
+            setModAventos: function(id, model) {
+                var m = S.project.modules.find(function(x) { return x.id === id; });
+                if (m) { m.aventosModel = model; S.editedPieces = {}; render(); }
+            },
+            setModShelves: function(id, n) {
+                var m = S.project.modules.find(function(x) { return x.id === id; });
+                if (m) { m.shelves = n; S.editedPieces = {}; render(); }
             },
             togModProp: function(id, prop) {
                 var m = S.project.modules.find(function(x) { return x.id === id; });
