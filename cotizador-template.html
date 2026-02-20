@@ -3249,6 +3249,33 @@
                 w: [60, 75, 90],
                 d: 'Nicho horno 595mm + caj\u00f3n inferior'
             },
+            // Cocina Alacenas — Prof: 30-35cm, Alto: 70-90cm
+            alacenaEstandar: {
+                n: 'Alacena Est\u00e1ndar',
+                w: [30, 40, 45, 50, 60, 75, 80, 90],
+                d: '1-2 puertas, 1-2 entrepa\u00f1os | Prof: 30-35cm, Alto: 70-90cm'
+            },
+            alacenaAventos: {
+                n: 'Alacena Aventos',
+                w: [60, 75, 80, 90],
+                d: 'Puerta elevable Blum Aventos (HK/HL/HS) | Prof: 30-35cm'
+            },
+            alacenaSobreCampana: {
+                n: 'Alacena Sobre Campana',
+                w: [60, 70, 80, 90],
+                d: 'Sobre campana o refri, prof. reducida | Prof: 20-30cm'
+            },
+            // Cocina Torres — Prof: 58-60cm, Alto total: 220-240cm
+            torreHornos: {
+                n: 'Torre de Hornos',
+                w: [60, 75, 90],
+                d: 'Microondas + horno, caj\u00f3n inferior, ventilaci\u00f3n | Prof: 58-60cm'
+            },
+            torreDespensa: {
+                n: 'Torre Despensa',
+                w: [40, 50, 60],
+                d: 'Entrepa\u00f1os regulables 32mm, 2 puertas (sup+inf) | Prof: 58-60cm'
+            },
             // Puertas — Ancho: 80-90cm (int), 100cm (principal) | Alto: 200, 210, 240cm
             puerta: {
                 n: 'Puerta',
@@ -3308,6 +3335,10 @@
         if (!HW_DEFAULTS.zoclo_clip) HW_DEFAULTS.zoclo_clip = { desc: 'Clip zoclo cocina', marca: 'DEMO', fallback: 8, cat: 'ACC. COCINA' };
         if (!HW_DEFAULTS.corr_tandem) HW_DEFAULTS.corr_tandem = { desc: 'Corredera Blum Tandem soft-close', marca: 'DEMO', fallback: 350, cat: 'CORREDERA' };
         if (!HW_DEFAULTS.bisagra_165) HW_DEFAULTS.bisagra_165 = { desc: 'Bisagra 165\u00b0 esquinero', marca: 'DEMO', fallback: 45, cat: 'BISAGRA' };
+        if (!HW_DEFAULTS.aventos_hk) HW_DEFAULTS.aventos_hk = { desc: 'Blum Aventos HK-S', marca: 'DEMO', fallback: 850, cat: 'AVENTOS' };
+        if (!HW_DEFAULTS.aventos_hl) HW_DEFAULTS.aventos_hl = { desc: 'Blum Aventos HL', marca: 'DEMO', fallback: 1200, cat: 'AVENTOS' };
+        if (!HW_DEFAULTS.aventos_hs) HW_DEFAULTS.aventos_hs = { desc: 'Blum Aventos HS', marca: 'DEMO', fallback: 1500, cat: 'AVENTOS' };
+        if (!HW_DEFAULTS.soporte_alacena) HW_DEFAULTS.soporte_alacena = { desc: 'Soporte colgante alacena', marca: 'DEMO', fallback: 25, cat: 'ACC. COCINA' };
         /* ── REAL HW_DEFAULTS (uncomment to restore) ──
         var HW_DEFAULTS = {
             corr_eco: { desc: 'Corredera ext total ecoline', marca: 'HERRAXA', fallback: 49.90, cat: 'CORREDERA' },
