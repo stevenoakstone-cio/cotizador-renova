@@ -12409,12 +12409,33 @@
                 render();
             },
             newProject: function() {
-                S.screen = 'estandarizado';
-                S.estScreen = 'builder';
-                S.estEditIdx = -1;
-                S.estProject = defaultEstProject();
-                S.estProject.mode = 'custom';
-                S.estPdfData = null;
+                S.screen = 'project';
+                S.step = 1;
+                S.project = {
+                    client: '',
+                    type: '',
+                    sameMaterial: true,
+                    matFrentes: defaultMat(),
+                    matInterior: defaultMat(),
+                    chapFrentesPrice: CONFIG.pricing.defaultChapPrice,
+                    chapInteriorPrice: CONFIG.pricing.defaultChapPrice,
+                    thickness: 16,
+                    modules: [],
+                    hardware: [],
+                    ledConfig: { activation: 'dimmer', lightTemp: 'calida' },
+                    glass: false,
+                    glassM2: 0,
+                    laborCost: CONFIG.pricing.defaultLaborCost,
+                    freight: true,
+                    freightCost: CONFIG.pricing.defaultFreightCost,
+                    defaultHeight: 200,
+                    defaultDepth: 50,
+                    sameDepth: true,
+                    chapSpec: CONFIG.pricing.defaultChapSpec,
+                    enchapPrice: typeof CONFIG.pricing.defaultEnchapPrice === 'number' ? CONFIG.pricing.defaultEnchapPrice : 13
+                };
+                S.pdfData = null;
+                S.editedPieces = {};
                 scrollY = 0;
                 render();
             },
@@ -14447,11 +14468,11 @@
             return; // Do not render main app until setup is complete
         }
 
-        // License check: validate license key before rendering main app
+        // License check: only enforce if a licenseKey was provided
         var licResult = validateLicense();
-        if (!licResult.valid) {
+        if (licResult.reason !== 'no_key' && !licResult.valid) {
             showLockScreen(licResult.reason, licResult);
-            return; // Do not render main app until license is valid
+            return;
         }
 
         render();
