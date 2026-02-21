@@ -92,6 +92,13 @@ None - no external service configuration required.
 - Ready for Phase 08-02: door logic / puertas for closet modules (calc() door block for new module types)
 - Anti-vuelco warning active for all tall closet custom modules
 
+## Self-Check: PASSED
+
+- FOUND: cotizador-template/cotizador-template.html (modified with all 6 code changes)
+- FOUND: .planning/phases/08-closet-extension-puertas/08-01-SUMMARY.md
+- FOUND: commit a078ee1 (task changes: MODS + calculateParts + assignHardware + anti-vuelco)
+- FOUND: commit 3084dde (metadata: SUMMARY + STATE + ROADMAP + REQUIREMENTS)
+
 ---
 *Phase: 08-closet-extension-puertas*
 *Completed: 2026-02-20*

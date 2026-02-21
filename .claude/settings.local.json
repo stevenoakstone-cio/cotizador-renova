@@ -18,7 +18,27 @@
       "Bash(git -C /tmp/closet-cotizador-bare log --format=\"%ai %s\" --reverse)",
       "Bash(gh auth status:*)",
       "Bash(git init:*)",
-      "Bash(git remote add:*)"
+      "Bash(git remote add:*)",
+      "Skill(gsd:new-project)",
+      "Bash(start:*)",
+      "Bash(ls:*)",
+      "Bash(node:*)",
+      "Bash(test:*)",
+      "Bash(git log:*)",
+      "Bash(cmd.exe /c \"dir D:\\\\claude-projects\\\\project-renova\\\\cotizador-template\\\\.planning\\\\phases\\\\04-cocina-extras-ui-output\")",
+      "Bash(cmd.exe /c \"dir D:\\\\claude-projects\\\\project-renova\\\\cotizador-template\\\\.planning\")",
+      "Bash(cmd.exe /c \"dir /a D:\\\\claude-projects\\\\project-renova\\\\cotizador-template\")",
+      "Bash(cmd.exe /c \"dir /a /b D:\\\\claude-projects\\\\project-renova\\\\cotizador-template\"\")",
+      "Bash(cmd.exe /c \"dir /a /b D:\\\\claude-projects\\\\project-renova\\\\cotizador-template\")",
+      "Bash(cmd.exe /c \"dir /a /b\")",
+      "Bash(git -C /d/claude-projects/project-renova/cotizador-template log --oneline)",
+      "Bash(xxd:*)",
+      "Bash([ -f \"D:/claude-projects/project-renova/.planning/phases/05-banos/05-01-SUMMARY.md\" ])",
+      "Bash(python3:*)",
+      "Bash(git restore:*)",
+      "Bash(cmd /c \"dir /a D:\\\\claude-projects\\\\project-renova\\\\cotizador-template\")",
+      "Bash(powershell -Command:*)",
+      "Skill(gsd:update)"
     ]
   }
 }

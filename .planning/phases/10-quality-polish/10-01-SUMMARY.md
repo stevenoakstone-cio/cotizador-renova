@@ -118,6 +118,14 @@ Each task was committed atomically:
 - Both features work for all project types (closet, cocina, bano, tv) since they operate on MODS[mk] data and calc() pieces array generically
 - No regressions expected — changes are additive only
 
+## Self-Check: PASSED
+
+- SUMMARY.md: FOUND at .planning/phases/10-quality-polish/10-01-SUMMARY.md
+- cotizador-template.html: FOUND with both changes applied
+- Commit c85f91f (Task 1 - tooltips): FOUND
+- Commit b352e29 (Task 2 - sheet optimizer): FOUND
+- Metadata commit 1e107e6: created successfully
+
 ---
 *Phase: 10-quality-polish*
 *Completed: 2026-02-20*
