@@ -44,7 +44,8 @@
         --color-bg-overlay: rgba(13, 13, 13, 0.8);
         --color-highlight: rgba(255, 255, 255, 0.08);
         --color-highlight-border: rgba(255, 255, 255, 0.15);
-        --color-bg-quote-hdr: #222222
+        --color-bg-quote-hdr: #222222;
+        --mod-block-stroke: rgba(255,255,255,0.75)
     }
     body.light {
         --color-bg: #f5f5f5;
@@ -71,7 +72,8 @@
         --color-bg-overlay: rgba(0, 0, 0, 0.5);
         --color-highlight: rgba(0, 0, 0, 0.05);
         --color-highlight-border: rgba(0, 0, 0, 0.12);
-        --color-bg-quote-hdr: #e8e8e8
+        --color-bg-quote-hdr: #e8e8e8;
+        --mod-block-stroke: rgba(0,0,0,0.65)
     }
 
     * {
@@ -376,7 +378,7 @@
         padding: 12px 4px;
         -webkit-overflow-scrolling: touch;
         align-items: flex-end;
-        min-height: 120px
+        min-height: 152px
     }
     .mod-block {
         flex-shrink: 0;
@@ -387,10 +389,11 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 8px 4px;
+        padding: 6px 6px 4px;
         border: 2px solid transparent;
         transition: all .15s;
-        min-width: 50px
+        min-width: 72px;
+        overflow: hidden
     }
     .mod-block.sel {
         border-color: var(--color-text-primary);
@@ -426,23 +429,28 @@
     }
     .mod-block-label {
         font-size: 10px;
-        color: #fff;
+        color: var(--color-text-primary);
         text-align: center;
         margin-top: 4px;
         max-width: 100%;
+        line-height: 1.2;
         overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-word
     }
     .mod-block-w {
         font-size: 9px;
-        color: rgba(255,255,255,0.7);
-        text-align: center
+        color: var(--color-text-secondary);
+        text-align: center;
+        margin-top: 2px
     }
     .mod-block svg.mod-silhouette {
         width: 100%;
-        height: 60px;
-        stroke: rgba(255,255,255,0.6);
+        height: 64px;
+        flex-shrink: 0;
+        stroke: var(--mod-block-stroke);
         stroke-width: 1.5;
         fill: none
     }
@@ -3282,9 +3290,9 @@
                 autoAssignRules: {
                     puertas: {
                         bisagras: [
-                            { maxHeight: 100, count: 3 },
-                            { maxHeight: 200, count: 4 },
-                            { maxHeight: Infinity, count: 5 }
+                            { maxHeight: 1000, count: 2 },
+                            { maxHeight: 2000, count: 3 },
+                            { maxHeight: Infinity, count: 4 }
                         ],
                         heavyMaterialBonus: 1
                     }
@@ -3433,8 +3441,8 @@
           },
           esquinero_bajo: {
             dims: ['height','depth'],
-            widthX: { type:'number', default:900, label:'Ancho eje X (mm)' },
-            widthY: { type:'number', default:900, label:'Ancho eje Y (mm)' },
+            widthX: { type:'number', default:900, label:'Lado X (mm)' },
+            widthY: { type:'number', default:900, label:'Lado Y (mm)' },
             esquineroTipo: { type:'button_group', options:['ciego','carrusel','magic_corner'],
                              labels:['Ciego','Carrusel','Magic Corner'], default:'ciego' }
           },
@@ -3457,8 +3465,8 @@
           },
           alacena_esquinera: {
             dims: ['height','depth'],
-            widthX: { type:'number', default:600, label:'Ancho eje X (mm)' },
-            widthY: { type:'number', default:600, label:'Ancho eje Y (mm)' },
+            widthX: { type:'number', default:600, label:'Lado X (mm)' },
+            widthY: { type:'number', default:600, label:'Lado Y (mm)' },
             esquineroTipo: { type:'button_group', options:['con_puertas','carrusel'], default:'con_puertas' }
           },
           alacena_profunda: {
@@ -4372,16 +4380,17 @@
         };
 
         // Category tab colors for module picker
+        var _isLight = document.body.classList.contains('light');
         var BP_COLORS = {
-            'Bajos': { bg: '#2563eb', border: '#3b82f6', light: 'rgba(37,99,235,0.25)' },
-            'Alacenas': { bg: '#7c3aed', border: '#8b5cf6', light: 'rgba(124,58,237,0.25)' },
-            'Altos': { bg: '#7c3aed', border: '#8b5cf6', light: 'rgba(124,58,237,0.25)' },
-            'Torres': { bg: '#059669', border: '#10b981', light: 'rgba(5,150,105,0.25)' },
-            'Extras': { bg: '#d97706', border: '#f59e0b', light: 'rgba(217,119,6,0.25)' },
-            'Modulos': { bg: '#c49a6c', border: '#d4aa7c', light: 'rgba(196,154,108,0.25)' },
-            'TV': { bg: '#0891b2', border: '#06b6d4', light: 'rgba(8,145,178,0.25)' },
-            'Tablered': { bg: '#65a30d', border: '#84cc16', light: 'rgba(101,163,13,0.25)' },
-            '_default': { bg: '#6b7280', border: '#9ca3af', light: 'rgba(107,114,128,0.25)' }
+            'Bajos':    { bg: '#2563eb', border: '#3b82f6', light: _isLight ? 'rgba(37,99,235,0.18)'   : 'rgba(37,99,235,0.40)'   },
+            'Alacenas': { bg: '#7c3aed', border: '#8b5cf6', light: _isLight ? 'rgba(124,58,237,0.18)'  : 'rgba(124,58,237,0.40)'  },
+            'Altos':    { bg: '#7c3aed', border: '#8b5cf6', light: _isLight ? 'rgba(124,58,237,0.18)'  : 'rgba(124,58,237,0.40)'  },
+            'Torres':   { bg: '#059669', border: '#10b981', light: _isLight ? 'rgba(5,150,105,0.18)'   : 'rgba(5,150,105,0.40)'   },
+            'Extras':   { bg: '#d97706', border: '#f59e0b', light: _isLight ? 'rgba(217,119,6,0.18)'   : 'rgba(217,119,6,0.40)'   },
+            'Modulos':  { bg: '#c49a6c', border: '#d4aa7c', light: _isLight ? 'rgba(196,154,108,0.18)' : 'rgba(196,154,108,0.40)' },
+            'TV':       { bg: '#0891b2', border: '#06b6d4', light: _isLight ? 'rgba(8,145,178,0.18)'   : 'rgba(8,145,178,0.40)'   },
+            'Tablered': { bg: '#65a30d', border: '#84cc16', light: _isLight ? 'rgba(101,163,13,0.18)'  : 'rgba(101,163,13,0.40)'  },
+            '_default': { bg: '#6b7280', border: '#9ca3af', light: _isLight ? 'rgba(107,114,128,0.18)' : 'rgba(107,114,128,0.40)' }
         };
         function getModCatColor(modType) {
             var cat = (MODS[modType] && MODS[modType].cat) || '';
@@ -5539,10 +5548,11 @@
                 // Cocina: upper wall cabinet
                 // AUDIT: alacH uses module h directly (already resolved by caller in mm)
                 var alacH = h;
-                pieces.push({ n: 'Lateral',   q: 2, w: d,           h: alacH,             t: TK, z: 'i' });
-                pieces.push({ n: 'Techo/Piso', q: 2, w: w - 32,     h: d,                 t: TK, z: 'i' });
-                pieces.push({ n: 'Entrepano', q: 1, w: w - 32,     h: d,                 t: TK, z: 'i' });
-                pieces.push({ n: 'Fondo',     q: 1, w: w - 2 * TK, h: alacH - 2 * TK,   t: TK, z: 'i' });
+                pieces.push({ n: 'Costado',    q: 2, w: d,           h: alacH,             t: TK, z: 'i' });
+                pieces.push({ n: 'Techo',      q: 1, w: w - 2 * TK, h: d,                 t: TK, z: 'i' });
+                pieces.push({ n: 'Piso',       q: 1, w: w - 2 * TK, h: d,                 t: TK, z: 'i' });
+                pieces.push({ n: 'Entrepaño',  q: 1, w: w - 2 * TK, h: d,                 t: TK, z: 'i' });
+                pieces.push({ n: 'Fondo',      q: 1, w: w - 2 * TK, h: alacH - 2 * TK,   t: 3,  z: 'i' });
 
             } else if (moduleType === 'gabineteBase') {
                 // Cocina: base cabinet — NO techo (countertop goes on top), amarres instead
@@ -5931,6 +5941,7 @@
             } else if (moduleType === 'bajoLavabo') {
                 // Bano: bajo lavabo flotante (INSTRUCTIVO 4.2)
                 // AUDIT: Standard bano bajo h=500-600mm, d=450-500mm — wall-mounted flotante
+                var iW = w - 2 * TK; // inner width: w minus 2 side panels
                 var cajCount = materials.cajones || 2;
                 var cajH = cajCount === 1
                     ? Math.round(h - TK) // single cajon: full inner height minus top amarre
@@ -5956,6 +5967,7 @@
             } else if (moduleType === 'cajoneraBano') {
                 // Bano: cajonera auxiliar (INSTRUCTIVO 4.2)
                 // AUDIT: Auxiliary bano bajo h=500-600mm, d=450-500mm — same logic as cocina cajonera but shorter
+                var iW = w - 2 * TK; // inner width: w minus 2 side panels
                 var cajCount = materials.cajones || 2;
                 // AUDIT: cajH = (h - TK) / cajCount — minus one TK for top amarre only
                 var cajH = Math.round((h - TK) / cajCount);
@@ -5976,6 +5988,7 @@
             } else if (moduleType === 'botiquin') {
                 // Bano: botiquin/espejo wall-mount thin module (INSTRUCTIVO 4.2)
                 // AUDIT: d=100-150mm (thin wall cabinet), h=600-900mm, w=400-800mm
+                var iW = w - 2 * TK; // inner width: w minus 2 side panels
                 var doorCnt = w <= 500 ? 1 : 2;
                 // Casco pieces
                 pieces.push({ n: 'Costado',      q: 2, w: d,        h: h,       t: TK, z: 'i' }); // AUDIT: h x d full height
@@ -6218,13 +6231,13 @@
 
             } else if (moduleType === 'bajoEstandar') {
                 // Cocina: standard base cabinet — patas + zoclo only (door hardware in calc())
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'fregadero') {
                 // Cocina: sink module — patas + zoclo only (always 2 puertas, bisagras in calc())
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'cajonera') {
                 // Cocina: drawer module — Blum Tandem correderas + patas + zoclo
@@ -6236,20 +6249,20 @@
                     hw.push({ key: 'jaladera', q: caj });
                 }
                 // patas + clips
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'esquineroCiego') {
                 // Cocina: blind corner or L-corner — patas + zoclo (door bisagras in calc())
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'hornoBase') {
                 // Cocina: oven base — 1 pair Tandem for cajón inferior + patas + zoclo
                 hw.push({ key: 'corr_tandem', q: 1 });
                 hw.push({ key: 'jaladera', q: 1 });
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'alacenaEstandar') {
                 // Cocina: standard wall cabinet — wall-mount brackets only (door bisagras in calc())
@@ -6273,20 +6286,20 @@
                 // Cocina: tower — Tandem + patas + zoclo
                 hw.push({ key: 'corr_tandem', q: 1 });
                 hw.push({ key: 'jaladera', q: 1 });
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'torreDespensa') {
                 // Cocina: tall pantry tower — patas + zoclo (door bisagras in calc())
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             // ── COCINAS: New hardware assignments per INSTRUCTIVO 4 ──
 
             } else if (moduleType === 'bajoCooktop') {
                 // Same as bajoEstandar — patas + zoclo
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'alacenaCampana') {
                 // INSTRUCTIVO 4.7: 2 lateral doors + 4 wall brackets (wider module)
@@ -6302,23 +6315,23 @@
 
             } else if (moduleType === 'torreMicroondas') {
                 // Floor tower with microwave niche — patas + zoclo
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'torreRefrigerador') {
                 // Frame only — patas + zoclo, no doors
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'torreLimpieza') {
                 // Same as torreDespensa — patas + zoclo, doors in calc()
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'isla') {
                 // Island — patas (dynamic) + zoclo clips
-                hw.push({ key: 'pata', q: kitchenPatas(dims.w) });
-                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dims.w) });
+                hw.push({ key: 'pata', q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'gabineteRemate') {
                 // Over-fridge cap — wall brackets
@@ -6408,13 +6421,13 @@
 
             } else if (moduleType === 'gabineteBase') {
                 // Cocina: base cabinet — patas + zoclo clips
-                hw.push({ key: 'pata', q: 4 });
-                hw.push({ key: 'zoclo_clip', q: 4 });
+                hw.push({ key: 'pata',       q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'torre') {
                 // Cocina: simplified full-height tower — patas + zoclo clips
-                hw.push({ key: 'pata', q: 4 });
-                hw.push({ key: 'zoclo_clip', q: 4 });
+                hw.push({ key: 'pata',       q: kitchenPatas(dimensions.w) });
+                hw.push({ key: 'zoclo_clip', q: kitchenClipsZoclo(dimensions.w) });
 
             } else if (moduleType === 'credenzaBase') {
                 // Credenza con patas — patas + zoclo clips
@@ -6648,8 +6661,8 @@
                         doorH = h - 10;
                         doorW = innerW - 4;
                     } else {
-                        doorW = Math.round(w / doorCnt) - 3;
-                        doorH = h - 3;
+                        doorW = doorCnt === 1 ? (innerW - 4) : (Math.round(innerW / doorCnt) - 2);
+                        doorH = h - 10;
                     }
                     // For tower types, doorH is half the tower (2 stacked doors) per INSTRUCTIVO
                     if (m.type === 'torreDespensa' || m.type === 'torre' || m.type === 'torreLimpieza') {
@@ -6670,11 +6683,11 @@
                             c: 4,
                             z: 'f'
                         });
-                    var doorHeightCm = (m.height || P.defaultHeight || 200);
                     var doorMatType = _doorMat;
                     if (m.type !== 'alacenaAventos') {
                         // Standard bisagra + base_clip push (aventos hardware is already in assignHardware — no bisagras needed)
-                        var bisPerDoor = getBisagraCount(doorHeightCm, doorMatType);
+                        // Use kitchenBisagrasPerDoor (mm-based, per INSTRUCTIVO): ≤1000mm→2, ≤2000mm→3, >2000mm→4
+                        var bisPerDoor = kitchenBisagrasPerDoor(doorH, doorMatType);
                         // AUDIT: esquineroCiego en L uses 165-degree bisagras; all other types use standard bisagra
                         var bisKey = (m.type === 'esquineroCiego' && m.esquineroTipo === 'enL') ? 'bisagra_165' : 'bisagra';
                         autoHW.push({
@@ -7567,8 +7580,8 @@
                 P.modules.forEach(function(m, i) {
                     var col = getModCatColor(m.type);
                     var isSel = S.selectedModId === m.id;
-                    var blockW = Math.max(50, Math.min(120, m.width * 0.8));
-                    h += '<div class="mod-block' + (isSel ? ' sel' : '') + '" style="width:' + blockW + 'px;height:90px;background:' + col.light + ';border-color:' + (isSel ? col.border : 'transparent') + '" onclick="APP.selectMod(\'' + m.id + '\')">';
+                    var blockW = Math.max(72, Math.min(140, m.width * 0.9));
+                    h += '<div class="mod-block' + (isSel ? ' sel' : '') + '" style="width:' + blockW + 'px;height:132px;background:' + col.light + ';border-color:' + (isSel ? col.border : 'transparent') + '" onclick="APP.selectMod(\'' + m.id + '\')">';
                     h += '<div class="mod-block-actions">';
                     if (i > 0) h += '<button onclick="event.stopPropagation();APP.moveMod(\'' + m.id + '\',-1)" title="Mover izquierda">\u2190</button>';
                     if (i < P.modules.length - 1) h += '<button onclick="event.stopPropagation();APP.moveMod(\'' + m.id + '\',1)" title="Mover derecha">\u2192</button>';
@@ -7580,7 +7593,8 @@
                     } else {
                         h += modSvg(m.type);
                     }
-                    h += '<div class="mod-block-label">' + (MODS[m.type] ? MODS[m.type].n : m.name) + '</div>';
+                    var _mLabel = MODS[m.type] ? MODS[m.type].n : m.name;
+                    h += '<div class="mod-block-label" title="' + _mLabel + '">' + _mLabel + '</div>';
                     h += '<div class="mod-block-w">' + m.width + 'cm</div>';
                     h += '</div>';
                 });
@@ -7777,7 +7791,7 @@
                         });
                         h += '</div></div>';
                     }
-                    if (m.type === 'alacenaEstandar' || m.type === 'alacenaSobreCampana') {
+                    if (P.type !== 'cocina' && (m.type === 'alacenaEstandar' || m.type === 'alacenaSobreCampana')) {
                         var entCnt = typeof m.shelves === 'number' ? m.shelves : 1;
                         h += '<div class="module-row"><span>Entrepa\u00f1os:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
                         [0, 1, 2, 3].forEach(function(n) {
@@ -7785,7 +7799,7 @@
                         });
                         h += '</div></div>';
                     }
-                    if (m.type === 'torreDespensa') {
+                    if (P.type !== 'cocina' && m.type === 'torreDespensa') {
                         var entCnt = typeof m.shelves === 'number' ? m.shelves : 4;
                         h += '<div class="module-row"><span>Entrepa\u00f1os:</span><div style="display:flex;gap:6px;flex-wrap:wrap">';
                         [2, 3, 4, 5, 6].forEach(function(n) {
@@ -7984,8 +7998,8 @@
                                 h += '<div class="module-row"><span>Alto zoclo:</span><input type="number" value="' + m.zoclo.height + '" min="5" max="25" step="1" style="width:60px;padding:6px;background:var(--color-bg-tertiary);border:none;border-radius:8px;color:var(--color-text-primary);text-align:center" onchange="APP.setZocloH(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:var(--color-text-muted);margin-left:4px">cm</span></div>';
                             }
                         }
-                        // Maletero toggle
-                        if (m.maletero) {
+                        // Maletero toggle (closet only — never shown for kitchens)
+                        if (m.maletero && P.type !== 'cocina') {
                             h += '<div class="module-row"><span>Maletero:</span><button class="toggle' + (m.maletero.enabled ? ' on' : '') + '" onclick="APP.togModMaletero(\'' + m.id + '\')"></button><span style="font-size:12px;color:var(--color-text-muted);margin-left:4px">superior</span></div>';
                             if (m.maletero.enabled) {
                                 h += '<div class="module-row"><span>Alto maletero:</span><input type="number" value="' + m.maletero.height + '" min="15" max="80" step="5" style="width:60px;padding:6px;background:var(--color-bg-tertiary);border:none;border-radius:8px;color:var(--color-text-primary);text-align:center" onchange="APP.setMaleteroH(\'' + m.id + '\',parseInt(this.value))"><span style="font-size:12px;color:var(--color-text-muted);margin-left:4px">cm</span></div>';
