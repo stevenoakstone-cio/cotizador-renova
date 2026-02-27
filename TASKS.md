@@ -1,182 +1,349 @@
 # TASKS.md — Plan de Desarrollo Cotizador Pro
 > Para usar con Claude Code + plugin GetShitDone.
-> Leer CONTEXT.md y INSTRUCTIVO_TECNICO.md antes de empezar cualquier tarea.
+> Leer CONTEXT.md, INSTRUCTIVO_TECNICO.md e INSTRUCTIVO_TECNICO_COCINAS.md antes de empezar cualquier tarea.
 > No romper closets. No separar archivos. Todo en cotizador-template.html salvo que se indique.
 
 ---
 
 ## BLOQUE 0 — Fundación (hacer primero, todo lo demás depende de esto)
 
-- [ ] **0.1** Leer `CONTEXT.md` e `INSTRUCTIVO_TECNICO.md` completos antes de empezar.
+- [x] **0.1** Leer `CONTEXT.md`, `INSTRUCTIVO_TECNICO.md` e `INSTRUCTIVO_TECNICO_COCINAS.md` completos antes de empezar.
 
-- [ ] **0.2** Auditar el código de closets en `cotizador-template.html`:
+- [x] **0.2** Auditar el código de closets en `cotizador-template.html`:
   - Identificar dónde están definidos los módulos de closet (objeto/array con los tipos)
   - Identificar la función de despiece automático (donde se calculan las `parts`)
   - Identificar el sistema de filtrado de UI por tipo de mueble
   - Identificar la función de asignación automática de herrajes
   - Documentar los hallazgos en comentarios en el código o en un archivo `AUDIT.md`
 
-- [ ] **0.3** Crear la función genérica `calculateParts(moduleType, dimensions, material)` que:
+- [x] **0.3** Crear la función genérica `calculateParts(moduleType, dimensions, material)` que:
   - Recibe tipo de módulo, dimensiones (w, h, d) y material
-  - Aplica la fórmula base: `innerWidth = width - 30`
-  - Retorna array de piezas `[{ name, qty, w, h, thickness, material }]`
+  - Aplica la fórmula base: `innerWidth = width - 30` (2 × espesor 15mm)
+  - Retorna array de piezas `[{ name, qty, largo, ancho, thickness, mat, nota }]`
   - Es el núcleo que todos los módulos nuevos usarán
-  - **Referencia:** Sección "Cálculo de piezas (despiece automático)" en CONTEXT.md
+  - **Referencia:** Sección 3.1 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **0.4** Crear la función `assignHardware(moduleType, dimensions, parts)` que:
+- [x] **0.4** Crear la función `assignHardware(moduleType, dimensions, parts, config)` que:
   - Asigna automáticamente herrajes según tipo y dimensiones
-  - Regla de bisagras: altura ≤ 1000mm → 2 bisagras; 1000–2000mm → 3; >2000mm → 4
-  - Regla de correderas: ancho ≤ 500mm → estándar; >500mm → Tandem Plus con freno
-  - Regla de patas: módulos bajos de cocina → 4 patas (2 si comparte con módulo contiguo)
-  - Regla de precio: herraje ≤ $500 MXN → factor ×3; ≥ $501 → precio ÷ 0.70
-  - **Referencia:** Sección "Reglas de negocio" en CONTEXT.md
+  - Regla bisagras: altura ≤ 1000mm → 2; 1000–2000mm → 3; >2000mm → 4; +1 si vidrio/metal
+  - Regla correderas: el usuario elige entre Blum Tandem o económica (toggle)
+  - Regla patas: módulos bajos y torres → 4 patas; ancho > 900mm → 6 patas
+  - Regla precio: herraje ≤ $500 MXN → absorbido en ×3; >$500 → precio = costo / 0.70
+  - **Referencia:** Sección 4 de INSTRUCTIVO_TECNICO_COCINAS.md
 
 ---
 
 ## BLOQUE 1 — Cocinas (prioridad máxima)
 
-> Leer Sección 3 de INSTRUCTIVO_TECNICO.md antes de este bloque.
+> Leer INSTRUCTIVO_TECNICO_COCINAS.md completo antes de este bloque.
+> No tocar nada de closets. Todo código nuevo va en secciones claramente marcadas con `// COCINAS`.
 
-### 1A — Módulos Bajos de Cocina
+---
 
-- [ ] **1A.1** Definir el objeto de configuración para módulos bajos de cocina:
+### 1A — Catálogo de módulos y CONFIG
+
+- [x] **1A.1** Agregar al CONFIG el objeto `kitchen` con todos los flags de activación por cliente:
   ```javascript
-  COCINA_MODULES_BAJOS = {
-    base_1_puerta:   { label: 'Base 1 Puerta',   defaultW: 600, defaultH: 720, defaultD: 580 },
-    base_2_puertas:  { label: 'Base 2 Puertas',  defaultW: 600, defaultH: 720, defaultD: 580 },
-    fregadero:       { label: 'Fregadero',        defaultW: 600, defaultH: 720, defaultD: 580 },
-    cajonera_2:      { label: 'Cajonera 2 Cajones', defaultW: 500, defaultH: 720, defaultD: 580 },
-    cajonera_3:      { label: 'Cajonera 3 Cajones', defaultW: 500, defaultH: 720, defaultD: 580 },
-    cajonera_4:      { label: 'Cajonera 4 Cajones', defaultW: 500, defaultH: 720, defaultD: 580 },
-    esquinero_ciego: { label: 'Esquinero Ciego',  defaultW: 900, defaultH: 720, defaultD: 580 },
-    esquinero_l:     { label: 'Esquinero en L',   defaultW: 900, defaultH: 720, defaultD: 580 },
-    horno_base:      { label: 'Módulo Horno',     defaultW: 600, defaultH: 720, defaultD: 580 },
+  kitchen: {
+    zocloMode: 'configurable', // 'auto' | 'extra' | 'configurable'
+    cubiertas: true,
+    preciosCubierta: { postformado: 2500, cuarzo: 8500, granito: 6500, acero: 9000 },
+    precioZoclo: 350,
+    modules: {
+      bajo_estandar: true, bajo_cajones: true, bajo_fregadero: true,
+      bajo_horno: true, bajo_cooktop: false, esquinero_bajo: true,
+      alacena_estandar: true, alacena_aventos: true, alacena_campana: true,
+      alacena_esquinera: false, alacena_profunda: false,
+      torre_despensa: true, torre_hornos: true, torre_microondas: false,
+      torre_refrigerador: false, torre_limpieza: false,
+      cubierta: true, zoclo: true, panel_lateral: true,
+      panel_relleno: false, isla: false, gabinete_remate: false,
+    }
   }
   ```
+  **Referencia:** Sección 6 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1A.2** Implementar despiece automático para `base_1_puerta` y `base_2_puertas`:
-  - Casco: 2 costados + 1 piso + 2 amarres (sup e inf) + 1 fondo HDF 3mm + 1 entrepaño opcional
-  - Frente: puertas según `width ≤ 500 → 1 puerta; > 500 → 2 puertas`
-  - Ancho puerta = `(innerWidth / doorQty) - 2mm` por puerta
-  - Alto puerta = `height - 10mm`
-  - **Referencia:** Sección 3.7 de INSTRUCTIVO_TECNICO.md
+- [x] **1A.2** Definir el objeto `KITCHEN_MODS` con los 22 módulos, sus dimensiones default, categoría y label:
+  - Cada entrada: `{ type, label, category, defaultW, defaultH, defaultD, enabledKey }`
+  - Categorías: `'bajos'`, `'alacenas'`, `'torres'`, `'extras'`
+  - El UI solo muestra los módulos donde `CONFIG.kitchen.modules[enabledKey] === true`
+  - **Referencia:** Sección 2.1 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1A.3** Implementar despiece automático para `fregadero`:
-  - Sin techo (solo 2 amarres de 80mm)
-  - Sin entrepaño interior
-  - Saque en fondo trasero para tuberías (notar en el despiece como observación)
-  - 2 puertas siempre
-  - **Referencia:** "Módulo Fregadero" en Sección 3.3 de INSTRUCTIVO_TECNICO.md
-
-- [ ] **1A.4** Implementar despiece automático para `cajonera_2`, `cajonera_3`, `cajonera_4`:
-  - Casco: 2 costados + 1 piso + 1 amarre + 1 fondo HDF
-  - Por cada cajón: 2 costados + 1 frente interno + 1 fondo HDF
-  - Frentes de cajón (premium): 1 por cajón
-  - Alturas de cajones para módulo de 720mm:
-    - Superior: 150mm | Medios: 200mm | Inferior: 270mm (ajustar para que sumen 720mm)
-  - Herraje: 1 par de correderas Blum Tandem por cajón
-  - **Referencia:** "Módulo Cajonera" en Sección 3.3 de INSTRUCTIVO_TECNICO.md
-
-- [ ] **1A.5** Implementar despiece automático para `horno_base`:
-  - Casco con entrepaño a 595mm del piso (hueco del horno)
-  - 1 cajón inferior de 150mm
-  - Nota en despiece: "Saque trasero 100mm para ventilación — obligatorio"
-  - Nota en despiece: "Verificar medidas del horno antes de fabricar"
-
-- [ ] **1A.6** Implementar herrajes automáticos para módulos bajos de cocina:
-  - Todos llevan patas regulables (4 pz por módulo independiente)
-  - Todos llevan zoclo (1 ml por módulo)
-  - Cajoneras: correderas Blum Tandem (1 par por cajón)
-  - Puertas: bisagras cup 35mm (2 por puerta)
-  - Esquinero en L: bisagras 165° en lugar de estándar
-
-### 1B — Módulos Altos de Cocina (Alacenas)
-
-- [ ] **1B.1** Definir objeto de configuración para alacenas:
+- [x] **1A.3** Definir los anchos estándar sugeridos por categoría:
   ```javascript
-  COCINA_MODULES_ALTOS = {
-    alacena_std:      { label: 'Alacena Estándar',   defaultW: 600, defaultH: 800, defaultD: 350 },
-    alacena_aventos:  { label: 'Alacena Aventos',    defaultW: 600, defaultH: 800, defaultD: 350 },
-    alacena_campana:  { label: 'Sobre Campana/Refri', defaultW: 600, defaultH: 400, defaultD: 300 },
-  }
+  const KITCHEN_WIDTH_PRESETS = {
+    bajos:    [300, 400, 450, 500, 600, 800, 900],
+    alacenas: [300, 400, 450, 500, 600, 800, 900],
+    torres:   [450, 500, 600],
+    extras:   []
+  };
   ```
+  Estos se usan como dropdown de sugerencias en el campo de ancho. El usuario puede escribir cualquier otro valor.
 
-- [ ] **1B.2** Implementar despiece para `alacena_std`:
-  - Casco: 2 costados + 1 piso + 1 techo + 1 fondo HDF + 1-2 entrepaños
-  - 1 o 2 puertas (mismo criterio que módulos bajos)
-  - Sin patas (va anclada a muro)
-  - **Referencia:** "Alacena Estándar" en Sección 3.4 de INSTRUCTIVO_TECNICO.md
+---
 
-- [ ] **1B.3** Implementar despiece para `alacena_aventos`:
-  - 1 sola puerta elevable (no 2 laterales)
-  - Nota en despiece: "Sistema Aventos — seleccionar modelo según peso del frente"
-  - Agregar campo para seleccionar modelo Aventos (HK, HL, HS)
+### 1B — Despiece de módulos bajos
 
-### 1C — Torres / Columnas
+> Constantes globales para todo el bloque: `T=15`, `TF=18`, `THDF=3`
+> Fórmula base: `innerWidth = W - (2 * T)` — aplicar en TODOS los módulos sin excepción.
+> Los módulos bajos NO llevan techo de tablero — la cubierta lo reemplaza.
 
-- [ ] **1C.1** Definir objeto de configuración para torres:
-  ```javascript
-  COCINA_MODULES_TORRES = {
-    torre_hornos:   { label: 'Torre de Hornos',  defaultW: 600, defaultH: 2100, defaultD: 580 },
-    torre_despensa: { label: 'Torre Despensa',   defaultW: 600, defaultH: 2100, defaultD: 580 },
-  }
-  ```
+- [x] **1B.1** Implementar `calcBajoEstandar(module)`:
+  - Piezas casco: 2× Costado (D×H), 1× Piso (innerWidth×D), 2× Amarre sup (innerWidth×80), 1× Fondo HDF (innerWidth×H)
+  - Puertas: si W ≤ 500 → 1 puerta; si W > 500 → 2 puertas (sugerencia, el usuario puede cambiar con toggle)
+  - doorW (1 puerta) = innerWidth - 4 | doorW (2 puertas) = floor(innerWidth/2) - 2
+  - doorH = H - 10
+  - Entrepaños: stepper 0–3, default 1 | medidas: (innerWidth-2) × (D-30)
+  - **Referencia:** Sección 3.2 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1C.2** Implementar despiece para `torre_hornos`:
-  - Estructura de piso a techo
-  - Nichos: microondas 450mm + horno 600mm + cajón inferior 150mm + puertas arriba
-  - Nota obligatoria: "Saque trasero 100mm para ventilación"
-  - **Referencia:** "Torre de Hornos" en Sección 3.5 de INSTRUCTIVO_TECNICO.md
+- [x] **1B.2** Implementar `calcBajoCajones(module)`:
+  - Piezas casco: 2× Costado, 1× Piso, 2× Amarre, 1× Fondo HDF (sin techo)
+  - Por cada cajón: 1× Frente ext (frente premium), 1× Frente int (casco), 2× Costado cajón, 1× Trasero, 1× Fondo HDF
+  - Medidas cajón: `cajonInnerW = innerWidth - 60` | `cajonDepth = D - 80` | `cajonH = alturaCajon - 20`
+  - Alturas default: 2 cajones → [200, 350] | 3 cajones → [150, 200, 270] | 4 cajones → [120, 150, 180, 200]
+  - Validación: suma de alturas + (numCajones × T) ≤ H - (2×T)
+  - **Referencia:** Sección 3.3 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1C.3** Implementar despiece para `torre_despensa`:
-  - Entrepaños regulables cada 32mm (sistema cremallera)
-  - 2 puertas (superior + inferior)
-  - **Referencia:** "Torre Despensa" en Sección 3.5 de INSTRUCTIVO_TECNICO.md
+- [x] **1B.3** Implementar `calcBajoFregadero(module)`:
+  - Idéntico a bajo estándar pero: sin entrepaño, siempre 2 puertas, nota "Zona húmeda — MDF RH recomendado"
+  - **Referencia:** Sección 3.4 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-### 1D — Piezas Extra de Cocina
+- [x] **1B.4** Implementar `calcBajoHorno(module)`:
+  - Casco base + 1× Separador horno (innerWidth × (D-30)) en posición calculada
+  - Toggle cajonHorno: 'arriba' | 'abajo' | 'ninguno'
+  - Si tiene cajón: mismas piezas de cajón que bajo_cajones (1 cajón)
+  - altoHueco default: 600mm — editable por el usuario
+  - **Referencia:** Sección 3.5 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1D.1** Agregar piezas extra al cotizador de cocinas:
-  - **Zoclo**: se calcula como ml lineales totales (suma del ancho de todos los módulos bajos)
-  - **Vista lateral (panel)**: tablero del material premium, tamaño = costado visible del casco
-  - **Panel de relleno**: tira de material entre módulo y pared (ancho variable 5–100mm)
-  - **Cubierta**: cotizar por m² (postformado, cuarzo, granito — precio diferenciado)
-  - Estas piezas deben poder agregarse manualmente desde la UI, no son automáticas
+- [x] **1B.5** Implementar `calcBajoCooktop(module)`:
+  - Mismo despiece que bajo_estandar
+  - Agregar pieza especial de nota: "Requiere recorte para parrilla — verificar dimensiones del modelo"
+  - **Referencia:** Sección 3.6 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-### 1E — UI de Cocinas
+- [x] **1B.6** Implementar `calcEsquineroBajo(module)`:
+  - Inputs: widthX, widthY (dos anchos separados), H, D
+  - Casco: usa el eje mayor como ancho principal
+  - Piezas: 2× Costado, 1× Piso, 2× Amarre, 1× Fondo HDF, 1× Panel ciego
+  - Toggle esquineroTipo: 'ciego' | 'carrusel' | 'magic_corner'
+  - Puertas según tipo: ciego→1 puerta bisagra 165° | carrusel→2 puertas pequeñas | magic_corner→1 puerta
+  - **Referencia:** Sección 3.7 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1E.1** Agregar `"cocina"` al selector de tipo de proyecto (Paso 1 del wizard)
+---
 
-- [ ] **1E.2** Implementar filtrado de UI: cuando `type === "cocina"`, mostrar SOLO:
-  - Los 3 grupos de módulos (Bajos, Alacenas, Torres) en el panel de configuración
-  - Materiales filtrados por categoría "casco" y "frente" (no clóset-específicos)
-  - Las piezas extra de cocina (zoclo, vista lateral, cubierta, panel de relleno)
+### 1C — Despiece de alacenas
 
-- [ ] **1E.3** Agrupar los módulos de cocina visualmente en el UI por categoría:
-  - Sección "Módulos Bajos" — con ícono y color diferenciador
-  - Sección "Alacenas" — idem
-  - Sección "Torres" — idem
-  - Sección "Piezas Extra" — idem
+> Las alacenas SÍ llevan techo de tablero (a diferencia de los bajos).
 
-- [ ] **1E.4** Agregar validaciones de cocina:
-  - Advertencia si hay módulo de horno sin nota de ventilación
-  - Advertencia si se usa MDF normal (no RH) en módulo de fregadero
-  - Advertencia si el ancho de un módulo no está en la lista de anchos estándar (300/400/450/500/600/750/800/900/1000mm)
+- [x] **1C.1** Implementar `calcAlacenaEstandar(module)`:
+  - Piezas: 2× Costado (D×H), 1× Piso (innerWidth×D), 1× Techo (innerWidth×D), 1× Amarre (innerWidth×80), 1× Fondo HDF
+  - Puertas: misma lógica que bajos (1 si W≤500, 2 si W>500)
+  - Entrepaños: stepper 0–4, default 2
+  - Toggle montaje: 'pared' | 'sobre_bajos'
+  - **Referencia:** Sección 3.8 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-### 1F — Totales y PDF de Cocinas
+- [x] **1C.2** Implementar `calcAlacenaAventos(module)`:
+  - Casco idéntico a alacena_estandar
+  - Puertas horizontales (abatibles hacia arriba)
+  - Toggle aventosHojas: 1 (puerta completa) | 2 (dividida en altura)
+  - Si 2 hojas: `hojaH = floor((H-10)/2) - 2`
+  - Herraje Aventos siempre isPremium: true
+  - **Referencia:** Sección 3.9 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1F.1** Agregar al resumen de cocinas:
-  - Subtotal de cascos (material económico)
-  - Subtotal de frentes (material premium)
-  - Subtotal de herrajes
-  - Subtotal de piezas extra (zoclo, cubierta, etc.)
-  - Total general con IVA
+- [x] **1C.3** Implementar `calcAlacenaCampana(module)`:
+  - Input adicional: anchoCampana (default 600mm)
+  - lateralW = floor((W - anchoCampana) / 2)
+  - Piezas: 2× Costado ext, 2× Panel divisor, 2× Piso lateral, 1× Techo corrido, 2× Fondo HDF, 2× Puerta lateral
+  - **Referencia:** Sección 3.10 de INSTRUCTIVO_TECNICO_COCINAS.md
 
-- [ ] **1F.2** Agregar al PDF de cocinas:
-  - Tabla de módulos con tipo, dimensiones, material, frente y precio unitario
-  - Tabla de despiece con todas las piezas calculadas
-  - Tabla de herrajes con cantidades
-  - Lista de piezas extra
-  - Nota técnica al pie: "Medidas sujetas a verificación en sitio"
+- [x] **1C.4** Implementar `calcAlacenaEsquinera(module)`:
+  - Inputs: widthX, widthY, H, D
+  - Toggle esquineroTipo: 'con_puertas' | 'carrusel'
+  - Bisagra especial 45° para tipo con_puertas
+  - **Referencia:** Sección 3.11 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1C.5** Implementar `calcAlacenaProfunda(module)`:
+  - Mismo cálculo que alacena_estandar
+  - Defaults distintos: H=350mm, D=600mm (profundidad igual a bajos)
+  - **Referencia:** Sección 3.12 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+---
+
+### 1D — Despiece de torres
+
+- [x] **1D.1** Implementar `calcTorreDespensa(module)`:
+  - Piezas: 2× Costado, 1× Piso, 1× Techo, 2× Amarre, 1× Fondo HDF
+  - Entrepaños: stepper 2–8, default 4
+  - Puertas: si W>600 → 2 puertas; si H>1500 → puertas dobles en altura (4 puertas total)
+  - `doorH = useDualDoor ? floor((H-10)/2)-2 : H-10`
+  - **Referencia:** Sección 3.13 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1D.2** Implementar `calcTorreHornos(module)`:
+  - Piezas base: 2× Costado, 1× Piso, 1× Techo, 2× Amarre, 1× Fondo HDF
+  - Separadores: 1× Sep.sup.microondas, 1× Sep.inf.microondas, 1× Sep.sup.horno
+  - Inputs: altoMicro (default 450), altoHorno (default 600)
+  - Toggle cajonesIntermedios: stepper 0–3, default 1
+  - Si cajones > 0: mismas piezas de cajón que bajo_cajones
+  - Puerta superior si queda espacio (hSup > 100mm)
+  - **Validación crítica:** `H >= altoMicro + altoHorno + (cajones×150) + (separadores×T) + 2T`
+  - Nota obligatoria: "⚠️ Saque trasero 100mm para ventilación — obligatorio"
+  - **Referencia:** Sección 3.14 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1D.3** Implementar `calcTorreMicroondas(module)`:
+  - Similar a torre_hornos pero con un solo hueco
+  - altoMicro default: 450mm
+  - El resto: entrepaños arriba y cajones abajo
+  - **Referencia:** Sección 3.15 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1D.4** Implementar `calcTorreRefrigerador(module)`:
+  - Solo genera marco: 2× Costado, 1× Techo, 1× Fondo HDF
+  - No genera frentes (el refri es visible)
+  - Nota: "Solo genera el marco/carcasa. El refrigerador no se cotiza."
+  - **Referencia:** Sección 3.16 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1D.5** Implementar `calcTorreLimpieza(module)`:
+  - Igual que torre_despensa con: numEntrepanos=0, numPuertas=1, W default=450mm
+  - **Referencia:** Sección 3.17 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+---
+
+### 1E — Extras de cocina
+
+- [x] **1E.1** Implementar módulo `cubierta`:
+  - No genera piezas de tablero — genera línea de costo por m²
+  - `area = (W/1000) * (D/1000)` en m²
+  - Toggle tipoCubierta: 'postformado' | 'cuarzo' | 'granito' | 'acero'
+  - `costo = area × CONFIG.kitchen.preciosCubierta[tipo]`
+  - Multiplicador extras: ×4 (igual que otros extras)
+  - **Referencia:** Sección 3.18 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1E.2** Implementar módulo `zoclo`:
+  - El usuario ingresa metros lineales y alto del zoclo (default 120mm)
+  - Genera 1 pieza de tablero: (ml×1000) × altoZoclo para el despiece
+  - `costo = ml × CONFIG.kitchen.precioZoclo`
+  - Si CONFIG.kitchen.zocloMode === 'auto': calcular ml automáticamente sumando anchos de módulos bajos
+
+- [x] **1E.3** Implementar módulo `panel_lateral`:
+  - 1 pieza: D × H, material: selector independiente (puede ser diferente al frente del proyecto)
+  - Default material: igual al frente del proyecto
+
+- [x] **1E.4** Implementar módulos `panel_relleno`, `isla` y `gabinete_remate`:
+  - panel_relleno: 1 pieza W×H, material casco
+  - isla: combinación de 2 bajos espalda con espalda (usar calcBajoEstandar × 2 con D compartida)
+  - gabinete_remate: igual que alacena_profunda, se ubica sobre refri o al remate de línea
+  - **Referencia:** Sección 3.18 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+---
+
+### 1F — Herrajes automáticos
+
+- [x] **1F.1** Implementar `assignKitchenHardware(module)`:
+  - Usar tabla de herrajes por módulo de Sección 4.7 de INSTRUCTIVO_TECNICO_COCINAS.md
+  - Cada herraje retorna: `{ id, qty, unitCost, isPremium }`
+  - isPremium: `unitCost > CONFIG.pricing.hardwareThreshold` (default $500 MXN)
+
+- [x] **1F.2** Implementar función `bisagrasPerDoor(doorHeight, frontMaterial)`:
+  - ≤1000mm → 2 | 1001–2000mm → 3 | >2000mm → 4
+  - +1 si material es 'vidrio', 'metal' o 'aluminio'
+  - Bisagra especial 165° para esquineros tipo 'ciego' y 'con_puertas'
+
+- [x] **1F.3** Implementar lógica de correderas:
+  - Toggle por módulo: 'blum_tandem' | 'economica'
+  - Si blum_tandem y cajonWidth > 500mm → usar 'blum_tandem_plus'
+  - Blum siempre isPremium: true
+
+- [x] **1F.4** Implementar lógica de patas:
+  - Solo bajos y torres: `qty = W > 900 ? 6 : 4`
+  - Clips de zoclo: `qty = ceil(W / 300) * 2`
+
+- [x] **1F.5** Implementar herrajes especiales:
+  - Aventos (alacena_aventos): 1 par por puerta, isPremium: true, modelo según peso estimado de puerta
+  - Carrusel lazy susan (esquinero tipo 'carrusel'): 1 pz, isPremium: true
+  - Magic corner (esquinero tipo 'magic_corner'): 1 pz, isPremium: true
+
+---
+
+### 1G — UI del Paso 2 para cocinas
+
+- [x] **1G.1** Agregar `"cocina"` al selector de tipo de proyecto en el Paso 1 del wizard.
+
+- [x] **1G.2** Cuando `type === 'cocina'`, mostrar en el Paso 2:
+  - Campo "Ancho del muro (mm)" — opcional, para el indicador de ancho acumulado
+  - Selector de material frente del proyecto (1 solo para todo el proyecto, con opción de override por módulo)
+  - Selector de material casco del proyecto
+  - Grupos de módulos filtrados por CONFIG.kitchen.modules
+
+- [x] **1G.3** Agrupar módulos visualmente en 4 secciones con header de categoría:
+  - 🔲 Bajos | 🔼 Alacenas | 🗼 Torres | ➕ Extras
+  - Solo mostrar las secciones que tienen al menos 1 módulo enabled en CONFIG
+
+- [x] **1G.4** Implementar la tarjeta de módulo de cocina con todos sus toggles:
+  - Campos de dimensiones (W, H, D) con input numérico y dropdown de anchos sugeridos
+  - Toggles según `KITCHEN_MODULE_CONTROLS[moduleType]` de Sección 5 de INSTRUCTIVO_TECNICO_COCINAS.md
+  - Toggle de corredera (Blum / económica) visible solo en módulos con cajones
+  - Toggle de montaje (pared / sobre bajos) solo en alacenas
+  - Override de material frente: checkbox "¿Frente diferente al proyecto?" — al marcar, mostrar selector
+  - **Referencia:** Sección 5 completa de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1G.5** Implementar el indicador de ancho acumulado:
+  - Mostrar debajo de la lista de módulos
+  - Acumular bajos y alacenas por separado
+  - Torres NO se acumulan con bajos
+  - Si el usuario ingresó ancho del muro: mostrar barra de progreso con colores
+    - ≤95% del muro → verde ✅
+    - 95–100% → amarillo ⚠️
+    - >100% → rojo ❌ "Excede el ancho disponible por Xmm"
+  - Si no ingresó ancho del muro: mostrar solo el total acumulado en mm
+  - **Referencia:** Sección 8 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1G.6** Implementar validaciones en tiempo real:
+  - Ancho mínimo 200mm — mostrar error inline
+  - Torres mínimo 1800mm de alto
+  - Suma de cajones no supera alto interior
+  - Suma de huecos en torre_hornos no supera alto total
+  - Esquineros: widthX y widthY ambos requeridos
+  - **Referencia:** Sección 7.1 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+- [x] **1G.7** Mostrar advertencias (no bloqueantes) en casos especiales:
+  - Bajo fregadero o bajo horno con material que no es MDF RH: "⚠️ Zona húmeda — considera MDF RH"
+  - Torre hornos/microondas: "⚠️ Verificar saque de ventilación 100mm antes de instalar"
+
+---
+
+### 1H — Paso 3: Resumen de costos de cocinas
+
+- [x] **1H.1** Agregar al resumen de cocinas las líneas específicas:
+  - Subtotal carpintería (casco + frente + corte + chapacanto + mano de obra + flete) × 3
+  - Subtotal herrajes premium (Blum, Aventos, etc.) — precio = costo / 0.70
+  - Subtotal extras (cubierta, zoclo si aplica) × 4
+  - Total antes de IVA
+  - IVA 16%
+  - Total con IVA
+
+- [x] **1H.2** Mostrar resumen de materiales:
+  - Láminas de casco necesarias (qty por material y espesor)
+  - Láminas de frente necesarias
+  - Metros lineales de chapacanto (casco y frente por separado)
+  - Fórmula: `sheetsNeeded(parts, mat)` con factor de desperdicio 20%
+  - **Referencia:** Sección 9.1 de INSTRUCTIVO_TECNICO_COCINAS.md
+
+---
+
+### 1I — PDF de cocinas
+
+- [x] **1I.1** PDF cliente (minimal — igual que closets):
+  - Portada oscura con logo, título "COTIZACIÓN DE COCINA", nombre del proyecto y cliente
+  - Descripción narrativa del proyecto
+  - Precio: subtotal → IVA → total
+  - Términos legales (desde CONFIG.brand.legalTerms)
+  - Sin detalle de módulos ni despiece
+
+- [x] **1I.2** PDF interno (despiece completo):
+  - Tabla de módulos: tipo, dimensiones, material casco, material frente, precio unitario
+  - Por cada módulo: tabla de piezas con nombre, cantidad, largo, ancho, material
+  - Tabla de herrajes: herraje, cantidad, costo unitario, subtotal
+  - Tabla de extras: cubierta, zoclo, paneles — con m² o ml y precio
+  - Resumen de materiales (láminas necesarias)
+  - Totales desglosados
 
 ---
 
@@ -187,20 +354,22 @@
 - [ ] **2.1** Definir módulos de baño:
   ```javascript
   BANO_MODULES = {
-    bajo_lavabo:  { label: 'Bajo Lavabo',      defaultW: 800,  defaultH: 550, defaultD: 500 },
-    cajonera_bano:{ label: 'Cajonera Baño',    defaultW: 400,  defaultH: 550, defaultD: 500 },
-    botikin:      { label: 'Botiquín/Espejo',  defaultW: 600,  defaultH: 800, defaultD: 150 },
+    vanity_1_puerta:  { label: 'Vanity 1 Puerta',   defaultW: 600, defaultH: 800, defaultD: 450 },
+    vanity_2_puertas: { label: 'Vanity 2 Puertas',  defaultW: 900, defaultH: 800, defaultD: 450 },
+    vanity_cajones:   { label: 'Vanity con Cajones', defaultW: 600, defaultH: 800, defaultD: 450 },
+    espejo_caja:      { label: 'Botiquín / Espejo',  defaultW: 600, defaultH: 700, defaultD: 120 },
+    torre_bano:       { label: 'Torre de Baño',      defaultW: 350, defaultH: 2100, defaultD: 350 },
   }
   ```
 
-- [ ] **2.2** Implementar despiece para `bajo_lavabo`:
-  - Material: **MDF RH obligatorio** — forzar en el selector de materiales
-  - Cajón superior con saque en U: 220mm × 180mm centrado
-  - Montaje flotante: agregar nota "Anclar con escuadras metálicas — no usar solo yeso"
+- [ ] **2.2** Despiece para módulos de baño:
+  - Material casco obligatorio: MDF RH (mostrar advertencia si se selecciona melamina normal)
+  - Montaje: flotante en muro (escuadras) — sin patas
+  - Saque en fondo HDF para tuberías: centrado, U 200×150mm en el frente del cajón superior
 
-- [ ] **2.3** Agregar `"bano"` al selector y filtrado de UI igual que cocinas
+- [ ] **2.3** Herrajes de baño: escuadras de muro (qty según peso estimado)
 
-- [ ] **2.4** Validación: si `type === "bano"` y el material seleccionado NO es MDF RH → mostrar advertencia roja prominente
+- [ ] **2.4** Agregar `"bano"` al selector y filtrado de UI
 
 ---
 
@@ -211,22 +380,19 @@
 - [ ] **3.1** Definir módulos de TV:
   ```javascript
   TV_MODULES = {
-    consola_patas:   { label: 'Consola con Patas',   defaultW: 1600, defaultH: 400, defaultD: 400 },
-    consola_flotante:{ label: 'Consola Flotante',    defaultW: 1600, defaultH: 400, defaultD: 400 },
-    torre_tv:        { label: 'Torre Lateral TV',    defaultW: 350,  defaultH: 2100, defaultD: 300 },
-    repisa_flotante: { label: 'Repisa Flotante',     defaultW: 800,  defaultH: 40,   defaultD: 300 },
-    panel_fondo:     { label: 'Panel de Fondo',      defaultW: 1800, defaultH: 2400, defaultD: 30  },
+    consola_patas:    { label: 'Consola con Patas',  defaultW: 1600, defaultH: 400, defaultD: 400 },
+    consola_flotante: { label: 'Consola Flotante',   defaultW: 1600, defaultH: 400, defaultD: 400 },
+    torre_tv:         { label: 'Torre Lateral TV',   defaultW: 350,  defaultH: 2100, defaultD: 300 },
+    repisa_flotante:  { label: 'Repisa Flotante',    defaultW: 800,  defaultH: 40,   defaultD: 300 },
+    panel_fondo:      { label: 'Panel de Fondo',     defaultW: 1800, defaultH: 2400, defaultD: 30  },
   }
   ```
 
-- [ ] **3.2** Despiece para `consola_patas` y `consola_flotante`:
-  - Igual que módulo base de cocina pero sin zoclo
-  - Consola con pistas: incluir pistones de gas si tiene tapa abatible (≥150N)
+- [ ] **3.2** Despiece para `consola_patas` y `consola_flotante`
 
 - [ ] **3.3** Despiece para `repisa_flotante`:
   - Opción A: repisa hueca (cajita) — calcular piezas de la caja
   - Opción B: herraje oculto — cotizar herraje + tablero sólido ≥38mm
-  - El usuario elige el método
 
 - [ ] **3.4** Agregar `"tv"` al selector y filtrado de UI
 
@@ -236,43 +402,20 @@
 
 > Leer Secciones 8, 9 y 10 de INSTRUCTIVO_TECNICO.md antes de este bloque.
 
-- [ ] **4.1** Agregar módulo `librero` con el despiece exacto de Tablered Arauco:
-  - 9 piezas (A–I) con sus medidas específicas
-  - Cubrecanto KIRA: 59.2 ml
-  - 8 bisagras bidimensionales
-  - 6 regatones niveladores
-
-- [ ] **4.2** Agregar módulo `credenza` con el despiece exacto de Tablered Arauco:
-  - 7 piezas (A–G) con sus medidas específicas
-  - Cubrecanto NERO: 49 ml
-  - 8 bisagras bidimensionales
-  - 4 patas metálicas 10cm
-
-- [ ] **4.3** Agregar módulo `mesa_centro` con el despiece de 2 bloques:
-  - Bloque 1 KIRA: 5 piezas (A–E)
-  - Bloque 2 NERO: 4 piezas (F–I)
-  - 1 pistón gas 150N (obligatorio)
-  - 2 bisagras bidimensionales
-  - 4 patas 5cm
-
-- [ ] **4.4** Crear tipo de proyecto `"librero"`, `"credenza"`, `"mesa_centro"` con filtrado UI correspondiente
+- [ ] **4.1** Agregar módulo `librero` con el despiece exacto de Tablered Arauco (9 piezas A–I)
+- [ ] **4.2** Agregar módulo `credenza` con el despiece exacto de Tablered Arauco (7 piezas A–G)
+- [ ] **4.3** Agregar módulo `mesa_centro` con el despiece de 2 bloques (KIRA + NERO)
+- [ ] **4.4** Crear tipos de proyecto `"librero"`, `"credenza"`, `"mesa_centro"` con filtrado UI
 
 ---
 
 ## BLOQUE 5 — Clósets (extensión de lo existente)
 
-> Solo mejoras sobre lo que ya funciona.
+> Solo mejoras sobre lo que ya funciona. NO cambiar la lógica existente.
 
 - [ ] **5.1** Auditar módulos de closet actuales y documentar cuáles están implementados
-
-- [ ] **5.2** Agregar los módulos faltantes según INSTRUCTIVO_TECNICO.md Sección 6:
-  - `colgador_largo` (si no existe)
-  - `colgador_corto_doble` (si no existe)
-  - `zapatero` (si no existe)
-  - `maletero` (si no existe)
-  - `torre_entrepaños` (si no existe)
-
-- [ ] **5.3** Agregar validación: si hay módulo `colgador_largo` o `torre_entrepaños` con alto > 1,500mm → advertencia "Anclar mueble a pared — anti-vuelco obligatorio"
+- [ ] **5.2** Agregar módulos faltantes si los hay (colgador_largo, zapatero, maletero, torre_entrepaños)
+- [ ] **5.3** Agregar validación anti-vuelco para muebles > 1500mm de alto
 
 ---
 
@@ -287,72 +430,27 @@
   }
   ```
 
-- [ ] **6.2** Despiece de puerta:
-  - Bastidor de pino (perímetro + peinazos)
-  - 2 tapas MDF (cara exterior + cara interior)
-  - Marco (chambrana): 3 piezas × 2 lados = 6 tiras
-  - Tope: 1 tira
-  - Herrajes: 3 bisagras tipo libro + 1 cerradura
-  - Número de bisagras: auto-calcular según tipo de relleno (honey-comb → 3; peinazos → 3; sólida → 4)
-
+- [ ] **6.2** Despiece: bastidor pino + 2 tapas MDF + marco chambrana + tope + bisagras libro + cerradura
 - [ ] **6.3** Agregar `"puerta"` al selector y filtrado de UI
 
 ---
 
 ## BLOQUE 7 — Multi-tenant / Producción
 
-> Este bloque prepara la app para ser vendida como SaaS a cada carpintería.
-
-- [ ] **7.1** Agregar pantalla de configuración inicial (primera vez que se abre la app):
-  - Input: URL de Supabase
-  - Input: Anon Key de Supabase
-  - Input: Nombre de la empresa (reemplaza "Renova" en el PDF)
-  - Input: Logo (upload de imagen)
-  - Botón "Guardar y conectar" — guarda en localStorage bajo `APP_CONFIG`
-
-- [ ] **7.2** Hacer que el PDF use el nombre y logo del `APP_CONFIG` en lugar de los hardcodeados de Renova
-
-- [ ] **7.3** Agregar indicador de estado de conexión a Supabase en el header:
-  - 🟢 Conectado a la nube
-  - 🔴 Modo offline (solo localStorage)
-  - Al hacer clic: muestra info de la cuenta conectada
-
-- [ ] **7.4** Agregar pantalla "Acerca de / Licencia":
-  - Versión de la app
-  - Nombre del cliente (la carpintería que compró la licencia)
-  - Fecha de vencimiento de licencia (hardcodeada en el HTML por ahora)
-  - Botón para contactar soporte
-
-- [ ] **7.5** Agregar protección básica de licencia:
-  - Un campo `licenseKey` en el `APP_CONFIG`
-  - Al iniciar la app, verificar que la key sea válida (validación simple contra un hash hardcodeado)
-  - Si la licencia venció o no existe → pantalla de bloqueo con mensaje de contacto
+- [ ] **7.1** Pantalla de configuración inicial (primera vez): URL Supabase, Anon Key, nombre empresa, logo
+- [ ] **7.2** PDF usa nombre y logo del APP_CONFIG en lugar de los hardcodeados de Renova
+- [ ] **7.3** Indicador de estado de conexión a Supabase en el header (🟢 / 🔴)
+- [ ] **7.4** Pantalla "Acerca de / Licencia" con versión, cliente y fecha de vencimiento
+- [ ] **7.5** Protección básica de licencia (licenseKey en CONFIG, validación simple)
 
 ---
 
 ## BLOQUE 8 — Calidad y Pulido
 
-- [ ] **8.1** Test end-to-end manual: crear una cotización completa de cocina desde cero y verificar:
-  - El despiece es correcto (piezas, medidas, cantidades)
-  - Los herrajes se asignan automáticamente y son correctos
-  - El PDF generado es profesional y tiene toda la información
-  - El proyecto se guarda correctamente en Supabase
-
-- [ ] **8.2** Revisar y mejorar el PDF de cocinas:
-  - Portada con nombre del proyecto, cliente, fecha y logo
-  - Índice de módulos
-  - Tabla de despiece por módulo
-  - Resumen de materiales (m² de cada tablero necesario)
-  - Resumen de herrajes (total de bisagras, correderas, patas, etc.)
-  - Totales con desglose de casco / frente / herrajes / extras
-
-- [ ] **8.3** Agregar tooltips o ayuda contextual en la UI para los módulos nuevos:
-  - Al pasar el mouse sobre un tipo de módulo: mostrar dimensiones estándar y descripción breve
-
-- [ ] **8.4** Optimizar el cálculo de m² de tablero necesario:
-  - Dado el despiece completo de un proyecto, calcular cuántos tableros completos (1220×2440mm) se necesitan
-  - Mostrar el número de tableros por diseño/material
-  - Esto permite cotizar el material exacto sin desperdicio
+- [ ] **8.1** Test end-to-end: crear cotización completa de cocina y verificar despiece, herrajes, PDF y guardado en Supabase
+- [ ] **8.2** Revisar y mejorar PDF de cocinas: portada, índice, despiece por módulo, resumen materiales, totales desglosados
+- [ ] **8.3** Tooltips en UI: al hacer hover sobre tipo de módulo, mostrar dimensiones estándar y descripción breve
+- [ ] **8.4** Calcular m² de tablero y número exacto de láminas necesarias por proyecto
 
 ---
 
@@ -361,7 +459,7 @@
 ```
 BLOQUE 0 (obligatorio primero)
   ↓
-BLOQUE 1A → 1B → 1C → 1D → 1E → 1F  (cocinas completo)
+BLOQUE 1A → 1B → 1C → 1D → 1E → 1F → 1G → 1H → 1I  (cocinas completo)
   ↓
 BLOQUE 2 (baños)
   ↓
@@ -382,9 +480,14 @@ BLOQUE 8 (calidad y pulido — siempre al final)
 
 ## Notas para Claude Code
 
-- **No inventes medidas.** Todas las dimensiones estándar están en `INSTRUCTIVO_TECNICO.md`. Úsalas.
+- **Lee INSTRUCTIVO_TECNICO_COCINAS.md completo antes de escribir cualquier función de cocinas.**
+- **No inventes medidas.** Todas las dimensiones estándar están en los instructivos. Úsalas.
 - **No cambies la estructura de `project.data`.** Solo extiende con nuevos tipos de módulo.
 - **No rompas closets.** Cada cambio debe pasar la prueba: "¿un proyecto de closet existente sigue funcionando igual?"
-- **Pregunta antes de hacer cambios grandes** a la arquitectura del HTML monolítico.
+- **innerWidth = W - (2 × T) siempre.** Sin excepción. Nunca W - T ni W - 30 hardcodeado.
+- **Bajos NO llevan techo. Alacenas y torres SÍ llevan techo.** Error crítico si se confunden.
+- **Cajones tienen frente externo (premium) y frente interno (casco).** Son piezas diferentes.
+- **Cubierta no es pieza de tablero.** Va a extras como precio por m², no a parts[].
+- **Torres con horno: validar siempre que la suma de huecos + cajones + separadores ≤ H.**
 - **El sistema Dual Material (Casco + Frente) es la lógica central.** Todo módulo nuevo debe respetarlo.
-- **Prioridad absoluta: Bloque 1 (Cocinas).** Es el producto principal para la primera venta.
+- **Prioridad absoluta: Bloque 1 (Cocinas).** Es el producto principal para la primera venta (Renova).
